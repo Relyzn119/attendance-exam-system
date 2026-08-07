@@ -9,13 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('token_ujians', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+   
+public function up(): void
+{
+    Schema::create('token_ujians', function (Blueprint $table) {
+        $table->id();
+        $table->string('kode_token', 8)->unique();
+        $table->boolean('is_active')->default(true);
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

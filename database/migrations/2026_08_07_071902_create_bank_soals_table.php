@@ -9,13 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('bank_soals', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+public function up(): void
+{
+    Schema::create('bank_soals', function (Blueprint $table) {
+        $table->id();
+        $table->text('soal');
+        $table->string('opsi_a');
+        $table->string('opsi_b');
+        $table->string('opsi_c');
+        $table->string('opsi_d');
+        $table->enum('kunci_jawaban', ['A', 'B', 'C', 'D']);
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.
