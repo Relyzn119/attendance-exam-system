@@ -8,9 +8,19 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use HasFactory, Notifiable; 
 
-    protected $guarded = ['id'];
+    // Perbarui $fillable sesuai dengan field yang diinput di RegisteredUserController
+    protected $fillable = [
+        'nama',
+        'email',
+        'password',
+        'jenis_kelamin',
+        'alamat',
+        'no_hp',
+        'nik',
+        'npwp',
+    ];
 
     public function berkas()
     {
