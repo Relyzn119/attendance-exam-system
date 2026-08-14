@@ -9,7 +9,7 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-public function up(): void
+  public function up(): void
 {
     Schema::create('bank_soals', function (Blueprint $table) {
         $table->id();
@@ -19,6 +19,8 @@ public function up(): void
         $table->string('opsi_c');
         $table->string('opsi_d');
         $table->enum('kunci_jawaban', ['A', 'B', 'C', 'D']);
+        // is_selected: Penanda 25 soal yang dipilih Admin untuk dijadikan Soal Ujian
+        $table->boolean('is_selected')->default(false); 
         $table->timestamps();
     });
 }

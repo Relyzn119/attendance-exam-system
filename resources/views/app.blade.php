@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
     <!-- Arahkan ke app.ts -->
-    @vite(['resources/js/app.ts'])
+     @vite(['resources/css/app.css', 'resources/js/app.ts'])
 </head>
 <body class="bg-light">
     <div id="app"></div>

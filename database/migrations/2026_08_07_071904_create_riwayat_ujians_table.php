@@ -14,8 +14,8 @@ public function up(): void
 {
     Schema::create('riwayat_ujians', function (Blueprint $table) {
         $table->id();
-        $table->foreignId('pegawai_id')->constrained('pegawais')->onDelete('cascade');
-        $table->foreignId('token_id')->nullable()->constrained('token_ujians')->nullOnDelete();
+        $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+        $table->foreignId('token_id')->constrained('token_absensis')->onDelete('cascade');
         $table->integer('total_soal')->default(25);
         $table->integer('jawaban_benar')->default(0);
         $table->integer('jawaban_salah')->default(0);

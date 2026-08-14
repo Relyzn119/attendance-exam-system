@@ -9,16 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   
-public function up(): void
+    public function up(): void
 {
-    Schema::create('berkas_pegawais', function (Blueprint $table) {
+    Schema::create('berkas_pesertas', function (Blueprint $table) {
         $table->id();
-        $table->foreignId('pegawai_id')->constrained('pegawais')->onDelete('cascade');
+        $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+        // jenis_berkas: kk, ktp, ijazah, transkrip, cv, surat_lamaran, npwp, berkas_lain
         $table->string('jenis_berkas'); 
         $table->string('nama_file');
-        $table->string('file_path'); 
-        $table->date('tanggal_upload');
+        $table->string('file_path');
         $table->timestamps();
     });
 }
@@ -28,6 +27,6 @@ public function up(): void
      */
     public function down(): void
     {
-        Schema::dropIfExists('berkas_pegawais');
+        Schema::dropIfExists('berkas_pesertas');
     }
 };

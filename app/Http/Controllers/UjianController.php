@@ -3,140 +3,142 @@
 namespace App\Http\Controllers;
 
 use App\Models\BankSoal;
-use App\Models\TokenUjian;
+use App\Models\TokenAbsensi;
 use App\Models\RiwayatUjian;
 use App\Models\DetailJawabanUjian;
-use App\Models\Pegawai;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Carbon\Carbon;
-use PDF; // Gunakan package barryvdh/laravel-dompdf untuk PDF Sertifikat
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UjianController extends Controller
 {
-    // 1. Admin Klik Tombol "Generate Kode Token"
-    public function generateToken()
-    {
-        $token = TokenUjian::create([
-            'kode_token' => strtoupper(Str::random(6)), // Menghasilkan 6 karakter unik (ex: X7K9A2)
-            'is_active' => true
-        ]);
-
-        return response()->json([
-            'message' => 'Token berhasil dibuat!',
-            'token' => $token->kode_token
-        ]);
-    }
-
-    // 2. Pegawai Masuk Ujian via Kode Token
-    public function mulaiUjian(Request $request)
+    // 1. Validasi Token Absensi & Mulai Ujian (Ambil 25 Soal Terpilih)
+    public function startExam(Request $request)
     {
         $request->validate([
-            'nik_nip' => 'required',
-            'kode_token' => 'required'
+            'user_id' => 'required|exists:users,id',
+            'token'   => 'required'
         ]);
 
-        // Cek Token Valid
-        $token = TokenUjian::where('kode_token', $request->kode_token)
-                           ->where('is_active', true)->first();
+        // Cek Keberadaan Token
+        $token = TokenAbsensi::where('user_id', $request->user_id)
+            ->where('kode_token', strtoupper($request->token))
+            ->first();
+
         if (!$token) {
-            return response()->json(['message' => 'Kode Token Tidak Valid atau Kadaluarsa!'], 400);
+            return response()->json(['message' => 'Kode Token tidak ditemukan atau tidak sesuai!'], 400);
         }
 
-        // Cek Data Pegawai
-        $pegawai = Pegawai::where('nik_nip', $request->nik_nip)->first();
-        if (!$pegawai) {
-            return response()->json(['message' => 'Data Pegawai tidak ditemukan!'], 404);
+        if ($token->is_used) {
+            return response()->json(['message' => 'Kode Token ini sudah pernah digunakan untuk ujian!'], 400);
         }
 
-        // Ambil 25 Soal Secara Acak dari total 200 Soal
-        $soalAcak = BankSoal::inRandomOrder()->take(25)->get();
+        // Ambil 25 Soal yang dipilih Admin (is_selected = true)
+        $soalList = BankSoal::where('is_selected', true)->get();
+        if ($soalList->count() === 0) {
+            return response()->json(['message' => 'Admin belum memilih 25 Soal Ujian! Mohon hubungi Admin.'], 400);
+        }
 
-        // Buat Sesi Ujian Baru
-        $riwayat = RiwayatUjian::create([
-            'pegawai_id' => $pegawai->id,
-            'token_id' => $token->id,
-            'waktu_mulai' => Carbon::now(),
-            'status' => 'berlangsung'
+        // Tandai Token Sudah Digunakan (Absensi Terverifikasi)
+        $token->update([
+            'is_used' => true,
+            'used_at' => now()
         ]);
 
-        // Siapkan Record Detail Jawaban
-        foreach ($soalAcak as $soal) {
+        // Buat Sesi Riwayat Ujian
+        $riwayat = RiwayatUjian::create([
+            'user_id'     => $request->user_id,
+            'token_id'    => $token->id,
+            'total_soal'  => $soalList->count(),
+            'waktu_mulai' => now(),
+            'status'      => 'berlangsung'
+        ]);
+
+        // Buat Placeholder Detail Jawaban
+        foreach ($soalList as $soal) {
             DetailJawabanUjian::create([
                 'riwayat_ujian_id' => $riwayat->id,
-                'soal_id' => $soal->id,
+                'soal_id'          => $soal->id,
             ]);
         }
 
         return response()->json([
+            'status'     => 'success',
             'riwayat_id' => $riwayat->id,
-            'pegawai' => $pegawai,
-            'soal' => $soalAcak->makeHidden('kunci_jawaban') // Sembunyikan kunci jawaban
+            'soal'       => $soalList->makeHidden('kunci_jawaban') // Sembunyikan kunci jawaban dari client
         ]);
     }
 
-    // 3. Simpan Jawaban & Durasi per Soal + Selesai Ujian
-    public function submitUjian(Request $request, $riwayatId)
+    // 2. Submit Jawaban & Hitung Nilai Akhir
+    public function submitExam(Request $request, $riwayatId)
     {
         $riwayat = RiwayatUjian::findOrFail($riwayatId);
-        $jawabanInput = $request->jawaban; // Array dari Vue: [{soal_id: 1, jawaban: 'A', durasi_detik: 45}, ...]
+        $jawabanUser = $request->jawaban; // Array: [{soal_id: 1, jawaban: 'A'}, ...]
 
         $benar = 0;
         $salah = 0;
 
-        foreach ($jawabanInput as $item) {
+        foreach ($jawabanUser as $item) {
             $soal = BankSoal::find($item['soal_id']);
-            $isBenar = ($soal->kunci_jawaban == $item['jawaban']);
+            $isBenar = ($soal && $soal->kunci_jawaban == $item['jawaban']);
 
-            if ($isBenar) $benar++; else $salah++;
+            if ($isBenar) $benar++;
+            else $salah++;
 
             DetailJawabanUjian::where('riwayat_ujian_id', $riwayat->id)
                 ->where('soal_id', $item['soal_id'])
                 ->update([
                     'jawaban_user' => $item['jawaban'],
-                    'is_benar' => $isBenar,
-                    'durasi_detik' => $item['durasi_detik'] // Waktu pengerjaan per soal disimpan di sini
+                    'is_benar'     => $isBenar,
                 ]);
         }
 
-        // Hitung Nilai Akhir
-        $nilai = ($benar / 25) * 100;
-        $nomorSertifikat = "CERT/DIKLAT/" . date('Ym') . "/" . sprintf("%04d", $riwayat->id);
+        $totalSoal = $riwayat->total_soal > 0 ? $riwayat->total_soal : 25;
+        $nilai = ($benar / $totalSoal) * 100;
+        $noSertifikat = "CERT/DIKLAT/" . date('Ym') . "/" . sprintf("%04d", $riwayat->id);
 
         $riwayat->update([
-            'jawaban_benar' => $benar,
-            'jawaban_salah' => $salah,
-            'nilai_akhir' => $nilai,
-            'nomor_sertifikat' => $nomorSertifikat,
-            'waktu_selesai' => Carbon::now(),
-            'status' => 'selesai'
+            'jawaban_benar'    => $benar,
+            'jawaban_salah'    => $salah,
+            'nilai_akhir'      => $nilai,
+            'nomor_sertifikat' => $noSertifikat,
+            'waktu_selesai'    => now(),
+            'status'           => 'selesai'
         ]);
 
         return response()->json([
-            'message' => 'Ujian Selesai',
-            'nilai' => $nilai,
-            'nomor_sertifikat' => $nomorSertifikat
+            'status'  => 'success',
+            'message' => 'Ujian berhasil diselesaikan!',
+            'nilai'   => $nilai
+        ]);
+    }
+    // Tambahkan di dalam class UjianController
+
+    public function getReviewJawaban($riwayatId)
+    {
+        $riwayat = RiwayatUjian::with(['detailJawaban.soal', 'user'])->findOrFail($riwayatId);
+
+        return response()->json([
+            'status'  => 'success',
+            'riwayat' => $riwayat
         ]);
     }
 
-    // 4. Download Sertifikat Otomatis
-    public function cetakSertifikat($riwayatId)
-    {
-        $riwayat = RiwayatUjian::with('pegawai')->findOrFail($riwayatId);
-        
-        // Render PDF menggunakan view sertifikat
-        $pdf = PDF::loadView('pdf.sertifikat', compact('riwayat'));
-        return $pdf->download("Sertifikat_{$riwayat->pegawai->nama_lengkap}.pdf");
+
+// Tambahkan di dalam class UjianController
+public function cetakSertifikat($riwayatId)
+{
+    $riwayat = RiwayatUjian::with('user')->findOrFail($riwayatId);
+
+    // Keamanan: Tolak jika status ujian belum selesai
+    if ($riwayat->status !== 'selesai') {
+        return response()->json([
+            'message' => 'Sertifikat belum tersedia karena Anda belum menyelesaikan ujian!'
+        ], 403);
     }
 
-    // 5. Data Monitoring untuk Bagian Bawah Halaman 1 (Admin)
-    public function getMonitoringResult()
-    {
-        $data = RiwayatUjian::with(['pegawai', 'detailJawaban.soal'])
-            ->where('status', 'selesai')
-            ->latest()
-            ->get();
-
-        return response()->json($data);
-    }
+    // Render View ke PDF
+    $pdf = Pdf::loadView('pdf.sertifikat', compact('riwayat'))->setPaper('a4', 'landscape');
+    
+    return $pdf->download("Sertifikat_Diklat_{$riwayat->user->nik}.pdf");
+}
 }
