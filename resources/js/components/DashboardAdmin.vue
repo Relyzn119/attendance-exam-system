@@ -256,8 +256,7 @@
 
     </div>
 </template>
-
-<script>
+<script lang="js">
 import axios from 'axios';
 
 export default {
@@ -310,7 +309,8 @@ export default {
         },
         deleteSoal(id) {
             if (confirm('Apakah Anda yakin ingin menghapus soal ini?')) {
-                axios.delete(`/api/admin/bank-soal/${id}`).then(res => {
+                // Mengubah res => menjadi () => agar tidak ada error 'res' unused
+                axios.delete(`/api/admin/bank-soal/${id}`).then(() => {
                     this.fetchBankSoal();
                 });
             }

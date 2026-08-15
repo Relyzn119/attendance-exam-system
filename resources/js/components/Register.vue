@@ -158,7 +158,7 @@ export default {
       this.isLoading = true;
       this.alert = { type: '', message: '' };
 
-      let formData = new FormData();
+      const formData = new FormData();
       
       // Append text fields
       Object.keys(this.form).forEach(key => {

@@ -167,7 +167,7 @@ export default {
       this.uploadForm.file = e.target.files[0];
     },
     uploadFile() {
-      let formData = new FormData();
+      const formData = new FormData();
       formData.append('jenis_berkas', this.uploadForm.jenis_berkas);
       formData.append('file', this.uploadForm.file);
 

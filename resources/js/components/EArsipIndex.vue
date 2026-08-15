@@ -656,7 +656,7 @@ const openModalDetail = async (id) => {
         if (response.data.success) {
             selectedPegawai.value = response.data.data;
         }
-    } catch (error) {
+    } catch  {
         alert('Gagal memuat detail pegawai');
         showModalDetail.value = false;
     } finally {
