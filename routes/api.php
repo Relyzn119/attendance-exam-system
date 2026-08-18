@@ -27,5 +27,8 @@ Route::get('/admin/export-absensi', [AdminController::class, 'exportAbsensiPdf']
 Route::get('/admin/pegawai', [PegawaiController::class, 'index']);
 Route::post('/admin/pegawai', [PegawaiController::class, 'store']);
 Route::get('/admin/pegawai/{id}', [PegawaiController::class, 'show']);
+Route::put('/admin/pegawai/{id}', [PegawaiController::class, 'update']);
+Route::delete('/admin/pegawai/{id}', [PegawaiController::class, 'destroy']);
+Route::get('/admin/pegawai/{id}/download-zip', [PegawaiController::class, 'downloadZip']);
 Route::post('/admin/pegawai/{id}/upload-berkas', [PegawaiController::class, 'uploadBerkas']);
 Route::delete('/admin/berkas/{id}', [PegawaiController::class, 'destroyBerkas']);

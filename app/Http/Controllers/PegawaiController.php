@@ -80,55 +80,109 @@ class PegawaiController extends Controller
     /**
      * Store Data Pegawai Baru & Automatic Attachment Placeholders
      */
+    /**
+     * Store Data Pegawai Baru + Direct File Uploads + Custom Role
+     */
     public function store(Request $request)
     {
-        // 1. Validasi Input sesuai form Gambar 6
+        // 1. Validasi Input (NIK & Unit sekarang OPSIONAL / nullable)
         $validated = $request->validate([
-            'nik'                 => 'required|string|unique:pegawais,nik',
-            'nama_lengkap'        => 'required|string|max:255',
-            'kategori_peran'      => 'required|string',
-            'unit_departemen'     => 'required|string|max:255',
-            'email_resmi'         => 'nullable|email|max:255',
-            'no_hp'               => 'nullable|string|max:50',
-            'pendidikan_terakhir' => 'nullable|string|max:255',
-            'tanggal_upload'      => 'nullable|date',
+            'nik'                  => 'nullable|string|max:50|unique:pegawais,nik',
+            'nama_lengkap'         => 'required|string|max:255',
+            'kategori_peran'       => 'required|string',
+            'kategori_peran_custom' => 'nullable|string|max:255',
+            'unit_departemen'      => 'nullable|string|max:255',
+            'email_resmi'          => 'nullable|email|max:255',
+            'no_hp'                => 'nullable|string|max:50',
+            'pendidikan_terakhir'  => 'nullable|string|max:255',
+            'tanggal_upload'       => 'nullable|date',
 
-            // Checkbox Lampiran Otomatis (Gambar 6)
-            'lampiran_ijazah'     => 'nullable|boolean',
-            'lampiran_transkrip'  => 'nullable|boolean',
-            'lampiran_str_sip'    => 'nullable|boolean',
+            // Validasi file PDF opsional jika diupload langsung saat pendaftaran
+            'file_ijazah'          => 'nullable|file|mimes:pdf|max:10240',
+            'file_transkrip'       => 'nullable|file|mimes:pdf|max:10240',
+            'file_str'             => 'nullable|file|mimes:pdf|max:10240',
+            'file_sip'             => 'nullable|file|mimes:pdf|max:10240',
+            'file_ktp'             => 'nullable|file|mimes:pdf|max:10240',
+            'file_kk'              => 'nullable|file|mimes:pdf|max:10240',
+            'file_cv'              => 'nullable|file|mimes:pdf|max:10240',
+            'file_lamaran'         => 'nullable|file|mimes:pdf|max:10240',
+            'file_lainnya'         => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         try {
-            // 2. Normalisasi kategori_peran dari pilihan dropdown Vue
+            // 2. Normalisasi kategori_peran / Peran Kustom
             $peran = $validated['kategori_peran'];
-            if (str_contains($peran, 'Dokter')) {
-                $peran = 'Dokter';
-            } elseif (str_contains($peran, 'Perawat')) {
-                $peran = 'Perawat';
-            } elseif (str_contains($peran, 'Penunjang Medis')) {
-                $peran = 'Penunjang Medis';
-            } elseif (str_contains($peran, 'Staf Administrasi') || str_contains($peran, 'HRD')) {
-                $peran = 'Staf Administrasi';
+            if (str_contains($peran, 'Lainnya') || $peran === 'Pegawai Lainnya') {
+                $peran = $request->input('kategori_peran_custom') ?: 'Pegawai Lainnya';
+            } else {
+                if (str_contains($peran, 'Dokter')) {
+                    $peran = 'Dokter';
+                } elseif (str_contains($peran, 'Perawat')) {
+                    $peran = 'Perawat';
+                } elseif (str_contains($peran, 'Penunjang Medis')) {
+                    $peran = 'Penunjang Medis';
+                } elseif (str_contains($peran, 'Staf Administrasi') || str_contains($peran, 'HRD')) {
+                    $peran = 'Staf Administrasi';
+                }
             }
+
+            // Jika NIK kosong, otomatis buat nomor NIK sementara unik
+            $nik = $validated['nik'] ?? ('NP-' . time() . rand(10, 99));
 
             // 3. Simpan Data Pegawai
             $pegawai = Pegawai::create([
-                'nik'                 => $validated['nik'],
+                'nik'                 => $nik,
                 'nama_lengkap'        => $validated['nama_lengkap'],
                 'kategori_peran'      => $peran,
-                'unit_departemen'     => $validated['unit_departemen'],
+                'unit_departemen'     => $validated['unit_departemen'] ?? 'Umum',
                 'email_resmi'         => $request->email_resmi,
                 'no_hp'               => $request->no_hp,
                 'pendidikan_terakhir' => $request->pendidikan_terakhir,
                 'tanggal_upload'      => $request->tanggal_upload ?? now()->format('Y-m-d'),
             ]);
 
-            // Sanitisasi nama untuk file placeholder
+            // 4. Handling Upload File PDF Langsung Saat Pendaftaran
+            $documentTypes = [
+                'file_ijazah'   => 'Ijazah Profesi / Gelar',
+                'file_transkrip' => 'Transkrip Nilai Akademik',
+                'file_str'      => 'STR (Surat Tanda Registrasi)',
+                'file_sip'      => 'SIP (Surat Izin Praktik)',
+                'file_ktp'      => 'KTP (Kartu Tanda Penduduk)',
+                'file_kk'       => 'Kartu Keluarga (KK)',
+                'file_cv'       => 'CV (Curriculum Vitae)',
+                'file_lamaran'  => 'Surat Lamaran',
+                'file_lainnya'  => 'Dokumen Lainnya',
+            ];
+
+            foreach ($documentTypes as $inputKey => $jenisBerkas) {
+                if ($request->hasFile($inputKey)) {
+                    $file = $request->file($inputKey);
+                    $originalName = $file->getClientOriginalName();
+                    $fileName = time() . '_' . rand(100, 999) . '_' . preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $originalName);
+                    $filePath = $file->storeAs('berkas_pegawai', $fileName, 'public');
+
+                    $bytes = $file->getSize();
+                    $fileSize = $bytes >= 1048576
+                        ? number_format($bytes / 1048576, 1) . ' MB'
+                        : number_format($bytes / 1024, 1) . ' KB';
+
+                    BerkasPegawai::create([
+                        'pegawai_id'     => $pegawai->id,
+                        'jenis_berkas'   => $jenisBerkas,
+                        'judul_dokumen'  => $jenisBerkas . ' - ' . $pegawai->nama_lengkap,
+                        'nama_file'      => $originalName,
+                        'file_path'      => 'storage/' . $filePath,
+                        'file_size'      => $fileSize,
+                        'catatan_hrd'    => 'Diunggah saat pendaftaran',
+                        'tanggal_upload' => $pegawai->tanggal_upload,
+                    ]);
+                }
+            }
+
+            // Fallback: Checkbox Draf Placeholder jika dicentang dan tidak ada upload file fisik
             $cleanName = str_replace([' ', '.', ','], '_', $pegawai->nama_lengkap);
 
-            // 4. Buat Lampiran Otomatis jika Checkbox Di-centang (Gambar 6)
-            if ($request->boolean('lampiran_ijazah')) {
+            if ($request->boolean('lampiran_ijazah') && !$request->hasFile('file_ijazah')) {
                 BerkasPegawai::create([
                     'pegawai_id'     => $pegawai->id,
                     'jenis_berkas'   => 'Ijazah Profesi / Gelar',
@@ -141,7 +195,7 @@ class PegawaiController extends Controller
                 ]);
             }
 
-            if ($request->boolean('lampiran_transkrip')) {
+            if ($request->boolean('lampiran_transkrip') && !$request->hasFile('file_transkrip')) {
                 BerkasPegawai::create([
                     'pegawai_id'     => $pegawai->id,
                     'jenis_berkas'   => 'Transkrip Nilai Akademik',
@@ -154,7 +208,7 @@ class PegawaiController extends Controller
                 ]);
             }
 
-            if ($request->boolean('lampiran_str_sip')) {
+            if ($request->boolean('lampiran_str_sip') && !$request->hasFile('file_str') && !$request->hasFile('file_sip')) {
                 BerkasPegawai::create([
                     'pegawai_id'     => $pegawai->id,
                     'jenis_berkas'   => 'STR (Surat Tanda Registrasi)',
@@ -305,6 +359,232 @@ class PegawaiController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal menghapus berkas: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+    /**
+     * Update Data Pegawai & Upload Lampiran Berkas Baru saat Edit
+     */
+    public function update(Request $request, $id)
+    {
+        $pegawai = Pegawai::find($id);
+
+        if (!$pegawai) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data pegawai tidak ditemukan'
+            ], 404);
+        }
+
+        // 1. Validasi Input (NIK & Unit Opsional)
+        $validated = $request->validate([
+            'nik'                  => 'nullable|string|max:50|unique:pegawais,nik,' . $id,
+            'nama_lengkap'         => 'required|string|max:255',
+            'kategori_peran'       => 'required|string',
+            'kategori_peran_custom' => 'nullable|string|max:255',
+            'unit_departemen'      => 'nullable|string|max:255',
+            'email_resmi'          => 'nullable|email|max:255',
+            'no_hp'                => 'nullable|string|max:50',
+            'pendidikan_terakhir'  => 'nullable|string|max:255',
+
+            // Validasi upload file PDF opsional saat edit
+            'file_ijazah'          => 'nullable|file|mimes:pdf|max:10240',
+            'file_transkrip'       => 'nullable|file|mimes:pdf|max:10240',
+            'file_str'             => 'nullable|file|mimes:pdf|max:10240',
+            'file_sip'             => 'nullable|file|mimes:pdf|max:10240',
+            'file_ktp'             => 'nullable|file|mimes:pdf|max:10240',
+            'file_kk'              => 'nullable|file|mimes:pdf|max:10240',
+            'file_cv'              => 'nullable|file|mimes:pdf|max:10240',
+            'file_lamaran'         => 'nullable|file|mimes:pdf|max:10240',
+            'file_lainnya'         => 'nullable|file|mimes:pdf|max:10240',
+        ]);
+
+        try {
+            // 2. Normalisasi kategori_peran / Peran Kustom
+            $peran = $validated['kategori_peran'];
+            if (str_contains($peran, 'Lainnya') || $peran === 'Pegawai Lainnya') {
+                $peran = $request->input('kategori_peran_custom') ?: 'Pegawai Lainnya';
+            } else {
+                if (str_contains($peran, 'Dokter')) {
+                    $peran = 'Dokter';
+                } elseif (str_contains($peran, 'Perawat')) {
+                    $peran = 'Perawat';
+                } elseif (str_contains($peran, 'Penunjang Medis')) {
+                    $peran = 'Penunjang Medis';
+                } elseif (str_contains($peran, 'Staf Administrasi') || str_contains($peran, 'HRD')) {
+                    $peran = 'Staf Administrasi';
+                }
+            }
+
+            // 3. Update Data Pegawai
+            $pegawai->update([
+                'nik'                 => $validated['nik'] ?? $pegawai->nik,
+                'nama_lengkap'        => $validated['nama_lengkap'],
+                'kategori_peran'      => $peran,
+                'unit_departemen'     => $validated['unit_departemen'] ?? $pegawai->unit_departemen,
+                'email_resmi'         => $request->email_resmi,
+                'no_hp'               => $request->no_hp,
+                'pendidikan_terakhir' => $request->pendidikan_terakhir,
+            ]);
+
+            // 4. Handling Upload File PDF Baru saat Edit (Opsional)
+            $documentTypes = [
+                'file_ijazah'   => 'Ijazah Profesi / Gelar',
+                'file_transkrip' => 'Transkrip Nilai Akademik',
+                'file_str'      => 'STR (Surat Tanda Registrasi)',
+                'file_sip'      => 'SIP (Surat Izin Praktik)',
+                'file_ktp'      => 'KTP (Kartu Tanda Penduduk)',
+                'file_kk'       => 'Kartu Keluarga (KK)',
+                'file_cv'       => 'CV (Curriculum Vitae)',
+                'file_lamaran'  => 'Surat Lamaran',
+                'file_lainnya'  => 'Dokumen Lainnya',
+            ];
+
+            foreach ($documentTypes as $inputKey => $jenisBerkas) {
+                if ($request->hasFile($inputKey)) {
+                    $file = $request->file($inputKey);
+                    $originalName = $file->getClientOriginalName();
+                    $fileName = time() . '_' . rand(100, 999) . '_' . preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $originalName);
+                    $filePath = $file->storeAs('berkas_pegawai', $fileName, 'public');
+
+                    $bytes = $file->getSize();
+                    $fileSize = $bytes >= 1048576
+                        ? number_format($bytes / 1048576, 1) . ' MB'
+                        : number_format($bytes / 1024, 1) . ' KB';
+
+                    BerkasPegawai::create([
+                        'pegawai_id'     => $pegawai->id,
+                        'jenis_berkas'   => $jenisBerkas,
+                        'judul_dokumen'  => $jenisBerkas . ' - ' . $pegawai->nama_lengkap,
+                        'nama_file'      => $originalName,
+                        'file_path'      => 'storage/' . $filePath,
+                        'file_size'      => $fileSize,
+                        'catatan_hrd'    => 'Diunggah saat update data',
+                        'tanggal_upload' => now()->format('Y-m-d'),
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Pegawai & Dokumen berhasil diperbarui!',
+                'data'    => $pegawai->load('berkasPegawais')
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui data pegawai: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Hapus Data Pegawai & Seluruh Dokumen Fisiknya di Storage
+     */
+    public function destroy($id)
+    {
+        try {
+            $pegawai = Pegawai::with('berkasPegawais')->find($id);
+
+            if (!$pegawai) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data pegawai tidak ditemukan'
+                ], 404);
+            }
+
+            // 1. Hapus semua file PDF fisik milik pegawai dari folder storage
+            foreach ($pegawai->berkasPegawais as $berkas) {
+                $cleanPath = str_replace('storage/', '', $berkas->file_path);
+                if (Storage::disk('public')->exists($cleanPath)) {
+                    Storage::disk('public')->delete($cleanPath);
+                }
+            }
+
+            // 2. Hapus data pegawai dari database
+            $pegawai->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Pegawai & seluruh berkas PDF berhasil dihapus'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus pegawai: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Download Semua Dokumen PDF Pegawai dalam Format ZIP (Tugas #6)
+     */
+    public function downloadZip($id)
+    {
+        try {
+            $pegawai = Pegawai::with('berkasPegawais')->find($id);
+
+            if (!$pegawai) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data pegawai tidak ditemukan'
+                ], 404);
+            }
+
+            if ($pegawai->berkasPegawais->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pegawai ini belum memiliki berkas dokumen terunggah'
+                ], 400);
+            }
+
+            // Buat File ZIP Sementara
+            $zip = new \ZipArchive();
+            $cleanName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $pegawai->nama_lengkap);
+            $zipFileName = 'Arsip_Dokumen_' . $cleanName . '_' . time() . '.zip';
+            $zipPath = storage_path('app/public/' . $zipFileName);
+
+            if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
+                $fileCount = 0;
+
+                foreach ($pegawai->berkasPegawais as $berkas) {
+                    $cleanRelativePath = str_replace('storage/', '', $berkas->file_path);
+                    $fullPath = storage_path('app/public/' . $cleanRelativePath);
+
+                    if (file_exists($fullPath)) {
+                        // Nama file di dalam zip diberi prefix jenis berkas agar rapi
+                        $jenisClean = preg_replace('/[^a-zA-Z0-9_-]/', '_', $berkas->jenis_berkas);
+                        $entryName = $jenisClean . '_' . $berkas->nama_file;
+
+                        $zip->addFile($fullPath, $entryName);
+                        $fileCount++;
+                    }
+                }
+
+                $zip->close();
+
+                if ($fileCount === 0) {
+                    if (file_exists($zipPath)) {
+                        unlink($zipPath);
+                    }
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'File dokumen fisik tidak ditemukan di server'
+                    ], 404);
+                }
+
+                // Stream Download File ZIP lalu hapus file temp setelah terkirim
+                return response()->download($zipPath)->deleteFileAfterSend(true);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal membuat file ZIP'
+            ], 500);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error download ZIP: ' . $e->getMessage(),
             ], 500);
         }
     }

@@ -1,153 +1,258 @@
 <template>
-    <div class="container my-4">
+    <div class="w-full text-slate-100 font-sans pb-12 space-y-8">
 
-        <!-- HEADER ADMIN -->
-        <div class="card bg-dark text-white shadow-sm mb-4">
-            <div class="card-body p-4 d-flex justify-content-between align-items-center">
-                <div>
-                    <h3 class="fw-bold mb-1"><i class="bi bi-speedometer2 me-2"></i>Dashboard Admin Diklat</h3>
-                    <p class="mb-0 text-white-50">Kelola Absensi, Token Ujian, & Bank Soal RSU Bunda Thamrin</p>
+        <!-- 1. HEADER ADMIN DASHBOARD (GLASSMORPHISM SHOWCASE) -->
+        <div class="bg-slate-900/60 border border-white/15 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+                <div class="space-y-1">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-400/30 rounded-full text-xs text-blue-300 font-semibold mb-2">
+                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                        <span>Pusat Kendali Ujian & Diklat RSU Bunda Thamrin</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-4xl font-black text-white tracking-tight uppercase flex items-center gap-3">
+                        <i class="bi bi-speedometer2 text-blue-400"></i>
+                        <span>Dashboard Admin Diklat</span>
+                    </h1>
+                    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl">
+                        Kelola Absensi Peserta, Token Akses Ujian Digital, & Penataan Bank Soal Terintegrasi.
+                    </p>
                 </div>
-                <span class="badge bg-danger fs-6 px-3 py-2">Role: Admin</span>
+
+                <div class="self-start sm:self-auto shrink-0">
+                    <span class="inline-flex items-center gap-1.5 bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs font-bold px-4 py-2 rounded-full shadow-lg backdrop-blur-md">
+                        <i class="bi bi-shield-lock-fill"></i> Role: Admin Authorized
+                    </span>
+                </div>
             </div>
         </div>
 
-        <!-- TABEL DATA PESERTA UJIAN (MAKS 10 PER HALAMAN) -->
-        <div class="card shadow-sm mb-5">
-            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center py-3">
-                <h5 class="mb-0 fw-bold"><i class="bi bi-people-fill me-2"></i>Daftar Peserta Ujian & Absensi</h5>
+        <!-- 2. TABEL DATA PESERTA UJIAN & ABSENSI (GLASS CARD) -->
+        <div class="bg-slate-900/60 border border-white/15 rounded-3xl overflow-hidden backdrop-blur-xl shadow-2xl">
+            
+            <!-- Table Header Bar -->
+            <div class="p-6 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-950/40">
                 <div>
-                    <span class="badge bg-light text-success fw-bold me-2">Total: {{ pagination.total }} Peserta</span>
-                    <a href="/api/admin/export-absensi" target="_blank" class="btn btn-light btn-sm text-success fw-bold">
-                        <i class="bi bi-file-pdf-fill me-1"></i> Export PDF Absensi
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i class="bi bi-people-fill text-blue-400"></i>
+                        <span>Daftar Peserta Ujian & Absensi</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Daftar Karyawan/Peserta Registered dalam Sistem Diklat</p>
+                </div>
+
+                <div class="flex items-center gap-3 flex-wrap">
+                    <span class="bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs font-bold px-3 py-1.5 rounded-full">
+                        Total: {{ pagination.total }} Peserta
+                    </span>
+                    <a 
+                        href="/api/admin/export-absensi" 
+                        target="_blank" 
+                        class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-full shadow-lg transition-all active:scale-95"
+                    >
+                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                        <span>Export PDF Absensi</span>
                     </a>
                 </div>
             </div>
-            <div class="card-body">
 
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th width="5%" class="text-center">No</th>
-                                <th width="25%">Nama Peserta</th>
-                                <th width="15%" class="text-center">Jenis Kelamin</th>
-                                <th width="20%">No. HP / WA</th>
-                                <th width="20%">Email</th>
-                                <th width="15%" class="text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(p, index) in pesertaList" :key="p.id">
-                                <td class="text-center">{{ (pagination.current_page - 1) * 10 + index + 1 }}</td>
-                                <td>
-                                    <strong>{{ p.nama }}</strong><br>
-                                    <small class="text-muted">NIK: {{ p.nik }}</small>
-                                </td>
-                                <td class="text-center">
-                                    <span v-if="p.jenis_kelamin === 'L'" class="badge bg-info text-dark">Laki-Laki</span>
-                                    <span v-else class="badge bg-warning text-dark">Perempuan</span>
-                                </td>
-                                <td>{{ p.no_hp }}</td>
-                                <td>{{ p.email }}</td>
-                                <td class="text-center">
-                                    <div class="btn-group" role="group">
-                                        <button @click="openModalDetail(p)" class="btn btn-sm btn-outline-primary" title="Lihat Detail Berkas & Data">
-                                            <i class="bi bi-eye-fill"></i>
-                                        </button>
-                                        <button @click="openModalToken(p)" class="btn btn-sm btn-outline-warning" title="Generate Token">
-                                            <i class="bi bi-key-fill"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr v-if="pesertaList.length === 0">
-                                <td colspan="6" class="text-center py-4 text-muted">Belum ada peserta yang mendaftar.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- PAGINATION -->
-                <div v-if="pagination.last_page > 1" class="d-flex justify-content-between align-items-center mt-4">
-                    <small class="text-muted">Menampilkan {{ pagination.from }} - {{ pagination.to }} dari {{ pagination.total }} peserta</small>
-                    <nav>
-                        <ul class="pagination pagination-sm mb-0">
-                            <li class="page-item" :class="{ disabled: pagination.current_page === 1 }">
-                                <button class="page-link" @click="fetchPeserta(pagination.current_page - 1)">Previous</button>
-                            </li>
-                            <li v-for="page in pagination.last_page" :key="page" class="page-item" :class="{ active: pagination.current_page === page }">
-                                <button class="page-link" @click="fetchPeserta(page)">{{ page }}</button>
-                            </li>
-                            <li class="page-item" :class="{ disabled: pagination.current_page === pagination.last_page }">
-                                <button class="page-link" @click="fetchPeserta(pagination.current_page + 1)">Next</button>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-
+            <!-- Table Body -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-white/10 bg-slate-950/60 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                            <th class="py-4 px-6 text-center w-12">No</th>
+                            <th class="py-4 px-6">Nama Peserta / NIK</th>
+                            <th class="py-4 px-6 text-center">Gender</th>
+                            <th class="py-4 px-6">No. HP / WA</th>
+                            <th class="py-4 px-6">Email</th>
+                            <th class="py-4 px-6 text-center">Aksi Token & Berkas</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5 text-sm">
+                        <tr v-for="(p, index) in pesertaList" :key="p.id" class="hover:bg-white/5 transition-colors group">
+                            <td class="py-4 px-6 text-center font-mono text-slate-400 text-xs">
+                                {{ (pagination.current_page - 1) * 10 + index + 1 }}
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="font-bold text-white group-hover:text-blue-300 transition-colors">{{ p.nama }}</div>
+                                <div class="text-xs text-slate-400 font-mono">NIK: {{ p.nik }}</div>
+                            </td>
+                            <td class="py-4 px-6 text-center">
+                                <span v-if="p.jenis_kelamin === 'L'" class="px-3 py-1 bg-sky-500/20 text-sky-300 border border-sky-500/30 rounded-full text-xs font-semibold">
+                                    Laki-Laki
+                                </span>
+                                <span v-else class="px-3 py-1 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-full text-xs font-semibold">
+                                    Perempuan
+                                </span>
+                            </td>
+                            <td class="py-4 px-6 font-mono text-slate-300 text-xs">{{ p.no_hp }}</td>
+                            <td class="py-4 px-6 text-slate-300 text-xs">{{ p.email }}</td>
+                            <td class="py-4 px-6 text-center">
+                                <div class="inline-flex items-center gap-2">
+                                    <button 
+                                        @click="openModalDetail(p)" 
+                                        class="p-2 bg-blue-600/30 hover:bg-blue-600 text-blue-200 hover:text-white rounded-xl transition-all border border-blue-500/30" 
+                                        title="Lihat Detail Berkas & Data"
+                                    >
+                                        <i class="bi bi-eye-fill"></i>
+                                    </button>
+                                    <button 
+                                        @click="openModalToken(p)" 
+                                        class="p-2 bg-amber-500/30 hover:bg-amber-500 text-amber-200 hover:text-white rounded-xl transition-all border border-amber-500/30" 
+                                        title="Generate Token Ujian"
+                                    >
+                                        <i class="bi bi-key-fill"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr v-if="pesertaList.length === 0">
+                            <td colspan="6" class="text-center py-12 text-slate-400">
+                                <i class="bi bi-inbox text-4xl mb-2 block"></i>
+                                <span>Belum ada peserta yang mendaftar.</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+
+            <!-- Table Pagination -->
+            <div v-if="pagination.last_page > 1" class="p-4 border-t border-white/10 bg-slate-950/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+                <div>
+                    Menampilkan {{ pagination.from }} - {{ pagination.to }} dari {{ pagination.total }} peserta
+                </div>
+                <div class="flex items-center gap-1">
+                    <button 
+                        @click="fetchPeserta(pagination.current_page - 1)" 
+                        :disabled="pagination.current_page === 1"
+                        class="px-3 py-1.5 rounded-lg border border-white/10 bg-slate-900 text-slate-300 hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    >
+                        Previous
+                    </button>
+                    <button 
+                        v-for="page in pagination.last_page" 
+                        :key="page"
+                        @click="fetchPeserta(page)"
+                        :class="pagination.current_page === page ? 'bg-blue-600 text-white font-bold border-blue-400' : 'bg-slate-900 text-slate-300 hover:bg-white/10 border-white/10'"
+                        class="px-3 py-1.5 rounded-lg border transition-all"
+                    >
+                        {{ page }}
+                    </button>
+                    <button 
+                        @click="fetchPeserta(pagination.current_page + 1)" 
+                        :disabled="pagination.current_page === pagination.last_page"
+                        class="px-3 py-1.5 rounded-lg border border-white/10 bg-slate-900 text-slate-300 hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
+
         </div>
 
-        <!-- ================= BAGIAN BANK SOAL & PILIH 25 SOAL UJIAN ================= -->
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
-                <h5 class="mb-0 fw-bold"><i class="bi bi-journal-check me-2"></i>Bank Soal & Pengaturan Soal Ujian</h5>
+        <!-- 3. BAGIAN BANK SOAL & SET 25 SOAL UJIAN (GLASS CARD) -->
+        <div class="bg-slate-900/60 border border-white/15 rounded-3xl overflow-hidden backdrop-blur-xl shadow-2xl">
+            
+            <!-- Bank Soal Header Bar -->
+            <div class="p-6 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-950/40">
                 <div>
-                    <button @click="showModalAddSoal = true" class="btn btn-light btn-sm text-primary fw-bold me-2">
-                        <i class="bi bi-plus-circle-fill me-1"></i> Tambah Soal Baru
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i class="bi bi-journal-check text-emerald-400"></i>
+                        <span>Bank Soal & Pengaturan Soal Ujian</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Atur & Centang Soal yang akan Dikeluarkan saat Ujian</p>
+                </div>
+
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button 
+                        @click="showModalAddSoal = true" 
+                        class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-4 py-2.5 rounded-full shadow-lg transition-all active:scale-95"
+                    >
+                        <i class="bi bi-plus-circle-fill"></i>
+                        <span>Tambah Soal Baru</span>
                     </button>
-                    <button @click="saveSelectedSoal" class="btn btn-warning btn-sm fw-bold">
-                        <i class="bi bi-check-circle-fill me-1"></i> Simpan Set Soal Ujian
+                    <button 
+                        @click="saveSelectedSoal" 
+                        class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-full shadow-lg transition-all active:scale-95"
+                    >
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Simpan Set Soal Ujian</span>
                     </button>
                 </div>
             </div>
-            <div class="card-body">
 
-                <!-- COUNTER SOAL TERPILIH -->
-                <div class="alert alert-info d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                        <strong>Mekanisme Soal Ujian:</strong> Centang soal di bawah ini untuk dijadikan soal ujian bagi peserta.
+            <div class="p-6 space-y-4">
+                
+                <!-- COUNTER SOAL TERPILIH ALERT -->
+                <div class="bg-blue-950/50 border border-blue-500/30 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 backdrop-blur-md">
+                    <div class="text-xs text-blue-200 flex items-center gap-2">
+                        <i class="bi bi-info-circle-fill text-blue-400 text-base"></i>
+                        <span><strong>Mekanisme Soal Ujian:</strong> Centang soal di bawah ini untuk dijadikan materi ujian resmi peserta.</span>
                     </div>
-                    <span class="badge bg-primary fs-6">Soal Terpilih: {{ selectedSoalIds.length }} / 25</span>
+                    <span class="bg-blue-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-full shadow-md shrink-0">
+                        Soal Terpilih: {{ selectedSoalIds.length }} / 25
+                    </span>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th width="5%" class="text-center">Pilih</th>
-                                <th width="5%" class="text-center">No</th>
-                                <th width="45%">Pertanyaan / Soal</th>
-                                <th width="30%">Opsi Jawaban</th>
-                                <th width="10%" class="text-center">Kunci</th>
-                                <th width="5%" class="text-center">Aksi</th>
+                <!-- TABLE BANK SOAL -->
+                <div class="overflow-x-auto rounded-2xl border border-white/10">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-white/10 bg-slate-950/60 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                <th class="py-4 px-4 text-center w-12">Pilih</th>
+                                <th class="py-4 px-4 text-center w-12">No</th>
+                                <th class="py-4 px-6">Pertanyaan / Soal</th>
+                                <th class="py-4 px-6">Opsi Jawaban</th>
+                                <th class="py-4 px-4 text-center w-20">Kunci</th>
+                                <th class="py-4 px-4 text-center w-16">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr v-for="(soal, index) in bankSoalList" :key="soal.id" :class="{ 'table-warning': selectedSoalIds.includes(soal.id) }">
-                                <td class="text-center">
-                                    <input type="checkbox" :value="soal.id" v-model="selectedSoalIds" class="form-check-input" />
+                        <tbody class="divide-y divide-white/5 text-sm">
+                            <tr 
+                                v-for="(soal, index) in bankSoalList" 
+                                :key="soal.id" 
+                                :class="selectedSoalIds.includes(soal.id) ? 'bg-amber-500/10 border-l-4 border-l-amber-400' : 'hover:bg-white/5'"
+                                class="transition-colors"
+                            >
+                                <td class="py-4 px-4 text-center">
+                                    <input 
+                                        type="checkbox" 
+                                        :value="soal.id" 
+                                        v-model="selectedSoalIds" 
+                                        class="w-4 h-4 rounded bg-slate-950 border-white/20 text-amber-500 focus:ring-amber-500 focus:ring-offset-slate-900 cursor-pointer" 
+                                    />
                                 </td>
-                                <td class="text-center">{{ index + 1 }}</td>
-                                <td>{{ soal.soal }}</td>
-                                <td class="small">
-                                    <div><strong>A.</strong> {{ soal.opsi_a }}</div>
-                                    <div><strong>B.</strong> {{ soal.opsi_b }}</div>
-                                    <div><strong>C.</strong> {{ soal.opsi_c }}</div>
-                                    <div><strong>D.</strong> {{ soal.opsi_d }}</div>
+                                <td class="py-4 px-4 text-center font-mono text-slate-400 text-xs">
+                                    {{ index + 1 }}
                                 </td>
-                                <td class="text-center">
-                                    <span class="badge bg-success fs-6">{{ soal.kunci_jawaban }}</span>
+                                <td class="py-4 px-6 font-medium text-slate-100 leading-relaxed">
+                                    {{ soal.soal }}
                                 </td>
-                                <td class="text-center">
-                                    <button @click="deleteSoal(soal.id)" class="btn btn-sm btn-outline-danger" title="Hapus Soal">
+                                <td class="py-4 px-6 text-xs text-slate-300 space-y-1">
+                                    <div><strong class="text-blue-400">A.</strong> {{ soal.opsi_a }}</div>
+                                    <div><strong class="text-blue-400">B.</strong> {{ soal.opsi_b }}</div>
+                                    <div><strong class="text-blue-400">C.</strong> {{ soal.opsi_c }}</div>
+                                    <div><strong class="text-blue-400">D.</strong> {{ soal.opsi_d }}</div>
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono font-bold text-xs rounded-lg">
+                                        {{ soal.kunci_jawaban }}
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <button 
+                                        @click="deleteSoal(soal.id)" 
+                                        class="p-2 bg-rose-500/20 hover:bg-rose-500/40 text-rose-300 hover:text-white rounded-xl transition-all" 
+                                        title="Hapus Soal"
+                                    >
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
                                 </td>
                             </tr>
                             <tr v-if="bankSoalList.length === 0">
-                                <td colspan="6" class="text-center py-4 text-muted">Bank Soal masih kosong. Silakan tambah soal baru.</td>
+                                <td colspan="6" class="text-center py-12 text-slate-400">
+                                    <i class="bi bi-journal-x text-4xl mb-2 block"></i>
+                                    <span>Bank Soal masih kosong. Silakan tambah soal baru.</span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -156,106 +261,162 @@
             </div>
         </div>
 
-        <!-- MODAL 1: DETAIL PESERTA (SESI 5) -->
-        <div v-if="selectedPesertaDetail" class="modal fade show d-block bg-dark bg-opacity-50">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title fw-bold">Detail Registrasi: {{ selectedPesertaDetail.nama }}</h5>
-                        <button @click="selectedPesertaDetail = null" class="btn-close btn-close-white"></button>
-                    </div>
-                    <div class="modal-body">
-                        <h6 class="fw-bold text-primary border-bottom pb-2">1. Data Diri Lengkap</h6>
-                        <div class="row g-2 mb-3 small">
-                            <div class="col-md-6"><strong>Nama:</strong> {{ selectedPesertaDetail.nama }}</div>
-                            <div class="col-md-6"><strong>NIK:</strong> {{ selectedPesertaDetail.nik }}</div>
-                            <div class="col-md-6"><strong>Email:</strong> {{ selectedPesertaDetail.email }}</div>
-                            <div class="col-md-6"><strong>No HP:</strong> {{ selectedPesertaDetail.no_hp }}</div>
-                            <div class="col-md-12"><strong>Alamat:</strong> {{ selectedPesertaDetail.alamat }}</div>
+        <!-- MODAL 1: DETAIL PESERTA -->
+        <div v-if="selectedPesertaDetail" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+            <div class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden text-slate-100">
+                
+                <div class="bg-slate-950/80 p-5 flex items-center justify-between border-b border-white/10">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i class="bi bi-person-lines-fill text-blue-400"></i>
+                        <span>Detail Registrasi: {{ selectedPesertaDetail.nama }}</span>
+                    </h3>
+                    <button @click="selectedPesertaDetail = null" class="text-slate-400 hover:text-white">
+                        <i class="bi bi-x-lg text-lg"></i>
+                    </button>
+                </div>
+
+                <div class="p-6 space-y-5">
+                    <div>
+                        <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-3">1. Data Diri Lengkap</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-slate-950/60 p-4 rounded-2xl border border-white/10">
+                            <div><strong class="text-slate-400">Nama:</strong> <span class="text-white font-semibold">{{ selectedPesertaDetail.nama }}</span></div>
+                            <div><strong class="text-slate-400">NIK:</strong> <span class="text-white font-mono">{{ selectedPesertaDetail.nik }}</span></div>
+                            <div><strong class="text-slate-400">Email:</strong> <span class="text-white">{{ selectedPesertaDetail.email }}</span></div>
+                            <div><strong class="text-slate-400">No HP:</strong> <span class="text-white font-mono">{{ selectedPesertaDetail.no_hp }}</span></div>
+                            <div class="sm:col-span-2"><strong class="text-slate-400">Alamat:</strong> <span class="text-white">{{ selectedPesertaDetail.alamat }}</span></div>
                         </div>
-                        <h6 class="fw-bold text-primary border-bottom pb-2">2. Berkas Terunggah</h6>
-                        <ul class="list-group list-group-flush small">
-                            <li v-for="b in selectedPesertaDetail.berkas" :key="b.id" class="list-group-item d-flex justify-content-between">
-                                <span>{{ b.jenis_berkas }}</span>
-                                <a :href="'/storage/' + b.file_path" target="_blank" class="btn btn-xs btn-outline-danger btn-sm">Buka PDF</a>
-                            </li>
-                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-3">2. Berkas Terunggah</h4>
+                        <div class="space-y-2">
+                            <div 
+                                v-for="b in selectedPesertaDetail.berkas" 
+                                :key="b.id" 
+                                class="flex items-center justify-between p-3 bg-slate-950/60 border border-white/10 rounded-xl text-xs"
+                            >
+                                <span class="font-medium text-slate-200">{{ b.jenis_berkas }}</span>
+                                <a 
+                                    :href="'/storage/' + b.file_path" 
+                                    target="_blank" 
+                                    class="px-3 py-1 bg-rose-500/20 hover:bg-rose-500/40 text-rose-300 font-bold rounded-lg transition-all"
+                                >
+                                    Buka PDF
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <div class="p-4 bg-slate-950/80 border-t border-white/10 text-right">
+                    <button @click="selectedPesertaDetail = null" class="px-5 py-2 bg-white text-slate-950 font-bold text-xs rounded-full">
+                        Tutup
+                    </button>
+                </div>
+
             </div>
         </div>
 
-        <!-- MODAL 2: GENERATE TOKEN (SESI 5) -->
-        <div v-if="selectedPesertaToken" class="modal fade show d-block bg-dark bg-opacity-50">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header bg-warning text-dark">
-                        <h5 class="modal-title fw-bold">Generate Token Absensi</h5>
-                        <button @click="selectedPesertaToken = null" class="btn-close"></button>
-                    </div>
-                    <div class="modal-body text-center py-4">
-                        <h5>{{ selectedPesertaToken.nama }}</h5>
-                        <div v-if="activeToken" class="card bg-light border-warning p-3 mb-3">
-                            <h2 class="display-5 fw-bold text-dark mb-2">{{ activeToken }}</h2>
-                            <button @click="copyToken" class="btn btn-sm btn-outline-dark">{{ isCopied ? 'Berhasil Disalin!' : 'Salin Kode Token' }}</button>
-                        </div>
-                        <button @click="processGenerateToken" class="btn btn-warning fw-bold btn-lg w-100">Generate Token Baru</button>
-                    </div>
+        <!-- MODAL 2: GENERATE TOKEN -->
+        <div v-if="selectedPesertaToken" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+            <div class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden text-slate-100">
+                
+                <div class="bg-amber-950/60 p-5 flex items-center justify-between border-b border-amber-500/30">
+                    <h3 class="text-base font-bold text-amber-300 flex items-center gap-2">
+                        <i class="bi bi-key-fill"></i> Generate Token Ujian
+                    </h3>
+                    <button @click="selectedPesertaToken = null" class="text-amber-200 hover:text-white">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </div>
+
+                <div class="p-6 text-center space-y-4">
+                    <h4 class="font-bold text-white text-lg">{{ selectedPesertaToken.nama }}</h4>
+                    
+                    <div v-if="activeToken" class="bg-slate-950/80 border border-amber-500/30 p-4 rounded-2xl space-y-3">
+                        <div class="text-3xl sm:text-4xl font-mono font-black text-amber-400 tracking-widest">{{ activeToken }}</div>
+                        <button 
+                            @click="copyToken" 
+                            class="px-4 py-1.5 bg-amber-500/20 hover:bg-amber-500/40 text-amber-200 text-xs font-bold rounded-full transition-all"
+                        >
+                            {{ isCopied ? 'Berhasil Disalin!' : 'Salin Kode Token' }}
+                        </button>
+                    </div>
+
+                    <button 
+                        @click="processGenerateToken" 
+                        class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all active:scale-95"
+                    >
+                        Generate Token Baru
+                    </button>
+                </div>
+
             </div>
         </div>
 
         <!-- MODAL 3: TAMBAH SOAL BARU -->
-        <div v-if="showModalAddSoal" class="modal fade show d-block bg-dark bg-opacity-50">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title fw-bold"><i class="bi bi-plus-circle me-2"></i>Tambah Soal ke Bank Soal</h5>
-                        <button @click="showModalAddSoal = false" class="btn-close btn-close-white"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form @submit.prevent="submitSoalBaru">
-                            <div class="mb-3">
-                                <label class="form-label font-weight-bold">Pertanyaan / Pertanyaan Ujian</label>
-                                <textarea v-model="formSoal.soal" class="form-control" rows="3" required></textarea>
-                            </div>
-                            <div class="row g-2 mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label font-weight-bold">Opsi A</label>
-                                    <input v-model="formSoal.opsi_a" type="text" class="form-control" required />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label font-weight-bold">Opsi B</label>
-                                    <input v-model="formSoal.opsi_b" type="text" class="form-control" required />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label font-weight-bold">Opsi C</label>
-                                    <input v-model="formSoal.opsi_c" type="text" class="form-control" required />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label font-weight-bold">Opsi D</label>
-                                    <input v-model="formSoal.opsi_d" type="text" class="form-control" required />
-                                </div>
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label font-weight-bold">Kunci Jawaban Benar</label>
-                                <select v-model="formSoal.kunci_jawaban" class="form-select" required>
-                                    <option value="">-- Pilih Kunci Jawaban --</option>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="C">C</option>
-                                    <option value="D">D</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100 btn-lg">Simpan Soal ke Bank Soal</button>
-                        </form>
-                    </div>
+        <div v-if="showModalAddSoal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+            <div class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden text-slate-100">
+                
+                <div class="bg-slate-950/80 p-5 flex items-center justify-between border-b border-white/10">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i class="bi bi-plus-circle text-blue-400"></i>
+                        <span>Tambah Soal ke Bank Soal</span>
+                    </h3>
+                    <button @click="showModalAddSoal = false" class="text-slate-400 hover:text-white">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </div>
+
+                <form @submit.prevent="submitSoalBaru" class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Pertanyaan Ujian</label>
+                        <textarea v-model="formSoal.soal" rows="3" required class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ketik soal pertanyaan..."></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Opsi A</label>
+                            <input v-model="formSoal.opsi_a" type="text" required class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Opsi B</label>
+                            <input v-model="formSoal.opsi_b" type="text" required class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Opsi C</label>
+                            <input v-model="formSoal.opsi_c" type="text" required class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Opsi D</label>
+                            <input v-model="formSoal.opsi_d" type="text" required class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Kunci Jawaban Benar</label>
+                        <select v-model="formSoal.kunci_jawaban" required class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option class="bg-slate-900" value="">-- Pilih Kunci Jawaban --</option>
+                            <option class="bg-slate-900" value="A">A</option>
+                            <option class="bg-slate-900" value="B">B</option>
+                            <option class="bg-slate-900" value="C">C</option>
+                            <option class="bg-slate-900" value="D">D</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all active:scale-95">
+                            Simpan Soal ke Bank Soal
+                        </button>
+                    </div>
+                </form>
+
             </div>
         </div>
 
     </div>
 </template>
+
 <script lang="js">
 import axios from 'axios';
 
@@ -309,7 +470,6 @@ export default {
         },
         deleteSoal(id) {
             if (confirm('Apakah Anda yakin ingin menghapus soal ini?')) {
-                // Mengubah res => menjadi () => agar tidak ada error 'res' unused
                 axios.delete(`/api/admin/bank-soal/${id}`).then(() => {
                     this.fetchBankSoal();
                 });
