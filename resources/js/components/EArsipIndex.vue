@@ -1,7 +1,7 @@
 <template>
   <div class="w-full text-slate-100 font-sans pb-12">
 
-    <!-- 1. HERO HEADER & FLOATING TICKER STATS (INSPIRASI GAMBAR 1) -->
+    <!-- 1. HERO HEADER & FLOATING TICKER STATS -->
     <div class="relative mb-8">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
         
@@ -13,7 +13,7 @@
             <span>Database Repository & HRD System • RSU Bunda Thamrin</span>
           </div>
 
-          <!-- Headline Utama BOLD Besar -->
+          <!-- Headline Utama -->
           <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white uppercase leading-[1.08] drop-shadow-md">
             DATA PEGAWAI & ARSIP DOKUMEN <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-emerald-400">TERINTEGRASI</span>
           </h1>
@@ -43,7 +43,7 @@
           </div>
         </div>
 
-        <!-- BAGIAN KANAN: FLOATING GLASS TICKER WIDGETS (MEMILIKI AURA WIDGET SAHAM GAMBAR 1) -->
+        <!-- BAGIAN KANAN: FLOATING GLASS TICKER WIDGETS -->
         <div class="lg:col-span-5 space-y-3">
           
           <!-- Widget 1: TOTAL DOKTER -->
@@ -65,7 +65,6 @@
                 </div>
                 <div class="text-[11px] text-slate-400">Dokter Spesialis & Umum Resmi</div>
               </div>
-              <!-- Mini Sparkline Graph SVG -->
               <svg class="w-24 h-10 text-blue-400 opacity-80 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 100 30">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M0 25 Q25 5, 50 18 T100 8" />
               </svg>
@@ -91,7 +90,6 @@
                 </div>
                 <div class="text-[11px] text-slate-400">Perawat & Ners Terverifikasi STR</div>
               </div>
-              <!-- Mini Sparkline Graph SVG -->
               <svg class="w-24 h-10 text-emerald-400 opacity-80 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 100 30">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M0 20 Q20 28, 45 10 T100 5" />
               </svg>
@@ -117,7 +115,6 @@
                 </div>
                 <div class="text-[11px] text-slate-400">Penunjang Medis & Staf Administrasi</div>
               </div>
-              <!-- Mini Sparkline Graph SVG -->
               <svg class="w-24 h-10 text-purple-400 opacity-80 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 100 30">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M0 15 Q35 2, 70 20 T100 12" />
               </svg>
@@ -129,7 +126,7 @@
       </div>
     </div>
 
-    <!-- 2. FILTER BAR & PENCARIAN (GLASS CARD) -->
+    <!-- 2. FILTER BAR & PENCARIAN -->
     <div id="tabel-pegawai" class="bg-slate-900/60 border border-white/15 rounded-3xl p-5 mb-6 backdrop-blur-xl shadow-2xl">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center mb-4">
         
@@ -205,7 +202,7 @@
       </div>
     </div>
 
-    <!-- 3. DATA TABLE PEGAWAI (GLASS CARD) -->
+    <!-- 3. DATA TABLE PEGAWAI -->
     <div class="bg-slate-900/60 border border-white/15 rounded-3xl overflow-hidden backdrop-blur-xl shadow-2xl">
       
       <!-- LOADING STATE -->
@@ -316,7 +313,7 @@
       </div>
     </div>
 
-    <!-- 4. MODAL FORM TAMBAH PEGAWAI BARU (DARK GLASS MODAL) -->
+    <!-- 4. MODAL FORM TAMBAH PEGAWAI BARU -->
     <div v-if="showModalTambah" class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-slate-950/80 backdrop-blur-md">
       <div class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden my-8 max-h-[90vh] flex flex-col text-slate-100">
         
@@ -390,7 +387,7 @@
             </div>
           </div>
 
-          <!-- UPLOAD DOKUMEN SECTION -->
+          <!-- UPLOAD DOKUMEN SECTION (9 INPUT BERKAS PDF) -->
           <div class="bg-slate-950/60 border border-white/10 rounded-2xl p-4 mt-4">
             <div class="flex items-center justify-between mb-3">
               <label class="block text-xs font-bold text-blue-400 uppercase tracking-wider">
@@ -459,7 +456,7 @@
       </div>
     </div>
 
-    <!-- 5. MODAL EDIT PEGAWAI & KELOLA BERKAS (DARK GLASS MODAL) -->
+    <!-- 5. MODAL EDIT PEGAWAI & KELOLA BERKAS (TETAP LENGKAP DENGAN 9 UPLOAD DOKUMEN BARU) -->
     <div v-if="showModalEdit" class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-slate-950/80 backdrop-blur-md">
       <div class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden my-8 max-h-[90vh] flex flex-col text-slate-100">
         
@@ -531,6 +528,63 @@
                 <button type="button" @click="deleteBerkasIndividual(berkas.id)" class="px-2.5 py-1 bg-rose-500/20 hover:bg-rose-500/40 text-rose-300 font-bold text-xs rounded-lg transition-colors whitespace-nowrap">
                   Hapus
                 </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- UPLOAD 9 DOKUMEN BARU / REVISI DOKUMEN PADA EDIT MODAL -->
+          <div class="bg-slate-950/60 border border-white/10 rounded-2xl p-4 mt-4">
+            <div class="flex items-center justify-between mb-3">
+              <label class="block text-xs font-bold text-amber-400 uppercase tracking-wider">
+                UPLOAD / REVISI DOKUMEN BERKAS PDF BARU (OPSIONAL):
+              </label>
+              <span class="text-[11px] text-slate-400 italic">Format file: PDF (Max 10MB)</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div class="bg-slate-900 p-2.5 rounded-xl border border-white/10">
+                <label class="block font-bold text-slate-300 mb-1">1. KTP (Kartu Tanda Penduduk)</label>
+                <input @change="handleFileEdit($event, 'file_ktp')" type="file" accept="application/pdf" class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
+              </div>
+
+              <div class="bg-slate-900 p-2.5 rounded-xl border border-white/10">
+                <label class="block font-bold text-slate-300 mb-1">2. Kartu Keluarga (KK)</label>
+                <input @change="handleFileEdit($event, 'file_kk')" type="file" accept="application/pdf" class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
+              </div>
+
+              <div class="bg-slate-900 p-2.5 rounded-xl border border-white/10">
+                <label class="block font-bold text-slate-300 mb-1">3. CV (Curriculum Vitae)</label>
+                <input @change="handleFileEdit($event, 'file_cv')" type="file" accept="application/pdf" class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
+              </div>
+
+              <div class="bg-slate-900 p-2.5 rounded-xl border border-white/10">
+                <label class="block font-bold text-slate-300 mb-1">4. Surat Lamaran</label>
+                <input @change="handleFileEdit($event, 'file_lamaran')" type="file" accept="application/pdf" class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
+              </div>
+
+              <div class="bg-slate-900 p-2.5 rounded-xl border border-white/10">
+                <label class="block font-bold text-slate-300 mb-1">5. Ijazah Profesi / Gelar</label>
+                <input @change="handleFileEdit($event, 'file_ijazah')" type="file" accept="application/pdf" class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
+              </div>
+
+              <div class="bg-slate-900 p-2.5 rounded-xl border border-white/10">
+                <label class="block font-bold text-slate-300 mb-1">6. Transkrip Nilai Akademik</label>
+                <input @change="handleFileEdit($event, 'file_transkrip')" type="file" accept="application/pdf" class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
+              </div>
+
+              <div class="bg-slate-900 p-2.5 rounded-xl border border-white/10">
+                <label class="block font-bold text-slate-300 mb-1">7. STR (Surat Tanda Registrasi)</label>
+                <input @change="handleFileEdit($event, 'file_str')" type="file" accept="application/pdf" class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
+              </div>
+
+              <div class="bg-slate-900 p-2.5 rounded-xl border border-white/10">
+                <label class="block font-bold text-slate-300 mb-1">8. SIP (Surat Izin Praktik)</label>
+                <input @change="handleFileEdit($event, 'file_sip')" type="file" accept="application/pdf" class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
+              </div>
+
+              <div class="bg-slate-900 p-2.5 rounded-xl border border-white/10 md:col-span-2">
+                <label class="block font-bold text-slate-300 mb-1">9. Dokumen Lainnya (Sertifikat / Berkas Tambahan)</label>
+                <input @change="handleFileEdit($event, 'file_lainnya')" type="file" accept="application/pdf" class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
               </div>
             </div>
           </div>
@@ -676,7 +730,7 @@
       </div>
     </div>
 
-    <!-- 7. MODAL KONFIRMASI HAPUS PEGAWAI (DARK GLASS MODAL) -->
+    <!-- 7. MODAL KONFIRMASI HAPUS PEGAWAI -->
     <div v-if="showModalHapus" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
       <div class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden text-slate-100">
         <div class="bg-rose-950/60 p-5 flex items-center justify-between border-b border-rose-500/30">
@@ -935,6 +989,7 @@ const closeModalEdit = () => {
   showModalEdit.value = false;
 };
 
+// Handler untuk menyimpan file saat Edit Pegawai
 const handleFileEdit = (e, key) => {
   if (e.target.files && e.target.files[0]) {
     formEdit.value[key] = e.target.files[0];
