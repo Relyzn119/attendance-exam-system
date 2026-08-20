@@ -64,7 +64,8 @@
                             <th class="py-4 px-6 text-center">Gender</th>
                             <th class="py-4 px-6">No. HP / WA</th>
                             <th class="py-4 px-6">Email</th>
-                            <th class="py-4 px-6 text-center">Aksi Token & Berkas</th>
+                            <!-- DIUBAH MENJADI 'Action' -->
+                            <th class="py-4 px-6 text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-white/5 text-sm">
@@ -101,6 +102,16 @@
                                         title="Generate Token Ujian"
                                     >
                                         <i class="bi bi-key-fill"></i>
+                                    </button>
+                                    
+                                    <!-- TOMBOL BARU: CETAK SERTIFIKAT UNTUK SALINAN ADMIN -->
+                                    <button 
+                                        v-if="hasRiwayatUjian(p)"
+                                        @click="cetakSertifikat(p)" 
+                                        class="p-2 bg-emerald-600/30 hover:bg-emerald-600 text-emerald-200 hover:text-white rounded-xl transition-all border border-emerald-500/30" 
+                                        title="Cetak Sertifikat Peserta (Salinan Admin)"
+                                    >
+                                        <i class="bi bi-patch-check-fill"></i>
                                     </button>
                                 </div>
                             </td>
@@ -468,17 +479,15 @@ export default {
             showModalAddSoal: false,
             formSoal: { soal: '', opsi_a: '', opsi_b: '', opsi_c: '', opsi_d: '', kunci_jawaban: '' },
 
-            // State Pagination Bank Soal (Tugas #1)
+            // Pagination Bank Soal
             bankSoalCurrentPage: 1,
             bankSoalPerPage: 10
         };
     },
     computed: {
-        // Hitung total halaman bank soal
         totalBankSoalPages() {
             return Math.ceil(this.bankSoalList.length / this.bankSoalPerPage) || 1;
         },
-        // Ambil 10 data soal sesuai halaman aktif
         paginatedBankSoal() {
             const start = (this.bankSoalCurrentPage - 1) * this.bankSoalPerPage;
             return this.bankSoalList.slice(start, start + this.bankSoalPerPage);
@@ -519,7 +528,6 @@ export default {
             if (confirm('Apakah Anda yakin ingin menghapus soal ini?')) {
                 axios.delete(`/api/admin/bank-soal/${id}`).then(() => {
                     this.fetchBankSoal();
-                    // Jika halaman saat ini melebihi total halaman setelah delete, mundur 1 halaman
                     if (this.bankSoalCurrentPage > this.totalBankSoalPages) {
                         this.bankSoalCurrentPage = Math.max(1, this.totalBankSoalPages);
                     }
@@ -538,6 +546,28 @@ export default {
             navigator.clipboard.writeText(this.activeToken);
             this.isCopied = true;
             setTimeout(() => { this.isCopied = false; }, 2000);
+        },
+
+        // HELPER METHOD SESI 2: CETAK SERTIFIKAT PESERTA UNTUK ADMIN
+        hasRiwayatUjian(peserta) {
+            if (Array.isArray(peserta.riwayat_ujian)) {
+                return peserta.riwayat_ujian.length > 0;
+            }
+            return !!(peserta.riwayat_ujian && peserta.riwayat_ujian.id);
+        },
+        cetakSertifikat(peserta) {
+            let riwayatId = null;
+            if (Array.isArray(peserta.riwayat_ujian) && peserta.riwayat_ujian.length > 0) {
+                riwayatId = peserta.riwayat_ujian[0].id;
+            } else if (peserta.riwayat_ujian && peserta.riwayat_ujian.id) {
+                riwayatId = peserta.riwayat_ujian.id;
+            }
+
+            if (riwayatId) {
+                window.open(`/api/ujian/sertifikat/${riwayatId}`, '_blank');
+            } else {
+                alert('Peserta belum memiliki riwayat ujian.');
+            }
         }
     }
 };
