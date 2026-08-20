@@ -1,44 +1,76 @@
 <template>
-  <div class="container my-4" v-if="userData">
+  <div class="w-full text-slate-100 font-sans pb-12 space-y-8" v-if="userData">
     
-    <!-- WELCOME CARD -->
-    <div class="card bg-success text-white shadow-sm mb-4">
-      <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap">
+    <!-- 1. WELCOME HERO CARD -->
+    <div class="bg-slate-900/60 border border-white/15 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
         <div>
-          <h3 class="fw-bold mb-1">Selamat Datang, {{ userData.nama }}!</h3>
-          <p class="mb-0">NIK: {{ userData.nik }} | Email: {{ userData.email }} | No. HP: {{ userData.no_hp }}</p>
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-400/30 rounded-full text-xs text-emerald-300 font-semibold mb-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Peserta Diklat Terdaftar • RSU Bunda Thamrin</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-black text-white tracking-tight">
+            Selamat Datang, {{ userData.nama }}!
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-300 font-mono mt-1">
+            NIK: {{ userData.nik }} <span class="text-slate-500">|</span> Email: {{ userData.email }} <span class="text-slate-500">|</span> No. HP: {{ userData.no_hp }}
+          </p>
         </div>
-        <button @click="showModalDetail = true" class="btn btn-light text-success fw-bold mt-2 mt-md-0">
-          <i class="bi bi-person-lines-fill me-1"></i> Lihat Detail Data Registrasi
+
+        <button 
+          @click="showModalDetail = true" 
+          class="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-slate-950 font-extrabold text-xs px-5 py-3 rounded-full shadow-lg transition-all active:scale-95 shrink-0"
+        >
+          <i class="bi bi-person-vcard-fill text-blue-600 text-base"></i>
+          <span>Detail Registrasi</span>
         </button>
       </div>
     </div>
 
-    <!-- RINGKASAN HASIL UJIAN (JIKA SUDAH SELESAI UJIAN) -->
-    <div v-if="hasCompletedExam" class="card shadow-sm border-success mb-4">
-      <div class="card-header bg-success text-white fw-bold d-flex justify-content-between align-items-center">
-        <span><i class="bi bi-trophy-fill me-2"></i>Hasil Akhir Ujian Diklat Anda</span>
-        <span class="badge bg-light text-success fs-6">Status: Lulus / Selesai</span>
+    <!-- 2. RINGKASAN HASIL UJIAN (JIKA SUDAH SELESAI UJIAN) -->
+    <div v-if="hasCompletedExam" class="bg-slate-900/60 border border-emerald-500/30 rounded-3xl overflow-hidden backdrop-blur-xl shadow-2xl">
+      <div class="p-4 sm:p-5 bg-emerald-950/60 border-b border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div class="flex items-center gap-2 text-emerald-300 font-bold text-sm">
+          <i class="bi bi-trophy-fill text-amber-400 text-lg"></i>
+          <span>Hasil Akhir Ujian Diklat Anda</span>
+        </div>
+        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-bold shrink-0">
+          ● Status: Lulus / Selesai
+        </span>
       </div>
-      <div class="card-body p-4">
-        <div class="row align-items-center text-center">
+
+      <div class="p-6 sm:p-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center text-center">
           
-          <div class="col-md-4 border-end">
-            <small class="text-muted fw-bold">SKOR NILAI UJIAN</small>
-            <h1 class="display-3 fw-bold text-success mb-0">{{ latestExam.nilai_akhir }}</h1>
-          </div>
-
-          <div class="col-md-4 border-end">
-            <div class="mb-2">
-              <span class="badge bg-success fs-6 me-2"><i class="bi bi-check-circle me-1"></i>Benar: {{ latestExam.jawaban_benar }}</span>
-              <span class="badge bg-danger fs-6"><i class="bi bi-x-circle me-1"></i>Salah: {{ latestExam.jawaban_salah }}</span>
+          <!-- SKOR UJIAN -->
+          <div class="md:border-r border-white/10 p-2">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">SKOR NILAI UJIAN</span>
+            <div class="text-5xl sm:text-6xl font-black font-mono text-emerald-400 tracking-tight">
+              {{ latestExam.nilai_akhir }}
             </div>
-            <small class="text-muted">Total Soal: {{ latestExam.total_soal }} Soal</small>
           </div>
 
-          <div class="col-md-4 mt-3 mt-md-0">
-            <button @click="openModalReview" class="btn btn-outline-primary btn-lg w-100 fw-bold">
-              <i class="bi bi-journal-text me-1"></i> Lihat Review Jawaban
+          <!-- BENAR & SALAH STATS -->
+          <div class="md:border-r border-white/10 p-2 space-y-2">
+            <div class="flex items-center justify-center gap-3">
+              <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg text-xs font-bold">
+                <i class="bi bi-check-circle-fill me-1"></i>Benar: {{ latestExam.jawaban_benar }}
+              </span>
+              <span class="px-3 py-1 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded-lg text-xs font-bold">
+                <i class="bi bi-x-circle-fill me-1"></i>Salah: {{ latestExam.jawaban_salah }}
+              </span>
+            </div>
+            <p class="text-xs text-slate-400">Total Soal Dijawab: {{ latestExam.total_soal }} Soal</p>
+          </div>
+
+          <!-- REVIEW ACTION -->
+          <div class="p-2">
+            <button 
+              @click="openModalReview" 
+              class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs uppercase tracking-wider rounded-full shadow-lg transition-all active:scale-95 inline-flex items-center justify-center gap-2"
+            >
+              <i class="bi bi-journal-text text-base"></i>
+              <span>Lihat Review Jawaban</span>
             </button>
           </div>
 
@@ -46,127 +78,231 @@
       </div>
     </div>
 
-    <div class="row g-4">
+    <!-- 3. GRID LAYOUT: TOKEN INPUT & SERTIFIKAT -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
       <!-- KOTAK 1: ABSENSI & INPUT TOKEN UJIAN -->
-      <div class="col-md-6">
-        <div class="card shadow-sm h-100">
-          <div class="card-header bg-primary text-white fw-bold">
-            <i class="bi bi-key-fill me-2"></i>Akses Absensi & Ujian Diklat
+      <div class="bg-slate-900/60 border border-white/15 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center gap-2.5 text-blue-400 font-bold text-base mb-3 border-b border-white/10 pb-3">
+            <i class="bi bi-key-fill text-xl"></i>
+            <span>Akses Absensi & Ujian Diklat</span>
           </div>
-          <div class="card-body">
-            <p class="text-muted small">
-              Silakan minta <strong>Kode Token Absensi</strong> kepada Admin. Token tersebut digunakan untuk membuka akses lembar ujian Anda.
-            </p>
-            
-            <form @submit.prevent="masukUjian">
-              <div class="mb-3">
-                <label class="form-label font-weight-bold">Kode Token Kunci Ujian</label>
-                <input v-model="tokenInput" type="text" class="form-control form-control-lg text-uppercase fw-bold" placeholder="Contoh: A7X9K2" :disabled="hasCompletedExam" required />
-              </div>
 
-              <button type="submit" class="btn btn-primary w-100 btn-lg" :disabled="hasCompletedExam">
-                {{ hasCompletedExam ? 'Anda Sudah Menyelesaikan Ujian' : 'Masuk Lembar Ujian' }}
-              </button>
-            </form>
-          </div>
+          <p class="text-xs text-slate-300 leading-relaxed mb-6">
+            Silakan minta <strong class="text-white">Kode Token Absensi</strong> kepada Admin Diklat. Token tersebut digunakan untuk membuka akses lembar ujian Anda.
+          </p>
+
+          <form @submit.prevent="masukUjian" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Kode Token Kunci Ujian</label>
+              <input 
+                v-model="tokenInput" 
+                type="text" 
+                placeholder="Contoh: A7X9K2" 
+                :disabled="hasCompletedExam" 
+                required 
+                class="w-full px-4 py-3 bg-slate-950/70 border border-white/15 rounded-xl text-center text-lg sm:text-xl font-mono font-black tracking-widest text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase transition-all disabled:opacity-50 disabled:cursor-not-allowed" 
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              :disabled="hasCompletedExam" 
+              class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 disabled:text-slate-500 text-white font-extrabold text-xs uppercase tracking-wider rounded-full shadow-lg transition-all active:scale-95"
+            >
+              {{ hasCompletedExam ? 'Ujian Telah Selesai' : 'Masuk Lembar Ujian' }}
+            </button>
+          </form>
         </div>
       </div>
 
       <!-- KOTAK 2: STATUS SERTIFIKAT HASIL UJIAN -->
-      <div class="col-md-6">
-        <div class="card shadow-sm h-100">
-          <div class="card-header bg-dark text-white fw-bold">
-            <i class="bi bi-award-fill me-2"></i>Sertifikat Hasil Ujian Diklat
+      <div class="bg-slate-900/60 border border-white/15 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center gap-2.5 text-amber-400 font-bold text-base mb-3 border-b border-white/10 pb-3">
+            <i class="bi bi-award-fill text-xl"></i>
+            <span>Sertifikat Hasil Ujian Diklat</span>
           </div>
-          <div class="card-body text-center d-flex flex-column justify-content-center align-items-center">
+
+          <!-- IF COMPLETED -->
+          <div v-if="hasCompletedExam" class="text-center py-4 space-y-3">
+            <div class="w-16 h-16 mx-auto rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-3xl">
+              <i class="bi bi-patch-check-fill"></i>
+            </div>
             
-            <div v-if="hasCompletedExam" class="py-2">
-              <i class="bi bi-patch-check-fill text-success display-3"></i>
-              <h5 class="fw-bold text-success mt-2">Sertifikat Anda Sudah Terbit!</h5>
-              <p class="text-muted small mb-3">Nomor: <strong>{{ latestExam.nomor_sertifikat }}</strong></p>
+            <div>
+              <h4 class="font-extrabold text-emerald-400 text-lg">Sertifikat Anda Sudah Terbit!</h4>
+              <p class="text-xs font-mono text-slate-300 mt-0.5">Nomor: {{ latestExam.nomor_sertifikat }}</p>
+            </div>
+
+            <a 
+              :href="'/api/ujian/sertifikat/' + latestExam.id" 
+              target="_blank" 
+              class="inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-full shadow-lg transition-all active:scale-95 mt-2"
+            >
+              <i class="bi bi-file-earmark-pdf-fill text-base"></i>
+              <span>Cetak / Download Sertifikat (PDF)</span>
+            </a>
+          </div>
+
+          <!-- IF LOCKED -->
+          <div v-else class="text-center py-4 space-y-3">
+            <div class="w-16 h-16 mx-auto rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-slate-500 text-3xl">
+              <i class="bi bi-lock-fill"></i>
+            </div>
+
+            <div>
+              <h4 class="font-bold text-slate-400 text-base">Sertifikat Masih Terkunci</h4>
+              <p class="text-xs text-slate-500 max-w-xs mx-auto mt-1">Sertifikat otomatis terbuka dan bisa dicetak setelah Anda menyelesaikan ujian diklat.</p>
+            </div>
+
+            <button disabled class="px-6 py-2.5 bg-slate-800 text-slate-500 text-xs font-bold rounded-full cursor-not-allowed">
+              Cetak Sertifikat (Terkunci)
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MODAL 1: DETAIL DATA REGISTRASI -->
+    <div v-if="showModalDetail" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+      <div class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden text-slate-100">
+        
+        <div class="bg-slate-950/80 p-5 flex items-center justify-between border-b border-white/10">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="bi bi-person-lines-fill text-blue-400"></i>
+            <span>Data Registrasi & Berkas Upload</span>
+          </h3>
+          <button @click="showModalDetail = false" class="text-slate-400 hover:text-white">
+            <i class="bi bi-x-lg text-lg"></i>
+          </button>
+        </div>
+
+        <div class="p-6 space-y-5">
+          <div>
+            <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-3">1. Data Diri Peserta</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-slate-950/60 p-4 rounded-2xl border border-white/10">
+              <div><strong class="text-slate-400">Nama:</strong> <span class="text-white font-semibold">{{ userData.nama }}</span></div>
+              <div><strong class="text-slate-400">NIK:</strong> <span class="text-white font-mono">{{ userData.nik }}</span></div>
+              <div><strong class="text-slate-400">Email:</strong> <span class="text-white">{{ userData.email }}</span></div>
+              <div><strong class="text-slate-400">No HP:</strong> <span class="text-white font-mono">{{ userData.no_hp }}</span></div>
+              <div class="sm:col-span-2"><strong class="text-slate-400">Alamat:</strong> <span class="text-white">{{ userData.alamat }}</span></div>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-3">2. Berkas Dokumen Terunggah</h4>
+            <div class="space-y-2">
+              <div 
+                v-for="b in userData.berkas" 
+                :key="b.id" 
+                class="flex items-center justify-between p-3 bg-slate-950/60 border border-white/10 rounded-xl text-xs"
+              >
+                <span class="font-medium text-slate-200 flex items-center gap-2">
+                  <i class="bi bi-file-earmark-pdf text-rose-400 text-base"></i>
+                  <span>{{ b.jenis_berkas }}</span>
+                </span>
+                <a 
+                  :href="'/storage/' + b.file_path" 
+                  target="_blank" 
+                  class="px-3 py-1 bg-rose-500/20 hover:bg-rose-500/40 text-rose-300 font-bold rounded-lg transition-all"
+                >
+                  Lihat File PDF
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-950/80 border-t border-white/10 text-right">
+          <button @click="showModalDetail = false" class="px-5 py-2 bg-white text-slate-950 font-bold text-xs rounded-full">
+            Tutup
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MODAL 2: REVIEW JAWABAN UJIAN -->
+    <div v-if="showModalReview && reviewData" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+      <div class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-3xl overflow-hidden text-slate-100 flex flex-col max-h-[85vh]">
+        
+        <div class="bg-slate-950/80 p-5 flex items-center justify-between border-b border-white/10 shrink-0">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="bi bi-journal-check text-blue-400"></i>
+            <span>Review Jawaban Ujian Diklat</span>
+          </h3>
+          <button @click="showModalReview = false" class="text-slate-400 hover:text-white">
+            <i class="bi bi-x-lg text-lg"></i>
+          </button>
+        </div>
+
+        <div class="p-6 space-y-4 overflow-y-auto flex-grow">
+          <div 
+            v-for="(detail, index) in reviewData.detail_jawaban" 
+            :key="detail.id" 
+            class="bg-slate-950/60 border rounded-2xl overflow-hidden"
+            :class="detail.is_benar ? 'border-emerald-500/30' : 'border-rose-500/30'"
+          >
+            <!-- Question Header -->
+            <div 
+              class="p-3.5 px-5 flex items-center justify-between text-xs font-bold"
+              :class="detail.is_benar ? 'bg-emerald-950/40 text-emerald-300' : 'bg-rose-950/40 text-rose-300'"
+            >
+              <span>Soal No. {{ index + 1 }}</span>
+              <span v-if="detail.is_benar" class="px-2.5 py-0.5 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center gap-1">
+                <i class="bi bi-check-circle-fill"></i> BENAR
+              </span>
+              <span v-else class="px-2.5 py-0.5 bg-rose-500/20 border border-rose-500/30 rounded-full flex items-center gap-1">
+                <i class="bi bi-x-circle-fill"></i> SALAH
+              </span>
+            </div>
+
+            <!-- Question Body -->
+            <div class="p-5 space-y-3">
+              <p class="font-bold text-white text-sm leading-relaxed">{{ detail.soal.soal }}</p>
               
-              <a :href="'/api/ujian/sertifikat/' + latestExam.id" target="_blank" class="btn btn-danger btn-lg">
-                <i class="bi bi-file-pdf me-1"></i> Cetak / Download Sertifikat (PDF)
-              </a>
-            </div>
-
-            <div v-else class="py-2 text-muted">
-              <i class="bi bi-lock-fill display-3 text-secondary"></i>
-              <h5 class="fw-bold mt-2 text-secondary">Sertifikat Masih Terkunci</h5>
-              <p class="small">Sertifikat otomatis terbuka dan bisa dicetak setelah Anda menyelesaikan ujian diklat.</p>
-              <button class="btn btn-secondary disabled opacity-50" disabled>
-                Cetak Sertifikat (Terkunci)
-              </button>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL 1: DETAIL DATA REGISTRASI (SESI 3) -->
-    <div v-if="showModalDetail" class="modal fade show d-block bg-dark bg-opacity-50">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header bg-success text-white">
-            <h5 class="modal-title fw-bold">Data Registrasi & Berkas Upload</h5>
-            <button @click="showModalDetail = false" class="btn-close btn-close-white"></button>
-          </div>
-          <div class="modal-body">
-            <h6 class="fw-bold text-success border-bottom pb-2">1. Data Diri Peserta</h6>
-            <div class="row g-2 mb-3 small">
-              <div class="col-6"><strong>Nama:</strong> {{ userData.nama }}</div>
-              <div class="col-6"><strong>NIK:</strong> {{ userData.nik }}</div>
-              <div class="col-6"><strong>Email:</strong> {{ userData.email }}</div>
-              <div class="col-6"><strong>No HP:</strong> {{ userData.no_hp }}</div>
-              <div class="col-12"><strong>Alamat:</strong> {{ userData.alamat }}</div>
-            </div>
-            <h6 class="fw-bold text-success border-bottom pb-2">2. Berkas Dokumen Terunggah</h6>
-            <ul class="list-group list-group-flush small">
-              <li v-for="b in userData.berkas" :key="b.id" class="list-group-item d-flex justify-content-between align-items-center">
-                <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>{{ b.jenis_berkas }}</span>
-                <a :href="'/storage/' + b.file_path" target="_blank" class="btn btn-sm btn-outline-danger">Lihat File PDF</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL 2: REVIEW JAWABAN (SESI 8) -->
-    <div v-if="showModalReview && reviewData" class="modal fade show d-block bg-dark bg-opacity-50">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title fw-bold"><i class="bi bi-journal-check me-2"></i>Review Jawaban Ujian Diklat</h5>
-            <button @click="showModalReview = false" class="btn-close btn-close-white"></button>
-          </div>
-          <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
-            
-            <div v-for="(detail, index) in reviewData.detail_jawaban" :key="detail.id" class="card mb-3 border">
-              <div class="card-header d-flex justify-content-between align-items-center" :class="detail.is_benar ? 'bg-success-subtle' : 'bg-danger-subtle'">
-                <span class="fw-bold">Soal No. {{ index + 1 }}</span>
-                <span v-if="detail.is_benar" class="badge bg-success"><i class="bi bi-check-circle me-1"></i>BENAR</span>
-                <span v-else class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>SALAH</span>
-              </div>
-              <div class="card-body">
-                <p class="fw-semibold mb-2">{{ detail.soal.soal }}</p>
-                <div class="small mb-2">
-                  <div :class="{ 'fw-bold text-success': detail.soal.kunci_jawaban === 'A' }">A. {{ detail.soal.opsi_a }}</div>
-                  <div :class="{ 'fw-bold text-success': detail.soal.kunci_jawaban === 'B' }">B. {{ detail.soal.opsi_b }}</div>
-                  <div :class="{ 'fw-bold text-success': detail.soal.kunci_jawaban === 'C' }">C. {{ detail.soal.opsi_c }}</div>
-                  <div :class="{ 'fw-bold text-success': detail.soal.kunci_jawaban === 'D' }">D. {{ detail.soal.opsi_d }}</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                <div :class="{ 'font-bold text-emerald-400 bg-emerald-950/40 p-2 rounded-lg border border-emerald-500/30': detail.soal.kunci_jawaban === 'A', 'text-slate-300 p-2': detail.soal.kunci_jawaban !== 'A' }">
+                  <strong>A.</strong> {{ detail.soal.opsi_a }}
                 </div>
-                <hr>
-                <div class="d-flex justify-content-between align-items-center small">
-                  <span>Jawaban Anda: <strong :class="detail.is_benar ? 'text-success' : 'text-danger'">{{ detail.jawaban_user || 'Tidak Dijawab' }}</strong></span>
-                  <span>Kunci Jawaban Benar: <strong class="text-success">{{ detail.soal.kunci_jawaban }}</strong></span>
+                <div :class="{ 'font-bold text-emerald-400 bg-emerald-950/40 p-2 rounded-lg border border-emerald-500/30': detail.soal.kunci_jawaban === 'B', 'text-slate-300 p-2': detail.soal.kunci_jawaban !== 'B' }">
+                  <strong>B.</strong> {{ detail.soal.opsi_b }}
+                </div>
+                <div :class="{ 'font-bold text-emerald-400 bg-emerald-950/40 p-2 rounded-lg border border-emerald-500/30': detail.soal.kunci_jawaban === 'C', 'text-slate-300 p-2': detail.soal.kunci_jawaban !== 'C' }">
+                  <strong>C.</strong> {{ detail.soal.opsi_c }}
+                </div>
+                <div :class="{ 'font-bold text-emerald-400 bg-emerald-950/40 p-2 rounded-lg border border-emerald-500/30': detail.soal.kunci_jawaban === 'D', 'text-slate-300 p-2': detail.soal.kunci_jawaban !== 'D' }">
+                  <strong>D.</strong> {{ detail.soal.opsi_d }}
+                </div>
+              </div>
+
+              <div class="pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                <div>
+                  Jawaban Anda: 
+                  <strong :class="detail.is_benar ? 'text-emerald-400' : 'text-rose-400'" class="font-mono font-bold text-sm ml-1">
+                    {{ detail.jawaban_user || 'Tidak Dijawab' }}
+                  </strong>
+                </div>
+                <div>
+                  Kunci Jawaban Benar: 
+                  <strong class="text-emerald-400 font-mono font-bold text-sm ml-1">
+                    {{ detail.soal.kunci_jawaban }}
+                  </strong>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
+
+        <div class="p-4 bg-slate-950/80 border-t border-white/10 text-right shrink-0">
+          <button @click="showModalReview = false" class="px-6 py-2 bg-white text-slate-950 font-bold text-xs rounded-full">
+            Tutup Review
+          </button>
+        </div>
+
       </div>
     </div>
 

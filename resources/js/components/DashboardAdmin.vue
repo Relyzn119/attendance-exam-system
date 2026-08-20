@@ -208,7 +208,7 @@
                         </thead>
                         <tbody class="divide-y divide-white/5 text-sm">
                             <tr 
-                                v-for="(soal, index) in bankSoalList" 
+                                v-for="(soal, index) in paginatedBankSoal" 
                                 :key="soal.id" 
                                 :class="selectedSoalIds.includes(soal.id) ? 'bg-amber-500/10 border-l-4 border-l-amber-400' : 'hover:bg-white/5'"
                                 class="transition-colors"
@@ -222,7 +222,7 @@
                                     />
                                 </td>
                                 <td class="py-4 px-4 text-center font-mono text-slate-400 text-xs">
-                                    {{ index + 1 }}
+                                    {{ (bankSoalCurrentPage - 1) * bankSoalPerPage + index + 1 }}
                                 </td>
                                 <td class="py-4 px-6 font-medium text-slate-100 leading-relaxed">
                                     {{ soal.soal }}
@@ -256,6 +256,38 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- PAGINATION BANK SOAL (10 SOAL PER HALAMAN) -->
+                <div v-if="totalBankSoalPages > 1" class="p-4 border border-white/10 rounded-2xl bg-slate-950/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 mt-4">
+                    <div>
+                        Menampilkan {{ (bankSoalCurrentPage - 1) * bankSoalPerPage + 1 }} - {{ Math.min(bankSoalCurrentPage * bankSoalPerPage, bankSoalList.length) }} dari {{ bankSoalList.length }} soal
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button 
+                            @click="bankSoalCurrentPage--" 
+                            :disabled="bankSoalCurrentPage === 1"
+                            class="px-3 py-1.5 rounded-lg border border-white/10 bg-slate-900 text-slate-300 hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                        >
+                            &lt;&lt; Prev
+                        </button>
+                        <button 
+                            v-for="page in totalBankSoalPages" 
+                            :key="page"
+                            @click="bankSoalCurrentPage = page"
+                            :class="bankSoalCurrentPage === page ? 'bg-emerald-600 text-white font-bold border-emerald-400' : 'bg-slate-900 text-slate-300 hover:bg-white/10 border-white/10'"
+                            class="px-3 py-1.5 rounded-lg border transition-all"
+                        >
+                            {{ page }}
+                        </button>
+                        <button 
+                            @click="bankSoalCurrentPage++" 
+                            :disabled="bankSoalCurrentPage === totalBankSoalPages"
+                            class="px-3 py-1.5 rounded-lg border border-white/10 bg-slate-900 text-slate-300 hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                        >
+                            Next &gt;&gt;
+                        </button>
+                    </div>
                 </div>
 
             </div>
@@ -434,8 +466,23 @@ export default {
             bankSoalList: [],
             selectedSoalIds: [],
             showModalAddSoal: false,
-            formSoal: { soal: '', opsi_a: '', opsi_b: '', opsi_c: '', opsi_d: '', kunci_jawaban: '' }
+            formSoal: { soal: '', opsi_a: '', opsi_b: '', opsi_c: '', opsi_d: '', kunci_jawaban: '' },
+
+            // State Pagination Bank Soal (Tugas #1)
+            bankSoalCurrentPage: 1,
+            bankSoalPerPage: 10
         };
+    },
+    computed: {
+        // Hitung total halaman bank soal
+        totalBankSoalPages() {
+            return Math.ceil(this.bankSoalList.length / this.bankSoalPerPage) || 1;
+        },
+        // Ambil 10 data soal sesuai halaman aktif
+        paginatedBankSoal() {
+            const start = (this.bankSoalCurrentPage - 1) * this.bankSoalPerPage;
+            return this.bankSoalList.slice(start, start + this.bankSoalPerPage);
+        }
     },
     mounted() {
         this.fetchPeserta(1);
@@ -472,6 +519,10 @@ export default {
             if (confirm('Apakah Anda yakin ingin menghapus soal ini?')) {
                 axios.delete(`/api/admin/bank-soal/${id}`).then(() => {
                     this.fetchBankSoal();
+                    // Jika halaman saat ini melebihi total halaman setelah delete, mundur 1 halaman
+                    if (this.bankSoalCurrentPage > this.totalBankSoalPages) {
+                        this.bankSoalCurrentPage = Math.max(1, this.totalBankSoalPages);
+                    }
                 });
             }
         },

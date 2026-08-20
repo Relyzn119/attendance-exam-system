@@ -113,7 +113,7 @@ const app = createApp({
                                     @click="currentView = 'login'" 
                                     class="text-xs font-semibold text-slate-200 hover:text-white px-3 py-2 transition-colors"
                                 >
-                                    Login Staff
+                                    Login
                                 </button>
                                 <button 
                                     @click="currentView = 'register'" 
