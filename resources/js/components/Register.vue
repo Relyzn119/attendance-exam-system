@@ -102,42 +102,50 @@
                 Upload Berkas & Dokumen Pendukung
               </h3>
             </div>
-            <p class="text-xs text-slate-400 italic mb-5">Format yang diperbolehkan: PDF, JPG, JPEG, PNG (Maksimal 5MB per file).</p>
+            <p class="text-xs text-slate-400 italic mb-5">Format yang diperbolehkan: JPG, JPEG, PNG, PDF (Maksimal 5MB per file).</p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <!-- PAS FOTO (WAJIB) -->
+              <div class="bg-blue-950/40 p-3.5 rounded-2xl border border-blue-500/40">
+                <label class="block font-bold text-blue-300 mb-1.5">Pas Foto Terbaru (Format Foto) <span class="text-rose-400">* Wajib</span></label>
+                <input type="file" @change="handleFileUpload($event, 'file_pas_foto')" accept=".jpg,.jpeg,.png,.pdf" required class="w-full text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/40 file:text-white hover:file:bg-blue-600 cursor-pointer" />
+              </div>
+
+              <!-- KTP (WAJIB) -->
+              <div class="bg-blue-950/40 p-3.5 rounded-2xl border border-blue-500/40">
+                <label class="block font-bold text-blue-300 mb-1.5">KTP <span class="text-rose-400">* Wajib</span></label>
+                <input type="file" @change="handleFileUpload($event, 'file_ktp')" accept=".pdf,.jpg,.jpeg,.png" required class="w-full text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/40 file:text-white hover:file:bg-blue-600 cursor-pointer" />
+              </div>
+
+              <!-- BERKAS-BERKAS OPSIONAL -->
               <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1.5">Kartu Keluarga (KK) <span class="text-rose-400">*</span></label>
-                <input type="file" @change="handleFileUpload($event, 'file_kk')" accept=".pdf,.jpg,.jpeg,.png" required class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50 cursor-pointer" />
+                <label class="block font-bold text-slate-200 mb-1.5">Kartu Keluarga (KK) <span class="text-slate-400 font-normal">(Opsional)</span></label>
+                <input type="file" @change="handleFileUpload($event, 'file_kk')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-slate-300 hover:file:bg-white/20 cursor-pointer" />
               </div>
 
               <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1.5">KTP <span class="text-rose-400">*</span></label>
-                <input type="file" @change="handleFileUpload($event, 'file_ktp')" accept=".pdf,.jpg,.jpeg,.png" required class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50 cursor-pointer" />
+                <label class="block font-bold text-slate-200 mb-1.5">Ijazah <span class="text-slate-400 font-normal">(Opsional)</span></label>
+                <input type="file" @change="handleFileUpload($event, 'file_ijazah')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-slate-300 hover:file:bg-white/20 cursor-pointer" />
               </div>
 
               <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1.5">Ijazah <span class="text-rose-400">*</span></label>
-                <input type="file" @change="handleFileUpload($event, 'file_ijazah')" accept=".pdf,.jpg,.jpeg,.png" required class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50 cursor-pointer" />
+                <label class="block font-bold text-slate-200 mb-1.5">Transkrip Nilai <span class="text-slate-400 font-normal">(Opsional)</span></label>
+                <input type="file" @change="handleFileUpload($event, 'file_transkrip')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-slate-300 hover:file:bg-white/20 cursor-pointer" />
               </div>
 
               <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1.5">Transkrip Nilai <span class="text-rose-400">*</span></label>
-                <input type="file" @change="handleFileUpload($event, 'file_transkrip')" accept=".pdf,.jpg,.jpeg,.png" required class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50 cursor-pointer" />
+                <label class="block font-bold text-slate-200 mb-1.5">Curriculum Vitae (CV) <span class="text-slate-400 font-normal">(Opsional)</span></label>
+                <input type="file" @change="handleFileUpload($event, 'file_cv')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-slate-300 hover:file:bg-white/20 cursor-pointer" />
               </div>
 
               <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1.5">Curriculum Vitae (CV) <span class="text-rose-400">*</span></label>
-                <input type="file" @change="handleFileUpload($event, 'file_cv')" accept=".pdf,.jpg,.jpeg,.png" required class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50 cursor-pointer" />
+                <label class="block font-bold text-slate-200 mb-1.5">Surat Lamaran <span class="text-slate-400 font-normal">(Opsional)</span></label>
+                <input type="file" @change="handleFileUpload($event, 'file_surat_lamaran')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-slate-300 hover:file:bg-white/20 cursor-pointer" />
               </div>
 
               <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1.5">Surat Lamaran <span class="text-rose-400">*</span></label>
-                <input type="file" @change="handleFileUpload($event, 'file_surat_lamaran')" accept=".pdf,.jpg,.jpeg,.png" required class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50 cursor-pointer" />
-              </div>
-
-              <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10 md:col-span-2">
                 <label class="block font-bold text-slate-200 mb-1.5">Berkas Pendukung Lainnya <span class="text-slate-400 font-normal">(Opsional)</span></label>
-                <input type="file" @change="handleFileUpload($event, 'file_berkas_lain')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50 cursor-pointer" />
+                <input type="file" @change="handleFileUpload($event, 'file_berkas_lain')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-slate-300 hover:file:bg-white/20 cursor-pointer" />
               </div>
             </div>
           </div>
@@ -179,8 +187,9 @@ export default {
         npwp: '',
       },
       files: {
-        file_kk: null,
+        file_pas_foto: null,
         file_ktp: null,
+        file_kk: null,
         file_ijazah: null,
         file_transkrip: null,
         file_cv: null,
@@ -218,7 +227,6 @@ export default {
       }).then(res => {
         this.isLoading = false;
         this.alert = { type: 'success', message: res.data.message };
-        // Reset form jika sukses
         this.resetForm();
       }).catch(err => {
         this.isLoading = false;
@@ -231,7 +239,7 @@ export default {
     },
     resetForm() {
       this.form = { nama: '', email: '', password: '', jenis_kelamin: '', alamat: '', no_hp: '', nik: '', npwp: '' };
-      this.files = { file_kk: null, file_ktp: null, file_ijazah: null, file_transkrip: null, file_cv: null, file_surat_lamaran: null, file_berkas_lain: null };
+      this.files = { file_pas_foto: null, file_ktp: null, file_kk: null, file_ijazah: null, file_transkrip: null, file_cv: null, file_surat_lamaran: null, file_berkas_lain: null };
     }
   }
 };

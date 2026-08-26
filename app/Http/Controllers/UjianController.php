@@ -11,7 +11,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class UjianController extends Controller
 {
-    // 1. Validasi Token Absensi & Mulai Ujian (Ambil 25 Soal Terpilih)
+    // 1. Validasi Token Absensi & Mulai Ujian (Ambil Soal Terpilih)
+    // 1. Validasi Token Absensi & Mulai Ujian (Ambil Soal Terpilih & Durasi)
     public function startExam(Request $request)
     {
         $request->validate([
@@ -21,7 +22,7 @@ class UjianController extends Controller
 
         // Cek Keberadaan Token
         $token = TokenAbsensi::where('user_id', $request->user_id)
-            ->where('kode_token', strtoupper($request->token))
+            ->where('kode_token', strtoupper(trim($request->token)))
             ->first();
 
         if (!$token) {
@@ -32,13 +33,13 @@ class UjianController extends Controller
             return response()->json(['message' => 'Kode Token ini sudah pernah digunakan untuk ujian!'], 400);
         }
 
-        // Ambil 25 Soal yang dipilih Admin (is_selected = true)
+        // Ambil Soal yang dipilih Admin (is_selected = true)
         $soalList = BankSoal::where('is_selected', true)->get();
         if ($soalList->count() === 0) {
-            return response()->json(['message' => 'Admin belum memilih 25 Soal Ujian! Mohon hubungi Admin.'], 400);
+            return response()->json(['message' => 'Admin belum memilih Soal Ujian! Mohon hubungi Admin.'], 400);
         }
 
-        // Tandai Token Sudah Digunakan (Absensi Terverifikasi)
+        // Tandai Token Sudah Digunakan
         $token->update([
             'is_used' => true,
             'used_at' => now()
@@ -62,9 +63,10 @@ class UjianController extends Controller
         }
 
         return response()->json([
-            'status'     => 'success',
-            'riwayat_id' => $riwayat->id,
-            'soal'       => $soalList->makeHidden('kunci_jawaban') // Sembunyikan kunci jawaban dari client
+            'status'       => 'success',
+            'riwayat_id'   => $riwayat->id,
+            'durasi_menit' => $token->durasi_menit ?? 60, // Durasi dari Admin
+            'soal'         => $soalList->makeHidden('kunci_jawaban')
         ]);
     }
 
@@ -72,14 +74,15 @@ class UjianController extends Controller
     public function submitExam(Request $request, $riwayatId)
     {
         $riwayat = RiwayatUjian::findOrFail($riwayatId);
-        $jawabanUser = $request->jawaban; // Array: [{soal_id: 1, jawaban: 'A'}, ...]
+        $jawabanUser = $request->jawaban ?? [];
 
         $benar = 0;
         $salah = 0;
 
         foreach ($jawabanUser as $item) {
             $soal = BankSoal::find($item['soal_id']);
-            $isBenar = ($soal && $soal->kunci_jawaban == $item['jawaban']);
+            $userAns = in_array($item['jawaban'] ?? '', ['A', 'B', 'C', 'D']) ? $item['jawaban'] : null;
+            $isBenar = ($soal && $userAns && $soal->kunci_jawaban == $userAns);
 
             if ($isBenar) $benar++;
             else $salah++;
@@ -87,13 +90,13 @@ class UjianController extends Controller
             DetailJawabanUjian::where('riwayat_ujian_id', $riwayat->id)
                 ->where('soal_id', $item['soal_id'])
                 ->update([
-                    'jawaban_user' => $item['jawaban'],
+                    'jawaban_user' => $userAns,
                     'is_benar'     => $isBenar,
                 ]);
         }
 
-        $totalSoal = $riwayat->total_soal > 0 ? $riwayat->total_soal : 25;
-        $nilai = ($benar / $totalSoal) * 100;
+        $totalSoal = $riwayat->total_soal > 0 ? $riwayat->total_soal : count($jawabanUser);
+        $nilai = $totalSoal > 0 ? round(($benar / $totalSoal) * 100, 2) : 0;
         $noSertifikat = "CERT/DIKLAT/" . date('Ym') . "/" . sprintf("%04d", $riwayat->id);
 
         $riwayat->update([
@@ -111,8 +114,8 @@ class UjianController extends Controller
             'nilai'   => $nilai
         ]);
     }
-    // Tambahkan di dalam class UjianController
 
+    // 3. Review Jawaban Ujian
     public function getReviewJawaban($riwayatId)
     {
         $riwayat = RiwayatUjian::with(['detailJawaban.soal', 'user'])->findOrFail($riwayatId);
@@ -123,22 +126,19 @@ class UjianController extends Controller
         ]);
     }
 
+    // 4. Cetak Sertifikat Hasil Ujian
+    public function cetakSertifikat($riwayatId)
+    {
+        $riwayat = RiwayatUjian::with('user')->findOrFail($riwayatId);
 
-// Tambahkan di dalam class UjianController
-public function cetakSertifikat($riwayatId)
-{
-    $riwayat = RiwayatUjian::with('user')->findOrFail($riwayatId);
+        if ($riwayat->status !== 'selesai') {
+            return response()->json([
+                'message' => 'Sertifikat belum tersedia karena Anda belum menyelesaikan ujian!'
+            ], 403);
+        }
 
-    // Keamanan: Tolak jika status ujian belum selesai
-    if ($riwayat->status !== 'selesai') {
-        return response()->json([
-            'message' => 'Sertifikat belum tersedia karena Anda belum menyelesaikan ujian!'
-        ], 403);
+        $pdf = Pdf::loadView('pdf.sertifikat', compact('riwayat'))->setPaper('a4', 'landscape');
+
+        return $pdf->download("Sertifikat_Diklat_{$riwayat->user->nik}.pdf");
     }
-
-    // Render View ke PDF
-    $pdf = Pdf::loadView('pdf.sertifikat', compact('riwayat'))->setPaper('a4', 'landscape');
-    
-    return $pdf->download("Sertifikat_Diklat_{$riwayat->user->nik}.pdf");
-}
 }

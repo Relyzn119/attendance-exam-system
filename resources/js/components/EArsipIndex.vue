@@ -151,14 +151,14 @@
           <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
             <i class="bi bi-search text-base"></i>
           </div>
-          <input v-model="searchQuery" @input="debounceFetch" type="text"
+          <input v-model="searchQuery" @input="onFilterChange" type="text"
             placeholder="Cari nama, NIK, unit, atau email..."
             class="w-full pl-10 pr-4 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" />
         </div>
 
         <!-- Filter Peran -->
         <div class="md:col-span-4">
-          <select v-model="selectedPeran" @change="fetchData"
+          <select v-model="selectedPeran" @change="onFilterChange"
             class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm font-medium text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
             <option class="bg-slate-900 text-white" value="Semua Peran / Profession">Semua Peran / Profession</option>
             <option class="bg-slate-900 text-white" value="Dokter Spesialis / Umum">Dokter Spesialis / Umum</option>
@@ -171,7 +171,7 @@
 
         <!-- Date Picker -->
         <div class="md:col-span-3">
-          <input v-model="selectedDate" @change="fetchData" type="date"
+          <input v-model="selectedDate" @change="onFilterChange" type="date"
             class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
         </div>
       </div>
@@ -234,7 +234,8 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-white/5 text-sm">
-            <tr v-for="item in pegawaiList" :key="item.id" class="hover:bg-white/5 transition-colors group">
+            <!-- V-FOR MEMAKAI displayedPegawaiList UNTUK PAGINATION 10 DATA -->
+            <tr v-for="item in displayedPegawaiList" :key="item.id" class="hover:bg-white/5 transition-colors group">
               <!-- NAMA & AVATAR -->
               <td class="py-4 px-6">
                 <div class="flex items-center gap-3">
@@ -301,6 +302,40 @@
           </tbody>
         </table>
       </div>
+
+      <!-- PAGINATION FOOTER CONTROL (MAKSIMAL 10 DATA PER HALAMAN) -->
+      <div v-if="!isLoading && pegawaiList.length > 0"
+        class="px-6 py-4 bg-slate-950/60 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        <!-- Informasi Jumlah Baris -->
+        <div>
+          Menampilkan <span class="font-bold text-white font-mono">{{ startItem }}</span> sampai
+          <span class="font-bold text-white font-mono">{{ endItem }}</span> dari
+          <span class="font-bold text-white font-mono">{{ pegawaiList.length }}</span> total pegawai
+        </div>
+
+        <!-- Tombol Navigasi Halaman -->
+        <div class="flex items-center gap-1.5">
+          <!-- Tombol Prev -->
+          <button @click="prevPage" :disabled="currentPage === 1"
+            class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-slate-200 font-bold transition-all flex items-center gap-1">
+            <i class="bi bi-chevron-left"></i> Prev
+          </button>
+
+          <!-- List Nomor Halaman -->
+          <button v-for="page in totalPages" :key="page" @click="goToPage(page)"
+            :class="currentPage === page ? 'bg-blue-600 text-white font-extrabold shadow-md' : 'bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-medium'"
+            class="w-8 h-8 rounded-xl text-xs transition-all flex items-center justify-center font-mono">
+            {{ page }}
+          </button>
+
+          <!-- Tombol Next -->
+          <button @click="nextPage" :disabled="currentPage === totalPages"
+            class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-slate-200 font-bold transition-all flex items-center gap-1">
+            Next <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
     </div>
 
     <!-- 4. MODAL FORM TAMBAH PEGAWAI BARU -->
@@ -482,7 +517,7 @@
       </div>
     </div>
 
-    <!-- 5. MODAL EDIT PEGAWAI & KELOLA BERKAS (TETAP LENGKAP DENGAN 9 UPLOAD DOKUMEN BARU) -->
+    <!-- 5. MODAL EDIT PEGAWAI & KELOLA BERKAS -->
     <div v-if="showModalEdit"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-slate-950/80 backdrop-blur-md">
       <div
@@ -849,13 +884,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 
 // States
 const statistics = ref({ total_dokter: 0, total_perawat: 0, staf_penunjang: 0 });
 const pegawaiList = ref([]);
 const isLoading = ref(false);
+
+// PAGINATION STATES (DISET MAKSIMAL 10 DATA PER PAGE)
+const currentPage = ref(1);
+const perPage = ref(10);
 
 // Filter States
 const searchQuery = ref('');
@@ -925,6 +964,46 @@ const isDeletingPegawai = ref(false);
 
 let debounceTimer = null;
 
+// COMPUTED PROPERTIES UNTUK PAGINATION 10 DATA
+const displayedPegawaiList = computed(() => {
+  const start = (currentPage.value - 1) * perPage.value;
+  const end = start + perPage.value;
+  return pegawaiList.value.slice(start, end);
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(pegawaiList.value.length / perPage.value) || 1;
+});
+
+const startItem = computed(() => {
+  if (pegawaiList.value.length === 0) return 0;
+  return (currentPage.value - 1) * perPage.value + 1;
+});
+
+const endItem = computed(() => {
+  const calcEnd = currentPage.value * perPage.value;
+  return calcEnd > pegawaiList.value.length ? pegawaiList.value.length : calcEnd;
+});
+
+// FUNCTIONS HANDLER PAGINATION
+const goToPage = (page) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page;
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
 const fetchData = async () => {
   isLoading.value = true;
   try {
@@ -939,12 +1018,22 @@ const fetchData = async () => {
     if (response.data.success) {
       statistics.value = response.data.statistics;
       pegawaiList.value = response.data.data;
+      
+      // Jika halaman saat ini melebih total halaman setelah filter, reset ke halaman 1
+      if (currentPage.value > totalPages.value) {
+        currentPage.value = 1;
+      }
     }
   } catch (error) {
     console.error('Gagal mengambil data pegawai:', error);
   } finally {
     isLoading.value = false;
   }
+};
+
+const onFilterChange = () => {
+  currentPage.value = 1; // Reset ke halaman 1 saat filter/pencarian berubah
+  debounceFetch();
 };
 
 const debounceFetch = () => {
@@ -957,6 +1046,7 @@ const debounceFetch = () => {
 const setQuickDate = (dateVal, label) => {
   selectedDate.value = dateVal;
   quickDateLabel.value = label;
+  currentPage.value = 1; // Reset halaman
   fetchData();
 };
 

@@ -157,7 +157,12 @@ const app = createApp({
                     <dashboard-admin v-if="currentView === 'dashboard-admin'"></dashboard-admin>
                     <e-arsip-index v-if="currentView === 'e-arsip'"></e-arsip-index>
                     
-                    <lembar-ujian v-if="currentView === 'lembar-ujian'" :riwayatId="examSession?.riwayatId" :soalData="examSession?.soal" @examSubmitted="onExamSubmitted"></lembar-ujian>
+                   <lembar-ujian 
+    v-if="currentView === 'lembar-ujian'" 
+    :riwayatId="examSession?.riwayatId" 
+    :soalData="examSession?.soal" 
+    :durasiMenit="examSession?.durasi_menit || 60" 
+    @examSubmitted="onExamSubmitted"></lembar-ujian>
                 </main>
 
                 <!-- FOOTER MINIMALIS -->
