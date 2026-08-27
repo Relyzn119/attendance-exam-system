@@ -170,38 +170,49 @@ class AdminController extends Controller
         }
     }
     // 5. Generate Token Absensi Ujian
-   // 5. Generate Token Absensi Ujian dengan Pengaturan Durasi
+    // 5. Generate Token Absensi / Ujian dengan Opsi Tipe Token & Durasi
     public function generateToken(Request $request, $userId)
     {
         $user = User::findOrFail($userId);
 
         $kodeToken = strtoupper(Str::random(6));
-        $durasi = $request->input('durasi_menit', 60); // Default 60 Menit jika tidak diisi
+        $tipeToken = $request->input('tipe_token', 'ujian'); // 'absensi' atau 'ujian'
+        if (!in_array($tipeToken, ['absensi', 'ujian'])) {
+            $tipeToken = 'ujian';
+        }
+        $durasi = $request->input('durasi_menit', 60);
 
         $token = TokenAbsensi::updateOrCreate(
             ['user_id' => $user->id],
             [
                 'kode_token'   => $kodeToken,
+                'tipe_token'   => $tipeToken,
                 'durasi_menit' => $durasi,
                 'is_used'      => false,
                 'used_at'      => null
             ]
         );
 
+        $pesanTipe = ($tipeToken === 'absensi') ? 'Token Absensi Saja' : 'Token Masuk Ujian';
+
         return response()->json([
-            'status'  => 'success',
-            'message' => 'Token Absensi & Ujian berhasil dibuat!',
-            'token'   => $token->kode_token,
-            'durasi'  => $token->durasi_menit
+            'status'     => 'success',
+            'message'    => "{$pesanTipe} berhasil dibuat!",
+            'token'      => $token->kode_token,
+            'tipe_token' => $token->tipe_token,
+            'durasi'     => $token->durasi_menit
         ]);
     }
 
-    // 6. Export PDF Absensi
-    public function exportAbsensiPdf()
+    // 6. Export PDF Absensi berdasarkan tanggal tertentu (Reset harian & riwayat)
+    public function exportAbsensiPdf(Request $request)
     {
-        $pesertas = User::where('role', 'peserta')
-            ->with('token')
-            ->orderBy('nama', 'asc')
+        $tanggal = $request->input('tanggal') ?: date('Y-m-d');
+
+        // Ambil riwayat absensi peserta yang sudah input token pada tanggal tersebut
+        $absensiList = \App\Models\Absensi::with('user')
+            ->whereDate('created_at', $tanggal)
+            ->orderBy('created_at', 'asc')
             ->get();
 
         $imagePath = public_path('images/BackgroundDocument.png');
@@ -211,9 +222,10 @@ class AdminController extends Controller
             $bgBase64 = 'data:image/png;base64,' . base64_encode($bgData);
         }
 
-        $pdf = Pdf::loadView('pdf.absensi', compact('pesertas', 'bgBase64'))->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('pdf.absensi', compact('absensiList', 'tanggal', 'bgBase64'))->setPaper('a4', 'portrait');
         
-        return $pdf->download("Daftar_Absensi_Diklat_" . date('Ymd_His') . ".pdf");
+        $cleanDate = str_replace('-', '', $tanggal);
+        return $pdf->download("Daftar_Absensi_Diklat_" . $cleanDate . ".pdf");
     }
      public function previewBerkas($id)
     {

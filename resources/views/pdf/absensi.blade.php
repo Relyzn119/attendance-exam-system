@@ -78,20 +78,6 @@
             vertical-align: middle;
             color: #0f172a;
         }
-
-        .text-hadir {
-            color: #15803d;
-            font-weight: bold;
-        }
-        .text-tidakhadir {
-            color: #b91c1c;
-            font-weight: bold;
-        }
-        .ttd-cell {
-            height: 25px;
-            font-size: 9px;
-            color: #334155;
-        }
     </style>
 </head>
 <body>
@@ -103,48 +89,38 @@
     @endif
 
     <div class="text-center">
-        <div class="doc-title">DAFTAR ABSENSI KEHADIRAN UJIAN DIKLAT</div>
-        <div class="doc-subtitle">RSU BUNDA THAMRIN MEDAN</div>
+        <div class="doc-title">DAFTAR ABSENSI KEHADIRAN DIKLAT</div>
+        <div class="doc-subtitle">RSU BUNDA THAMRIN MEDAN • TANGGAL: {{ \Carbon\Carbon::parse($tanggal)->format('d/m/Y') }}</div>
     </div>
 
     <table>
         <thead>
             <tr>
                 <th width="6%">No</th>
-                <th width="20%">NIK</th>
-                <th width="32%">Nama Peserta</th>
+                <th width="18%">NIK</th>
+                <th width="28%">Nama Peserta</th>
                 <th width="16%">No. HP</th>
-                <th width="14%">Keterangan</th>
-                <th width="12%">Tanda Tangan</th>
+                <th width="16%">Jabatan</th>
+                <th width="16%">Tanggal</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($pesertas as $idx => $p)
-            @php
-                // Status Hadir jika token ada & sudah digunakan (is_used = true)
-                $isHadir = $p->token && $p->token->is_used;
-            @endphp
+            @foreach($absensiList as $idx => $abs)
             <tr>
                 <td class="text-center">{{ $idx + 1 }}</td>
-                <td class="text-center">{{ $p->nik ?? '-' }}</td>
-                <td><strong>{{ $p->nama }}</strong></td>
-                <td class="text-center">{{ $p->no_hp ?? '-' }}</td>
-                <td class="text-center">
-                    @if($isHadir)
-                        <span class="text-hadir">Hadir</span>
-                    @else
-                        <span class="text-tidakhadir">Tidak Hadir</span>
-                    @endif
-                </td>
-                <td class="ttd-cell text-center">
-                    {{ $idx + 1 }}. ............
-                </td>
+                <td class="text-center">{{ $abs->user->nik ?? '-' }}</td>
+                <td><strong>{{ $abs->user->nama ?? '-' }}</strong></td>
+                <td class="text-center">{{ $abs->user->no_hp ?? '-' }}</td>
+                <td class="text-center">{{ $abs->user->jabatan ?? '-' }}</td>
+                <td class="text-center">{{ \Carbon\Carbon::parse($abs->created_at)->format('d/m/Y H:i') }}</td>
             </tr>
             @endforeach
 
-            @if(count($pesertas) === 0)
+            @if(count($absensiList) === 0)
             <tr>
-                <td colspan="6" class="text-center">Belum ada data peserta registered.</td>
+                <td colspan="6" class="text-center" style="padding: 15px; color: #64748b;">
+                    Tidak ada peserta yang melakukan absensi pada tanggal {{ \Carbon\Carbon::parse($tanggal)->format('d/m/Y') }}.
+                </td>
             </tr>
             @endif
         </tbody>

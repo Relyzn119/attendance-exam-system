@@ -16,6 +16,7 @@ class User extends Authenticatable
         'email',
         'password',
         'jenis_kelamin',
+        'jabatan',
         'alamat',
         'no_hp',
         'nik',
@@ -35,5 +36,10 @@ class User extends Authenticatable
     public function riwayatUjian()
     {
         return $this->hasMany(RiwayatUjian::class);
+    }
+
+    public function absensis()
+    {
+        return $this->hasMany(Absensi::class);
     }
 }

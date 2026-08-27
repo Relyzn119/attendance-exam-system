@@ -28,66 +28,43 @@
       </div>
     </div>
 
-    <!-- 2. CARD PROFIL DATA DIRI PESERTA DENGAN PAS FOTO (BESAR & PROPORSIONAL) -->
+    <!-- 2. CARD PROFIL DATA DIRI PESERTA -->
     <div class="bg-slate-900/60 border border-white/15 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl">
-      <div class="flex flex-col md:flex-row items-stretch gap-6 sm:gap-8">
-        
-        <!-- PAS FOTO PESERTA (UKURAN BESAR & SEIMBANG) -->
-        <div class="w-full md:w-56 shrink-0 flex flex-col items-center justify-center">
-          <div class="w-full h-72 sm:h-80 md:h-full min-h-[280px] rounded-2xl overflow-hidden border-2 border-blue-500/40 shadow-2xl bg-slate-950 relative group">
-            <img 
-              :src="pasFotoUrl" 
-              alt="Pas Foto Peserta" 
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
-              @error="handleFotoError"
-            />
-            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent p-3 text-center">
-              <span class="px-3 py-1 bg-blue-600/90 backdrop-blur-md text-white font-mono font-bold text-xs rounded-full shadow-md">
-                PAS FOTO RESMI
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- DETAIL DATA DIRI PESERTA (MENGISI RUANG SECARA PROPORSIONAL) -->
-        <div class="flex-grow space-y-4 w-full flex flex-col justify-between">
-          <div class="border-b border-white/10 pb-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <h3 class="text-2xl font-black text-white">
-                {{ userData.nama }}
-              </h3>
-              <span v-if="userData.jenis_kelamin === 'L'" class="px-3 py-1 bg-sky-500/20 text-sky-300 border border-sky-500/30 rounded-full text-xs font-bold">Laki-Laki</span>
-              <span v-else class="px-3 py-1 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-full text-xs font-bold">Perempuan</span>
-            </div>
-            <p class="text-xs sm:text-sm text-blue-400 font-mono font-bold mt-1">NIK: {{ userData.nik }}</p>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
-            <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10">
-              <span class="text-slate-400 block text-xs uppercase font-bold mb-1">Email Resmi</span>
-              <span class="text-white font-semibold break-all">{{ userData.email }}</span>
-            </div>
-            <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10">
-              <span class="text-slate-400 block text-xs uppercase font-bold mb-1">No. HP / WhatsApp</span>
-              <span class="text-white font-mono font-semibold">{{ userData.no_hp }}</span>
-            </div>
-            <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10 sm:col-span-2">
-              <span class="text-slate-400 block text-xs uppercase font-bold mb-1">Alamat Lengkap</span>
-              <span class="text-slate-200 leading-relaxed">{{ userData.alamat }}</span>
-            </div>
-          </div>
-        </div>
-
+      <div class="border-b border-white/10 pb-4 mb-5 flex flex-wrap items-center justify-between gap-2">
+        <h3 class="text-2xl font-black text-white">{{ userData.nama }}</h3>
+        <span v-if="userData.jenis_kelamin === 'L'" class="px-3 py-1 bg-sky-500/20 text-sky-300 border border-sky-500/30 rounded-full text-xs font-bold">Laki-Laki</span>
+        <span v-else class="px-3 py-1 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-full text-xs font-bold">Perempuan</span>
       </div>
-      <div class="pt-2 flex flex-wrap items-center justify-between gap-3">
-       <button 
-              @click="openModalEditProfile" 
-            class="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-slate-950 font-extrabold text-xs px-5 py-3 rounded-full shadow-lg transition-all active:scale-95 shrink-0"
-            >
-              <i class="bi bi-pencil-square"></i>
-              <span>Edit Data & Re-Upload Berkas</span>
-            </button>
-</div>
+      <p class="text-xs sm:text-sm text-blue-400 font-mono font-bold mb-5">NIK: {{ userData.nik }}</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+        <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10">
+          <span class="text-slate-400 block text-xs uppercase font-bold mb-1">Email Resmi</span>
+          <span class="text-white font-semibold break-all">{{ userData.email }}</span>
+        </div>
+        <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10">
+          <span class="text-slate-400 block text-xs uppercase font-bold mb-1">Jabatan</span>
+          <span class="text-white font-semibold">{{ userData.jabatan || '-' }}</span>
+        </div>
+        <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10">
+          <span class="text-slate-400 block text-xs uppercase font-bold mb-1">No. HP / WhatsApp</span>
+          <span class="text-white font-mono font-semibold">{{ userData.no_hp }}</span>
+        </div>
+        <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10 sm:col-span-2">
+          <span class="text-slate-400 block text-xs uppercase font-bold mb-1">Alamat Lengkap</span>
+          <span class="text-slate-200 leading-relaxed">{{ userData.alamat }}</span>
+        </div>
+      </div>
+
+      <div class="pt-5 flex flex-wrap items-center gap-3">
+        <button
+          @click="openModalEditProfile"
+          class="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-slate-950 font-extrabold text-xs px-5 py-3 rounded-full shadow-lg transition-all active:scale-95 shrink-0"
+        >
+          <i class="bi bi-pencil-square"></i>
+          <span>Edit Data Diri</span>
+        </button>
+      </div>
     </div>
 
     <!-- 2. RINGKASAN HASIL UJIAN (JIKA SUDAH SELESAI UJIAN) -->
@@ -228,14 +205,14 @@
 
     </div>
 
-      <!-- MODAL 1: DETAIL DATA REGISTRASI (TERMASUK PAS FOTO & LIHAT PREVIEW) -->
+    <!-- MODAL 1: DETAIL DATA REGISTRASI -->
     <div v-if="showModalDetail" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
       <div class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden text-slate-100 my-8">
         
         <div class="bg-slate-950/80 p-5 flex items-center justify-between border-b border-white/10">
           <h3 class="text-lg font-bold text-white flex items-center gap-2">
             <i class="bi bi-person-lines-fill text-blue-400"></i>
-            <span>Data Registrasi & Berkas Upload</span>
+            <span>Data Registrasi Peserta</span>
           </h3>
           <button @click="showModalDetail = false" class="text-slate-400 hover:text-white">
             <i class="bi bi-x-lg text-lg"></i>
@@ -243,45 +220,16 @@
         </div>
 
         <div class="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
-          <div>
-            <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-3">1. Data Diri Peserta</h4>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-slate-950/60 p-4 rounded-2xl border border-white/10">
-              <div><strong class="text-slate-400">Nama:</strong> <span class="text-white font-semibold">{{ userData.nama }}</span></div>
-              <div><strong class="text-slate-400">NIK:</strong> <span class="text-white font-mono">{{ userData.nik }}</span></div>
-              <div><strong class="text-slate-400">Email:</strong> <span class="text-white">{{ userData.email }}</span></div>
-              <div><strong class="text-slate-400">No HP:</strong> <span class="text-white font-mono">{{ userData.no_hp }}</span></div>
-              <div class="sm:col-span-2"><strong class="text-slate-400">Alamat:</strong> <span class="text-white">{{ userData.alamat }}</span></div>
-            </div>
-          </div>
-
-          <div>
-            <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-3">2. Berkas Dokumen Terunggah</h4>
-            <div class="space-y-2">
-             <div 
-                v-for="b in userData.berkas" 
-                :key="b.id" 
-                class="flex items-center justify-between p-3 bg-slate-950/60 border border-white/10 rounded-xl text-xs"
-              >
-                <span class="font-medium text-slate-200 flex items-center gap-2">
-                  <i :class="isImageFile(b.file_path) ? 'bi bi-file-image-fill text-blue-400 text-base' : 'bi bi-file-earmark-pdf-fill text-rose-400 text-base'"></i>
-                  <span>{{ b.jenis_berkas }}</span>
-                </span>
-                
-                <!-- GUNAKAN ROUTE API PREVIEW BERKAS -->
-                <a 
-                  :href="`/api/berkas/${b.id}/preview`" 
-                  target="_blank" 
-                  class="px-3.5 py-1.5 bg-blue-600/30 hover:bg-blue-600 text-blue-200 hover:text-white font-bold rounded-lg transition-all border border-blue-500/30 flex items-center gap-1"
-                >
-                  <i class="bi bi-eye-fill"></i>
-                  <span>Lihat File</span>
-                </a>
-              </div>
-
-              <div v-if="!userData.berkas || userData.berkas.length === 0" class="text-center py-4 text-slate-400 text-xs bg-slate-950/30 rounded-xl">
-                Belum ada berkas terunggah.
-              </div>
-            </div>
+          <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-3">Data Diri Peserta</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-slate-950/60 p-4 rounded-2xl border border-white/10">
+            <div><strong class="text-slate-400">Nama:</strong> <span class="text-white font-semibold">{{ userData.nama }}</span></div>
+            <div><strong class="text-slate-400">NIK:</strong> <span class="text-white font-mono">{{ userData.nik }}</span></div>
+            <div><strong class="text-slate-400">Email:</strong> <span class="text-white">{{ userData.email }}</span></div>
+            <div><strong class="text-slate-400">Jabatan:</strong> <span class="text-white">{{ userData.jabatan || '-' }}</span></div>
+            <div><strong class="text-slate-400">No HP:</strong> <span class="text-white font-mono">{{ userData.no_hp }}</span></div>
+            <div><strong class="text-slate-400">Jenis Kelamin:</strong> <span class="text-white">{{ userData.jenis_kelamin === 'L' ? 'Laki-Laki' : 'Perempuan' }}</span></div>
+            <div><strong class="text-slate-400">NPWP:</strong> <span class="text-white font-mono">{{ userData.npwp || '-' }}</span></div>
+            <div class="sm:col-span-2"><strong class="text-slate-400">Alamat:</strong> <span class="text-white">{{ userData.alamat }}</span></div>
           </div>
         </div>
 
@@ -382,14 +330,15 @@
 
       </div>
     </div>
-    <!-- MODAL EDIT DATA & RE-UPLOAD BERKAS PESERTA -->
+
+    <!-- MODAL EDIT DATA PESERTA -->
     <div v-if="showModalEdit" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
       <div class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden text-slate-100 my-8">
         
         <div class="bg-slate-950/80 p-5 flex items-center justify-between border-b border-white/10">
           <h3 class="text-lg font-bold text-white flex items-center gap-2">
             <i class="bi bi-pencil-square text-amber-400"></i>
-            <span>Edit Data Diri & Upload Ulang Berkas</span>
+            <span>Edit Data Diri Peserta</span>
           </h3>
           <button @click="showModalEdit = false" class="text-slate-400 hover:text-white">
             <i class="bi bi-x-lg text-lg"></i>
@@ -398,10 +347,7 @@
 
         <form @submit.prevent="submitEditProfile" class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
           
-          <!-- SECTION 1: DATA DIRI -->
           <div class="space-y-3">
-            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">1. Data Diri Peserta</h4>
-            
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div>
                 <label class="block font-bold text-slate-300 mb-1">Nama Lengkap</label>
@@ -432,6 +378,11 @@
               </div>
 
               <div>
+                <label class="block font-bold text-slate-300 mb-1">Jabatan</label>
+                <input v-model="formEdit.jabatan" type="text" required class="w-full px-3.5 py-2 bg-slate-950/70 border border-white/15 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500" />
+              </div>
+
+              <div class="sm:col-span-2">
                 <label class="block font-bold text-slate-300 mb-1">NPWP <span class="text-slate-500 font-normal">(Opsional)</span></label>
                 <input v-model="formEdit.npwp" type="text" class="w-full px-3.5 py-2 bg-slate-950/70 border border-white/15 rounded-xl text-white font-mono focus:outline-none focus:ring-2 focus:ring-amber-500" />
               </div>
@@ -439,54 +390,6 @@
               <div class="sm:col-span-2">
                 <label class="block font-bold text-slate-300 mb-1">Alamat Lengkap</label>
                 <textarea v-model="formEdit.alamat" rows="2" required class="w-full px-3.5 py-2 bg-slate-950/70 border border-white/15 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
-              </div>
-            </div>
-          </div>
-
-          <!-- SECTION 2: GANTI / RE-UPLOAD BERKAS -->
-          <div class="space-y-3">
-            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">2. Upload Ulang Berkas (Pilih hanya jika ingin mengganti)</h4>
-            <p class="text-[11px] text-slate-400 italic">Kosongkan input file jika tidak ada berkas yang diubah.</p>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div class="bg-slate-950/60 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1">Pas Foto Baru</label>
-                <input type="file" @change="handleEditFileUpload($event, 'file_pas_foto')" accept=".jpg,.jpeg,.png,.pdf" class="w-full text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:bg-amber-500/20 file:text-amber-200 cursor-pointer" />
-              </div>
-
-              <div class="bg-slate-950/60 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1">KTP Baru</label>
-                <input type="file" @change="handleEditFileUpload($event, 'file_ktp')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:bg-amber-500/20 file:text-amber-200 cursor-pointer" />
-              </div>
-
-              <div class="bg-slate-950/60 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1">Kartu Keluarga (KK) Baru</label>
-                <input type="file" @change="handleEditFileUpload($event, 'file_kk')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:bg-amber-500/20 file:text-amber-200 cursor-pointer" />
-              </div>
-
-              <div class="bg-slate-950/60 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1">Ijazah Baru</label>
-                <input type="file" @change="handleEditFileUpload($event, 'file_ijazah')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:bg-amber-500/20 file:text-amber-200 cursor-pointer" />
-              </div>
-
-              <div class="bg-slate-950/60 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1">Transkrip Nilai Baru</label>
-                <input type="file" @change="handleEditFileUpload($event, 'file_transkrip')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:bg-amber-500/20 file:text-amber-200 cursor-pointer" />
-              </div>
-
-              <div class="bg-slate-950/60 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1">Curriculum Vitae (CV) Baru</label>
-                <input type="file" @change="handleEditFileUpload($event, 'file_cv')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:bg-amber-500/20 file:text-amber-200 cursor-pointer" />
-              </div>
-
-              <div class="bg-slate-950/60 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1">Surat Lamaran Baru</label>
-                <input type="file" @change="handleEditFileUpload($event, 'file_surat_lamaran')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:bg-amber-500/20 file:text-amber-200 cursor-pointer" />
-              </div>
-
-              <div class="bg-slate-950/60 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-200 mb-1">Berkas Pendukung Baru</label>
-                <input type="file" @change="handleEditFileUpload($event, 'file_berkas_lain')" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:bg-amber-500/20 file:text-amber-200 cursor-pointer" />
               </div>
             </div>
           </div>
@@ -528,37 +431,16 @@ export default {
         email: '',
         nik: '',
         jenis_kelamin: 'L',
+        jabatan: '',
         no_hp: '',
         alamat: '',
         npwp: ''
-      },
-      filesEdit: {
-        file_pas_foto: null,
-        file_ktp: null,
-        file_kk: null,
-        file_ijazah: null,
-        file_transkrip: null,
-        file_cv: null,
-        file_surat_lamaran: null,
-        file_berkas_lain: null
       }
     };
   },
   computed: {
     
-   pasFotoUrl() {
-      if (this.userData && this.userData.berkas && this.userData.berkas.length > 0) {
-        const foto = this.userData.berkas.find(b => 
-          b.jenis_berkas && (
-            b.jenis_berkas.toLowerCase().includes('pas foto') || 
-            b.jenis_berkas.toLowerCase().includes('pasfoto') || 
-            b.jenis_berkas.toLowerCase().includes('foto')
-          )
-        );
-        if (foto) {
-          return `/api/berkas/${foto.id}/preview`;
-        }
-      }
+    pasFotoUrl() {
       return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(this.userData?.nama || 'Peserta') + '&background=0D8ABC&color=fff&size=256';
     },
     latestExam() {
@@ -583,24 +465,13 @@ export default {
         email: this.userData.email || '',
         nik: this.userData.nik || '',
         jenis_kelamin: this.userData.jenis_kelamin || 'L',
+        jabatan: this.userData.jabatan || '',
         no_hp: this.userData.no_hp || '',
         alamat: this.userData.alamat || '',
         npwp: this.userData.npwp || ''
       };
-      this.filesEdit = {
-        file_pas_foto: null,
-        file_ktp: null,
-        file_kk: null,
-        file_ijazah: null,
-        file_transkrip: null,
-        file_cv: null,
-        file_surat_lamaran: null,
-        file_berkas_lain: null
-      };
+
       this.showModalEdit = true;
-    },
-    handleEditFileUpload(event, key) {
-      this.filesEdit[key] = event.target.files[0];
     },
     submitEditProfile() {
       this.isUpdatingProfile = true;
@@ -610,36 +481,19 @@ export default {
         formData.append(key, this.formEdit[key] || '');
       });
 
-      Object.keys(this.filesEdit).forEach(key => {
-        if (this.filesEdit[key]) {
-          formData.append(key, this.filesEdit[key]);
-        }
-      });
-
       axios.post(`/api/peserta/update-profile/${this.userData.id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       }).then(res => {
         this.isUpdatingProfile = false;
         alert(res.data.message || 'Profil berhasil diperbarui!');
-        this.userData = res.data.user; // Update tampilan data profil langsung
+        this.userData = res.data.user;
         this.showModalEdit = false;
       }).catch(err => {
         this.isUpdatingProfile = false;
         alert('Gagal memperbarui profil: ' + (err.response?.data?.message || err.message));
       });
     },
-       getPdfUrl(filePath) {
-      if (!filePath) return '#';
-      const cleanPath = filePath.replace(/^(\/?storage\/|\/?public\/)+/g, '');
-      return `/storage/${cleanPath}`;
-    },
-    isImageFile(filePath) {
-      if (!filePath) return false;
-      return /\.(jpg|jpeg|png|webp|gif)$/i.test(filePath);
-    },
-    handleFotoError(e) {
-      e.target.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(this.userData?.nama || 'Peserta') + '&background=0D8ABC&color=fff&size=256';
-    },
+
     fetchProfile() {
       axios.get(`/api/user-profile/${this.user.id}`).then(res => {
         this.userData = res.data;
@@ -650,6 +504,13 @@ export default {
         user_id: this.userData.id,
         token: this.tokenInput
       }).then(res => {
+        if (res.data.tipe_token === 'absensi') {
+          alert(res.data.message || 'Absensi berhasil dicatat untuk hari ini!');
+          this.tokenInput = '';
+          this.fetchProfile();
+          return;
+        }
+
         this.$emit('startExamNow', {
           riwayatId: res.data.riwayat_id,
           soal: res.data.soal,

@@ -19,6 +19,7 @@ return new class extends Migration
         $table->string('password');
         $table->enum('role', ['admin', 'peserta'])->default('peserta');
         $table->enum('jenis_kelamin', ['L', 'P']);
+        $table->string('jabatan')->nullable();
         $table->text('alamat');
         $table->string('no_hp');
         $table->string('nik')->unique();

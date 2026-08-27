@@ -49,7 +49,12 @@
                         class="bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs font-bold px-3 py-1.5 rounded-full">
                         Total: {{ pagination.total }} Peserta
                     </span>
-                    <a href="/api/admin/export-absensi" target="_blank"
+                    <div class="flex items-center gap-2 bg-slate-950/70 p-1.5 px-3 rounded-full border border-white/15">
+                        <i class="bi bi-calendar-date text-amber-400 text-xs"></i>
+                        <input v-model="tanggalAbsensiPdf" type="date"
+                            class="bg-transparent text-xs text-white focus:outline-none [color-scheme:dark]" />
+                    </div>
+                    <a :href="'/api/admin/export-absensi?tanggal=' + tanggalAbsensiPdf" target="_blank"
                         class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-full shadow-lg transition-all active:scale-95">
                         <i class="bi bi-file-earmark-pdf-fill"></i>
                         <span>Export PDF Absensi</span>
@@ -502,8 +507,20 @@
                 <div class="p-6 text-center space-y-4">
                     <h4 class="font-bold text-white text-lg">{{ selectedPesertaToken.nama }}</h4>
 
-                    <!-- Pilihan Durasi Pengerjaan Ujian -->
+                    <!-- Pilihan Tipe Token -->
                     <div class="text-left bg-slate-950/60 p-3.5 rounded-2xl border border-white/10 space-y-1.5">
+                        <label class="block text-xs font-bold text-amber-400 uppercase tracking-wider">
+                            Pilih Tipe / Peruntukan Token
+                        </label>
+                        <select v-model="selectedTipeToken"
+                            class="w-full px-3.5 py-2 bg-slate-900 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="absensi">Absensi Saja (Tanpa Ujian & Sertifikat)</option>
+                            <option value="ujian">Masuk ke Ujian (+ Otomatis Absensi)</option>
+                        </select>
+                    </div>
+
+                    <!-- Pilihan Durasi Pengerjaan Ujian (Jika Tipe Ujian) -->
+                    <div v-if="selectedTipeToken === 'ujian'" class="text-left bg-slate-950/60 p-3.5 rounded-2xl border border-white/10 space-y-1.5">
                         <label class="block text-xs font-bold text-amber-400 uppercase tracking-wider">
                             Pilih Durasi Waktu Ujian
                         </label>
@@ -743,7 +760,9 @@ export default {
             selectedPesertaToken: null,
             activeToken: '',
             isCopied: false,
+            selectedTipeToken: 'ujian',
             selectedDurasiMenit: 60,
+            tanggalAbsensiPdf: new Date().toISOString().split('T')[0],
 
 
             // Edit Peserta
@@ -865,11 +884,13 @@ export default {
         openModalToken(peserta) {
             this.selectedPesertaToken = peserta;
             this.activeToken = peserta.token ? peserta.token.kode_token : '';
+            this.selectedTipeToken = peserta.token ? (peserta.token.tipe_token || 'ujian') : 'ujian';
             this.selectedDurasiMenit = peserta.token ? (peserta.token.durasi_menit || 60) : 60;
             this.isCopied = false;
         },
         processGenerateToken() {
             axios.post(`/api/admin/generate-token/${this.selectedPesertaToken.id}`, {
+                tipe_token: this.selectedTipeToken,
                 durasi_menit: this.selectedDurasiMenit
             }).then(res => {
                 this.activeToken = res.data.token;
@@ -1012,7 +1033,7 @@ openModalReview(peserta) {
                         try {
                             const res = JSON.parse(reader.result);
                             alert(res.message || 'Gagal mengunduh file ZIP');
-                        } catch (e) {
+                        } catch {
                             alert('Gagal mengunduh file ZIP: Dokumen fisik tidak ditemukan.');
                         }
                     };

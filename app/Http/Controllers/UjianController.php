@@ -29,6 +29,23 @@ class UjianController extends Controller
             return response()->json(['message' => 'Kode Token tidak ditemukan atau tidak sesuai!'], 400);
         }
 
+        // Simpan Log Absensi Kehadiran Peserta (Setiap kali token valid diinput)
+        \App\Models\Absensi::create([
+            'user_id'    => $request->user_id,
+            'token_id'   => $token->id,
+            'tipe_token' => $token->tipe_token ?? 'ujian',
+        ]);
+
+        // KONDISI 1: JIKA TOKEN HARUSNYA HANYA ABSENSI SAJA
+        if ($token->tipe_token === 'absensi') {
+            return response()->json([
+                'status'     => 'success',
+                'tipe_token' => 'absensi',
+                'message'    => 'Absensi Berhasil Dicatat!'
+            ]);
+        }
+
+        // KONDISI 2: JIKA TOKEN UNTUK MASUK UJIAN
         if ($token->is_used) {
             return response()->json(['message' => 'Kode Token ini sudah pernah digunakan untuk ujian!'], 400);
         }
@@ -39,7 +56,7 @@ class UjianController extends Controller
             return response()->json(['message' => 'Admin belum memilih Soal Ujian! Mohon hubungi Admin.'], 400);
         }
 
-        // Tandai Token Sudah Digunakan
+        // Tandai Token Sudah Digunakan untuk Ujian
         $token->update([
             'is_used' => true,
             'used_at' => now()
@@ -64,8 +81,9 @@ class UjianController extends Controller
 
         return response()->json([
             'status'       => 'success',
+            'tipe_token'   => 'ujian',
             'riwayat_id'   => $riwayat->id,
-            'durasi_menit' => $token->durasi_menit ?? 60, // Durasi dari Admin
+            'durasi_menit' => $token->durasi_menit ?? 60,
             'soal'         => $soalList->makeHidden('kunci_jawaban')
         ]);
     }
