@@ -21,13 +21,56 @@
                     </p>
                 </div>
 
-                <div class="self-start sm:self-auto shrink-0">
+                <div class="self-start sm:self-auto shrink-0 flex items-center gap-2">
+                    <button @click="openModalChangePasswordAdmin"
+                        class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 text-xs font-bold px-4 py-2 rounded-full shadow-lg backdrop-blur-md transition-all active:scale-95">
+                        <i class="bi bi-key-fill"></i> Ganti Password Admin
+                    </button>
                     <span
                         class="inline-flex items-center gap-1.5 bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs font-bold px-4 py-2 rounded-full shadow-lg backdrop-blur-md">
                         <i class="bi bi-shield-lock-fill"></i> Role: Admin Authorized
                     </span>
                 </div>
             </div>
+        </div>
+
+        <!-- CARD PENGATURAN DATA SERTIFIKAT (NAMA DIREKTUR, PEMBICARA, & TTD) -->
+        <div class="bg-slate-900/60 border border-white/15 rounded-3xl p-6 backdrop-blur-xl shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="space-y-1">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-400/30 rounded-full text-xs text-amber-300 font-semibold">
+                    <i class="bi bi-award-fill text-amber-400"></i>
+                    <span>Konfigurasi Cetak Sertifikat Ujian</span>
+                </div>
+                <h3 class="text-lg font-extrabold text-white flex items-center gap-2 pt-1">
+                    <span>Pengaturan Nama Direktur, Pembicara, & Tanda Tangan</span>
+                </h3>
+                <p class="text-xs text-slate-300 max-w-2xl">
+                    Atur nama penandatangan sertifikat (Direktur & Pembicara) serta pilih opsi tanda tangan digital (gambar TTD) atau tanda tangan basah.
+                </p>
+                <div class="pt-1 flex items-center gap-4 text-xs text-slate-400 flex-wrap">
+                    <span><strong class="text-slate-200">Direktur:</strong> {{ sertifikatForm.nama_direktur || 'dr. Iskandar Candra, M.Kes, FISQua, KMK, CHQP' }}</span>
+                    <span>•</span>
+                    <span><strong class="text-slate-200">Pembicara:</strong> {{ sertifikatForm.nama_pembicara || 'JUPENTIUS SITUMORANG' }}</span>
+                    <span>•</span>
+                    <span><strong class="text-slate-200">Tipe TTD:</strong> 
+                        <span :class="sertifikatForm.tipe_ttd === 'digital' ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'">
+                            {{ sertifikatForm.tipe_ttd === 'digital' ? 'Digital (Gambar TTD)' : 'Basah (Cetak Tanpa TTD)' }}
+                        </span>
+                    </span>
+                    <span>•</span>
+                    <span><strong class="text-slate-200">Background:</strong> 
+                        <span :class="sertifikatForm.use_bg_watermark ? 'text-blue-400 font-bold' : 'text-emerald-400 font-bold'">
+                            {{ sertifikatForm.use_bg_watermark ? 'Watermark Gambar' : 'Polos Putih' }}
+                        </span>
+                    </span>
+                </div>
+            </div>
+
+            <button @click="openModalSertifikat"
+                class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs px-5 py-3 rounded-2xl shadow-lg transition-all active:scale-95 shrink-0 uppercase tracking-wider">
+                <i class="bi bi-pencil-square text-base"></i>
+                <span>Ubah Data Sertifikat</span>
+            </button>
         </div>
 
         <!-- 2. TABEL DATA PESERTA UJIAN & ABSENSI (GLASS CARD) -->
@@ -211,7 +254,12 @@
                     <button @click="saveSelectedSoal"
                         class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-full shadow-lg transition-all active:scale-95">
                         <i class="bi bi-check-circle-fill"></i>
-                        <span>Simpan Set Soal Ujian</span>
+                        <span>Simpan Set Soal Manual (Model 1)</span>
+                    </button>
+                    <button @click="openModalAcakSoal"
+                        class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs px-4 py-2.5 rounded-full shadow-lg transition-all active:scale-95">
+                        <i class="bi bi-shuffle text-base"></i>
+                        <span>Acak Soal (Model 2)</span>
                     </button>
                 </div>
             </div>
@@ -223,12 +271,19 @@
                     class="bg-blue-950/50 border border-blue-500/30 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 backdrop-blur-md">
                     <div class="text-xs text-blue-200 flex items-center gap-2">
                         <i class="bi bi-info-circle-fill text-blue-400 text-base"></i>
-                        <span><strong>Mekanisme Soal Ujian:</strong> Centang soal di bawah ini untuk dijadikan materi
-                            ujian resmi peserta.</span>
+                        <span>
+                            <strong>Model Ujian Aktif:</strong> 
+                            <span v-if="ujianSetting.model_ujian === 'acak'" class="text-purple-300 font-bold">
+                                Model 2 (Acak Soal - {{ ujianSetting.tipe_acak === 'per_peserta' ? 'Soal Berbeda Per Peserta' : 'Soal Sama Untuk Semua' }}, Kesulitan: {{ uppercaseFirst(ujianSetting.tingkat_kesulitan) }}, Target: {{ ujianSetting.jumlah_soal }} Soal)
+                            </span>
+                            <span v-else class="text-amber-300 font-bold">
+                                Model 1 (Pemilihan Manual - {{ selectedSoalIds.length }} Soal Terpilih)
+                            </span>
+                        </span>
                     </div>
                     <span
                         class="bg-blue-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-full shadow-md shrink-0">
-                        Soal Terpilih: {{ selectedSoalIds.length }} Soal
+                        Total Bank Soal: {{ bankSoalList.length }} Soal
                     </span>
                 </div>
 
@@ -242,6 +297,7 @@
                                 <th class="py-4 px-4 text-center w-12">No</th>
                                 <th class="py-4 px-6">Pertanyaan / Soal</th>
                                 <th class="py-4 px-6">Opsi Jawaban</th>
+                                <th class="py-4 px-4 text-center w-28">Kesulitan</th>
                                 <th class="py-4 px-4 text-center w-20">Kunci</th>
                                 <th class="py-4 px-4 text-center w-16">Aksi</th>
                             </tr>
@@ -265,6 +321,12 @@
                                     <div><strong class="text-blue-400">B.</strong> {{ soal.opsi_b }}</div>
                                     <div><strong class="text-blue-400">C.</strong> {{ soal.opsi_c }}</div>
                                     <div><strong class="text-blue-400">D.</strong> {{ soal.opsi_d }}</div>
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <span v-if="soal.tingkat_kesulitan === 'mudah'" class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold text-[11px] rounded-md">Mudah</span>
+                                    <span v-else-if="soal.tingkat_kesulitan === 'normal'" class="px-2 py-0.5 bg-blue-500/20 text-blue-300 border border-blue-500/30 font-bold text-[11px] rounded-md">Normal</span>
+                                    <span v-else-if="soal.tingkat_kesulitan === 'sulit'" class="px-2 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold text-[11px] rounded-md">Sulit</span>
+                                    <span v-else class="px-2 py-0.5 bg-slate-800 text-slate-400 font-medium text-[11px] rounded-md">Tidak Ada</span>
                                 </td>
                                 <td class="py-4 px-4 text-center">
                                     <span
@@ -607,17 +669,28 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Kunci
-                            Jawaban Benar</label>
-                        <select v-model="formSoal.kunci_jawaban" required
-                            class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option class="bg-slate-900" value="">-- Pilih Kunci Jawaban --</option>
-                            <option class="bg-slate-900" value="A">A</option>
-                            <option class="bg-slate-900" value="B">B</option>
-                            <option class="bg-slate-900" value="C">C</option>
-                            <option class="bg-slate-900" value="D">D</option>
-                        </select>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Kunci Jawaban Benar</label>
+                            <select v-model="formSoal.kunci_jawaban" required
+                                class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option class="bg-slate-900" value="">-- Pilih Kunci Jawaban --</option>
+                                <option class="bg-slate-900" value="A">A</option>
+                                <option class="bg-slate-900" value="B">B</option>
+                                <option class="bg-slate-900" value="C">C</option>
+                                <option class="bg-slate-900" value="D">D</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Tingkat Kesulitan</label>
+                            <select v-model="formSoal.tingkat_kesulitan" required
+                                class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option class="bg-slate-900" value="tidak_ada">Tidak Ada (Default - Pemilihan Manual)</option>
+                                <option class="bg-slate-900" value="mudah">Mudah</option>
+                                <option class="bg-slate-900" value="normal">Normal</option>
+                                <option class="bg-slate-900" value="sulit">Sulit</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="pt-2">
@@ -744,6 +817,328 @@
             </div>
         </div>
 
+        <!-- MODAL GANTI PASSWORD ADMIN -->
+        <div v-if="showModalPasswordAdmin"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+            <div
+                class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden text-slate-100 my-8">
+
+                <div class="bg-slate-950/80 p-5 flex items-center justify-between border-b border-white/10">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i class="bi bi-key-fill text-amber-400"></i>
+                        <span>Ganti Password Admin</span>
+                    </h3>
+                    <button @click="showModalPasswordAdmin = false" class="text-slate-400 hover:text-white">
+                        <i class="bi bi-x-lg text-lg"></i>
+                    </button>
+                </div>
+
+                <form @submit.prevent="submitChangePasswordAdmin" class="p-6 space-y-4">
+                    <div>
+                        <label class="block font-bold text-xs text-slate-300 mb-1 uppercase tracking-wider">Password Lama</label>
+                        <input v-model="formPasswordAdmin.current_password" type="password" required
+                            placeholder="Masukkan password lama Anda"
+                            class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-xs text-slate-300 mb-1 uppercase tracking-wider">Password Baru</label>
+                        <input v-model="formPasswordAdmin.new_password" type="password" required minlength="6"
+                            placeholder="Minimal 6 karakter"
+                            class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-xs text-slate-300 mb-1 uppercase tracking-wider">Konfirmasi Password Baru</label>
+                        <input v-model="formPasswordAdmin.new_password_confirmation" type="password" required minlength="6"
+                            placeholder="Ulangi password baru"
+                            class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+                    </div>
+
+                    <div class="pt-3 flex items-center justify-end gap-2">
+                        <button type="button" @click="showModalPasswordAdmin = false"
+                            class="px-5 py-2.5 bg-slate-800 text-slate-300 font-bold text-xs rounded-full hover:bg-slate-700 transition-all">
+                            Batal
+                        </button>
+                        <button type="submit" :disabled="isChangingPasswordAdmin"
+                            class="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 disabled:bg-slate-800 text-slate-950 font-extrabold text-xs uppercase tracking-wider rounded-full shadow-lg transition-all active:scale-95 flex items-center gap-2">
+                            <span v-if="isChangingPasswordAdmin"
+                                class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-slate-950 border-t-transparent"></span>
+                            <span>{{ isChangingPasswordAdmin ? 'Memproses...' : 'Simpan Password Baru' }}</span>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- MODAL UBAH DATA SERTIFIKAT -->
+        <div v-if="showModalSertifikat"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+            <div class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden text-slate-100 my-8">
+
+                <div class="bg-amber-950/60 p-5 flex items-center justify-between border-b border-amber-500/30">
+                    <h3 class="text-base font-bold text-amber-300 flex items-center gap-2">
+                        <i class="bi bi-award-fill"></i>
+                        <span>Ubah Data Sertifikat</span>
+                    </h3>
+                    <button @click="showModalSertifikat = false" class="text-amber-200 hover:text-white">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
+                <form @submit.prevent="submitSertifikatSetting" class="p-6 space-y-4">
+
+                    <!-- Field Ubah Nama Direktur -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                            Nama Direktur RSU Bunda Thamrin
+                        </label>
+                        <input v-model="sertifikatForm.nama_direktur" type="text"
+                            placeholder="Contoh: dr. Iskandar Candra, M.Kes, FISQua, KMK, CHQP"
+                            class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500" />
+                        <p class="text-[11px] text-slate-400 mt-1">Kosongkan jika ingin menggunakan nama default.</p>
+                    </div>
+
+                    <!-- Field Ubah Nama Pembicara -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                            Nama Pembicara Pelatihan
+                        </label>
+                        <input v-model="sertifikatForm.nama_pembicara" type="text"
+                            placeholder="Contoh: JUPENTIUS SITUMORANG"
+                            class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500" />
+                        <p class="text-[11px] text-slate-400 mt-1">Kosongkan jika ingin menggunakan nama default.</p>
+                    </div>
+
+                    <!-- Opsi Tipe Latar Belakang Sertifikat -->
+                    <div class="bg-slate-950/60 p-4 rounded-2xl border border-white/10 space-y-2">
+                        <label class="block text-xs font-bold text-amber-400 uppercase tracking-wider">
+                            Pilih Latar Belakang Sertifikat
+                        </label>
+                        <div class="grid grid-cols-2 gap-3 pt-1">
+                            <label :class="[
+                                'flex items-center gap-2 p-3 rounded-xl border cursor-pointer transition-all text-xs font-bold',
+                                sertifikatForm.use_bg_watermark ? 'bg-amber-500/20 border-amber-500 text-amber-300' : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white'
+                            ]">
+                                <input type="radio" v-model="sertifikatForm.use_bg_watermark" :value="true" class="hidden" />
+                                <i class="bi bi-image text-base"></i>
+                                <span>Background Watermark</span>
+                            </label>
+
+                            <label :class="[
+                                'flex items-center gap-2 p-3 rounded-xl border cursor-pointer transition-all text-xs font-bold',
+                                !sertifikatForm.use_bg_watermark ? 'bg-amber-500/20 border-amber-500 text-amber-300' : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white'
+                            ]">
+                                <input type="radio" v-model="sertifikatForm.use_bg_watermark" :value="false" class="hidden" />
+                                <i class="bi bi-square-fill text-base text-slate-100"></i>
+                                <span>Polos Putih (Rekomendasi TTD)</span>
+                            </label>
+                        </div>
+                        <p class="text-[11px] text-slate-400 pt-1">
+                            * Pilih <strong>Polos Putih</strong> agar gambar TTD ber-background putih menyatu 100% tanpa garis/kotak bayangan.
+                        </p>
+                    </div>
+
+                    <!-- Opsi Tipe Tanda Tangan -->
+                    <div class="bg-slate-950/60 p-4 rounded-2xl border border-white/10 space-y-2">
+                        <label class="block text-xs font-bold text-amber-400 uppercase tracking-wider">
+                            Pilih Opsi Tanda Tangan
+                        </label>
+                        <div class="grid grid-cols-2 gap-3 pt-1">
+                            <label :class="[
+                                'flex items-center gap-2 p-3 rounded-xl border cursor-pointer transition-all text-xs font-bold',
+                                sertifikatForm.tipe_ttd === 'digital' ? 'bg-amber-500/20 border-amber-500 text-amber-300' : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white'
+                            ]">
+                                <input type="radio" v-model="sertifikatForm.tipe_ttd" value="digital" class="hidden" />
+                                <i class="bi bi-file-earmark-image text-base"></i>
+                                <span>Tanda Tangan Digital</span>
+                            </label>
+
+                            <label :class="[
+                                'flex items-center gap-2 p-3 rounded-xl border cursor-pointer transition-all text-xs font-bold',
+                                sertifikatForm.tipe_ttd === 'basah' ? 'bg-amber-500/20 border-amber-500 text-amber-300' : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white'
+                            ]">
+                                <input type="radio" v-model="sertifikatForm.tipe_ttd" value="basah" class="hidden" />
+                                <i class="bi bi-pen-fill text-base"></i>
+                                <span>Tanda Tangan Basah</span>
+                            </label>
+                        </div>
+                        <p v-if="sertifikatForm.tipe_ttd === 'basah'" class="text-[11px] text-amber-200/80 pt-1">
+                            * Opsi TTD Basah: Sertifikat dicetak hanya nama tanpa gambar tanda tangan (area TTD dikosongkan untuk TTD fisik).
+                        </p>
+                    </div>
+
+                    <!-- Upload Gambar TTD jika Tipe Digital -->
+                    <div v-if="sertifikatForm.tipe_ttd === 'digital'" class="space-y-4 pt-1">
+                        
+                        <!-- Upload TTD Direktur (Posisi Kiri) -->
+                        <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10">
+                            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                                Upload Gambar TTD Direktur (Posisi Kiri)
+                            </label>
+                            <input type="file" @change="onFileTtdDirekturChange" accept="image/png, image/jpeg, image/jpg, image/svg+xml"
+                                class="w-full text-xs text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-500/20 file:text-amber-300 hover:file:bg-amber-500/40 cursor-pointer" />
+                            <p class="text-[11px] text-slate-400 mt-1">Format: PNG, JPG, SVG (Max 2MB). Jika tidak di-upload, menggunakan gambar default.</p>
+                        </div>
+
+                        <!-- Upload TTD Pembicara (Posisi Kanan) -->
+                        <div class="bg-slate-950/60 p-3.5 rounded-2xl border border-white/10">
+                            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                                Upload Gambar TTD Pembicara (Posisi Kanan)
+                            </label>
+                            <input type="file" @change="onFileTtdPembicaraChange" accept="image/png, image/jpeg, image/jpg, image/svg+xml"
+                                class="w-full text-xs text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-500/20 file:text-amber-300 hover:file:bg-amber-500/40 cursor-pointer" />
+                            <p class="text-[11px] text-slate-400 mt-1">Format: PNG, JPG, SVG (Max 2MB). Jika tidak di-upload, menggunakan gambar default.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="pt-3 flex items-center justify-end gap-2">
+                        <button type="button" @click="showModalSertifikat = false"
+                            class="px-5 py-2.5 bg-slate-800 text-slate-300 font-bold text-xs rounded-xl hover:bg-slate-700">
+                            Batal
+                        </button>
+                        <button type="submit" :disabled="isSubmittingSertifikat"
+                            class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 disabled:bg-slate-800 text-slate-950 font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-2">
+                            <span v-if="isSubmittingSertifikat"
+                                class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-slate-950 border-t-transparent"></span>
+                            <span>{{ isSubmittingSertifikat ? 'Memproses...' : 'Simpan Perubahan' }}</span>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- MODAL ACAK SOAL (MODEL 2) -->
+        <div v-if="showModalAcakSoal"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+            <div class="bg-slate-900 border border-purple-500/30 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden text-slate-100 my-8">
+
+                <div class="bg-purple-950/60 p-5 flex items-center justify-between border-b border-purple-500/30">
+                    <h3 class="text-base font-bold text-purple-300 flex items-center gap-2">
+                        <i class="bi bi-shuffle"></i>
+                        <span>Pengaturan Acak Soal Ujian (Model 2)</span>
+                    </h3>
+                    <button @click="showModalAcakSoal = false" class="text-purple-200 hover:text-white">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
+                <form @submit.prevent="submitAcakSoal" class="p-6 space-y-5">
+
+                    <!-- 1. Pilihan Distribusi Soal (Tipe Acak) -->
+                    <div class="bg-slate-950/60 p-4 rounded-2xl border border-white/10 space-y-2">
+                        <label class="block text-xs font-bold text-purple-400 uppercase tracking-wider">
+                            Distribusi Soal Ke Peserta
+                        </label>
+                        <div class="space-y-2 pt-1">
+                            <label :class="[
+                                'flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all text-xs font-bold',
+                                acakForm.tipe_acak === 'per_peserta' ? 'bg-purple-500/20 border-purple-500 text-purple-200' : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white'
+                            ]">
+                                <input type="radio" v-model="acakForm.tipe_acak" value="per_peserta" class="hidden" />
+                                <i class="bi bi-people-fill text-lg text-purple-400"></i>
+                                <div>
+                                    <span class="block text-white">Setiap Peserta Mendapatkan Soal Berbeda</span>
+                                    <span class="text-[11px] font-normal text-slate-400">Sistem mengacak kombinasi soal unik secara dinamis untuk setiap peserta saat ujian dimulai.</span>
+                                </div>
+                            </label>
+
+                            <label :class="[
+                                'flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all text-xs font-bold',
+                                acakForm.tipe_acak === 'semua_sama' ? 'bg-purple-500/20 border-purple-500 text-purple-200' : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white'
+                            ]">
+                                <input type="radio" v-model="acakForm.tipe_acak" value="semua_sama" class="hidden" />
+                                <i class="bi bi-journal-check text-lg text-amber-400"></i>
+                                <div>
+                                    <span class="block text-white">Semua Peserta Mendapatkan Soal Yang Sama</span>
+                                    <span class="text-[11px] font-normal text-slate-400">Sistem memilih N soal acak sekali sekarang, lalu set soal tersebut diberikan secara seragam ke semua peserta.</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 2. Pilih Jumlah Soal -->
+                    <div class="bg-slate-950/60 p-4 rounded-2xl border border-white/10 space-y-2">
+                        <label class="block text-xs font-bold text-purple-400 uppercase tracking-wider">
+                            Pilih Jumlah Soal Ujian
+                        </label>
+                        <div class="flex flex-wrap gap-2 pt-1">
+                            <button type="button" v-for="preset in [20, 25, 30, 50]" :key="preset"
+                                @click="acakForm.jumlah_preset = preset; acakForm.is_custom = false"
+                                :class="[!acakForm.is_custom && acakForm.jumlah_preset === preset ? 'bg-purple-600 text-white font-bold border-purple-400 shadow-md' : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800', 'px-3.5 py-2 rounded-xl text-xs border transition-all']">
+                                {{ preset }} Soal
+                            </button>
+                            <button type="button" @click="acakForm.is_custom = true"
+                                :class="[acakForm.is_custom ? 'bg-purple-600 text-white font-bold border-purple-400 shadow-md' : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800', 'px-3.5 py-2 rounded-xl text-xs border transition-all']">
+                                Custom...
+                            </button>
+                        </div>
+                        <div v-if="acakForm.is_custom" class="pt-2">
+                            <label class="block text-[11px] text-slate-300 font-bold mb-1">Ketik Jumlah Soal Custom:</label>
+                            <input v-model.number="acakForm.jumlah_custom" type="number" min="1" placeholder="Contoh: 36, 55, dll." required
+                                class="w-full px-3.5 py-2 bg-slate-900 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        </div>
+                    </div>
+
+                    <!-- 3. Pilih Tingkat Kesulitan Ujian -->
+                    <div class="bg-slate-950/60 p-4 rounded-2xl border border-white/10 space-y-2">
+                        <label class="block text-xs font-bold text-purple-400 uppercase tracking-wider">
+                            Pilih Tingkat Kesulitan Ujian
+                        </label>
+                        <div class="grid grid-cols-3 gap-2 pt-1">
+                            <label :class="[
+                                'flex flex-col items-center justify-center p-3 rounded-xl border cursor-pointer transition-all text-center',
+                                acakForm.tingkat_kesulitan === 'mudah' ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold' : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white'
+                            ]">
+                                <input type="radio" v-model="acakForm.tingkat_kesulitan" value="mudah" class="hidden" />
+                                <span class="text-xs uppercase tracking-wider block">Mudah</span>
+                                <span class="text-[10px] text-slate-400 block mt-0.5">50% M, 30% N, 20% S</span>
+                            </label>
+
+                            <label :class="[
+                                'flex flex-col items-center justify-center p-3 rounded-xl border cursor-pointer transition-all text-center',
+                                acakForm.tingkat_kesulitan === 'normal' ? 'bg-blue-500/20 border-blue-500 text-blue-300 font-bold' : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white'
+                            ]">
+                                <input type="radio" v-model="acakForm.tingkat_kesulitan" value="normal" class="hidden" />
+                                <span class="text-xs uppercase tracking-wider block">Normal</span>
+                                <span class="text-[10px] text-slate-400 block mt-0.5">50% N, 30% S, 20% M</span>
+                            </label>
+
+                            <label :class="[
+                                'flex flex-col items-center justify-center p-3 rounded-xl border cursor-pointer transition-all text-center',
+                                acakForm.tingkat_kesulitan === 'sulit' ? 'bg-rose-500/20 border-rose-500 text-rose-300 font-bold' : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white'
+                            ]">
+                                <input type="radio" v-model="acakForm.tingkat_kesulitan" value="sulit" class="hidden" />
+                                <span class="text-xs uppercase tracking-wider block">Sulit</span>
+                                <span class="text-[10px] text-slate-400 block mt-0.5">50% S, 30% N, 20% M</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <p class="text-[11px] text-amber-300/80 bg-amber-950/40 p-3 rounded-xl border border-amber-500/20">
+                        * Catatan: Soal yang ditandai <strong>"Tidak Ada"</strong> pada tingkat kesulitan akan diabaikan dan tidak akan diikutsertakan dalam pengacakan (khusus untuk pemilihan manual Model 1).
+                    </p>
+
+                    <div class="pt-2 flex items-center justify-end gap-2">
+                        <button type="button" @click="showModalAcakSoal = false"
+                            class="px-5 py-2.5 bg-slate-800 text-slate-300 font-bold text-xs rounded-xl hover:bg-slate-700">
+                            Batal
+                        </button>
+                        <button type="submit" :disabled="isSubmittingAcak"
+                            class="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 disabled:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-2">
+                            <span v-if="isSubmittingAcak"
+                                class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-white border-t-transparent"></span>
+                            <span>{{ isSubmittingAcak ? 'Memproses Acak...' : 'Simpan & Terapkan Acak Soal' }}</span>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -751,6 +1146,7 @@
 import axios from 'axios';
 
 export default {
+    props: ['user'],
     data() {
         return {
             isDownloadingZip: false,
@@ -764,6 +1160,15 @@ export default {
             selectedDurasiMenit: 60,
             tanggalAbsensiPdf: new Date().toISOString().split('T')[0],
 
+            // State Ganti Password Admin
+            showModalPasswordAdmin: false,
+            isChangingPasswordAdmin: false,
+            formPasswordAdmin: {
+                current_password: '',
+                new_password: '',
+                new_password_confirmation: ''
+            },
+
 
             // Edit Peserta
             selectedPesertaEdit: null,
@@ -773,7 +1178,19 @@ export default {
             bankSoalList: [],
             selectedSoalIds: [],
             showModalAddSoal: false,
-            formSoal: { soal: '', opsi_a: '', opsi_b: '', opsi_c: '', opsi_d: '', kunci_jawaban: '' },
+            formSoal: { soal: '', opsi_a: '', opsi_b: '', opsi_c: '', opsi_d: '', kunci_jawaban: '', tingkat_kesulitan: 'tidak_ada' },
+
+            // Ujian Setting & Acak Soal
+            ujianSetting: { model_ujian: 'manual', tipe_acak: 'semua_sama', jumlah_soal: 25, tingkat_kesulitan: 'normal' },
+            showModalAcakSoal: false,
+            isSubmittingAcak: false,
+            acakForm: {
+                tipe_acak: 'semua_sama',
+                jumlah_preset: 25,
+                is_custom: false,
+                jumlah_custom: 25,
+                tingkat_kesulitan: 'normal'
+            },
 
             // Pagination Bank Soal
             bankSoalCurrentPage: 1,
@@ -781,7 +1198,19 @@ export default {
 
             // Review Jawaban Ujian Peserta
             selectedPesertaReview: null,
-            reviewData: { nilai: 0, total_benar: 0, total_salah: 0, detail: [] }
+            reviewData: { nilai: 0, total_benar: 0, total_salah: 0, detail: [] },
+
+            // Sertifikat Settings
+            showModalSertifikat: false,
+            isSubmittingSertifikat: false,
+            sertifikatForm: {
+                nama_direktur: '',
+                nama_pembicara: '',
+                tipe_ttd: 'digital',
+                use_bg_watermark: true,
+                file_ttd_direktur: null,
+                file_ttd_pembicara: null
+            }
 
         };
     },
@@ -797,6 +1226,7 @@ export default {
     mounted() {
         this.fetchPeserta(1);
         this.fetchBankSoal();
+        this.fetchSertifikatSetting();
     },
     methods: {
         getPdfUrl(berkas) {
@@ -850,17 +1280,27 @@ export default {
             }
         },
 
+        uppercaseFirst(str) {
+            if (!str) return '';
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        },
         fetchBankSoal() {
             axios.get('/api/admin/bank-soal').then(res => {
-                this.bankSoalList = res.data;
-                this.selectedSoalIds = res.data.filter(s => s.is_selected).map(s => s.id);
+                if (res.data.soal) {
+                    this.bankSoalList = res.data.soal;
+                    this.ujianSetting = res.data.setting || this.ujianSetting;
+                    this.selectedSoalIds = res.data.soal.filter(s => s.is_selected).map(s => s.id);
+                } else {
+                    this.bankSoalList = res.data;
+                    this.selectedSoalIds = res.data.filter(s => s.is_selected).map(s => s.id);
+                }
             });
         },
         submitSoalBaru() {
             axios.post('/api/admin/bank-soal', this.formSoal).then(res => {
                 alert(res.data.message);
                 this.showModalAddSoal = false;
-                this.formSoal = { soal: '', opsi_a: '', opsi_b: '', opsi_c: '', opsi_d: '', kunci_jawaban: '' };
+                this.formSoal = { soal: '', opsi_a: '', opsi_b: '', opsi_c: '', opsi_d: '', kunci_jawaban: '', tingkat_kesulitan: 'tidak_ada' };
                 this.fetchBankSoal();
             });
         },
@@ -868,6 +1308,40 @@ export default {
             axios.post('/api/admin/bank-soal/pilih', { selected_ids: this.selectedSoalIds }).then(res => {
                 alert(res.data.message);
                 this.fetchBankSoal();
+            });
+        },
+        openModalAcakSoal() {
+            this.acakForm.tipe_acak = this.ujianSetting.tipe_acak || 'semua_sama';
+            this.acakForm.tingkat_kesulitan = this.ujianSetting.tingkat_kesulitan || 'normal';
+            const jml = this.ujianSetting.jumlah_soal || 25;
+            if ([20, 25, 30, 50].includes(jml)) {
+                this.acakForm.jumlah_preset = jml;
+                this.acakForm.is_custom = false;
+            } else {
+                this.acakForm.is_custom = true;
+                this.acakForm.jumlah_custom = jml;
+            }
+            this.showModalAcakSoal = true;
+        },
+        submitAcakSoal() {
+            const jumlahSoal = this.acakForm.is_custom ? this.acakForm.jumlah_custom : this.acakForm.jumlah_preset;
+            if (!jumlahSoal || jumlahSoal < 1) {
+                alert('Jumlah soal harus lebih dari 0!');
+                return;
+            }
+            this.isSubmittingAcak = true;
+            axios.post('/api/admin/bank-soal/acak', {
+                tipe_acak: this.acakForm.tipe_acak,
+                jumlah_soal: jumlahSoal,
+                tingkat_kesulitan: this.acakForm.tingkat_kesulitan
+            }).then(res => {
+                this.isSubmittingAcak = false;
+                alert(res.data.message || 'Acak Soal berhasil diterapkan!');
+                this.showModalAcakSoal = false;
+                this.fetchBankSoal();
+            }).catch(err => {
+                this.isSubmittingAcak = false;
+                alert(err.response?.data?.message || 'Gagal menerapkan Acak Soal.');
             });
         },
         deleteSoal(id) {
@@ -1064,6 +1538,74 @@ openModalReview(peserta) {
             }).catch(err => {
                 alert('Gagal mengunduh berkas ZIP: ' + (err.response?.data?.message || err.message));
                 this.isDownloadingZip = false;
+            });
+        },
+        openModalChangePasswordAdmin() {
+            this.formPasswordAdmin = { current_password: '', new_password: '', new_password_confirmation: '' };
+            this.showModalPasswordAdmin = true;
+        },
+        submitChangePasswordAdmin() {
+            if (this.formPasswordAdmin.new_password !== this.formPasswordAdmin.new_password_confirmation) {
+                alert('Konfirmasi password baru tidak cocok!');
+                return;
+            }
+            this.isChangingPasswordAdmin = true;
+            const adminId = this.user ? this.user.id : 1;
+            axios.post(`/api/change-password/${adminId}`, this.formPasswordAdmin).then(res => {
+                this.isChangingPasswordAdmin = false;
+                alert(res.data.message || 'Password Admin berhasil diperbarui!');
+                this.showModalPasswordAdmin = false;
+            }).catch(err => {
+                this.isChangingPasswordAdmin = false;
+                alert(err.response?.data?.message || 'Gagal memperbarui password Admin.');
+            });
+        },
+
+        // SERTIFIKAT SETTING METHODS
+        fetchSertifikatSetting() {
+            axios.get('/api/admin/sertifikat-setting').then(res => {
+                if (res.data) {
+                    this.sertifikatForm.nama_direktur = res.data.nama_direktur || '';
+                    this.sertifikatForm.nama_pembicara = res.data.nama_pembicara || '';
+                    this.sertifikatForm.tipe_ttd = res.data.tipe_ttd || 'digital';
+                    this.sertifikatForm.use_bg_watermark = res.data.use_bg_watermark !== undefined ? Boolean(res.data.use_bg_watermark) : true;
+                }
+            });
+        },
+        openModalSertifikat() {
+            this.fetchSertifikatSetting();
+            this.showModalSertifikat = true;
+        },
+        onFileTtdDirekturChange(event) {
+            this.sertifikatForm.file_ttd_direktur = event.target.files[0] || null;
+        },
+        onFileTtdPembicaraChange(event) {
+            this.sertifikatForm.file_ttd_pembicara = event.target.files[0] || null;
+        },
+        submitSertifikatSetting() {
+            this.isSubmittingSertifikat = true;
+            const formData = new FormData();
+            formData.append('nama_direktur', this.sertifikatForm.nama_direktur || '');
+            formData.append('nama_pembicara', this.sertifikatForm.nama_pembicara || '');
+            formData.append('tipe_ttd', this.sertifikatForm.tipe_ttd || 'digital');
+            formData.append('use_bg_watermark', this.sertifikatForm.use_bg_watermark ? 1 : 0);
+            if (this.sertifikatForm.file_ttd_direktur) {
+                formData.append('ttd_direktur', this.sertifikatForm.file_ttd_direktur);
+            }
+            if (this.sertifikatForm.file_ttd_pembicara) {
+                formData.append('ttd_pembicara', this.sertifikatForm.file_ttd_pembicara);
+            }
+
+            axios.post('/api/admin/sertifikat-setting', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            }).then(res => {
+                this.isSubmittingSertifikat = false;
+                alert(res.data.message || 'Pengaturan sertifikat berhasil disimpan!');
+                this.showModalSertifikat = false;
+                this.fetchSertifikatSetting();
+            }).catch(err => {
+                this.isSubmittingSertifikat = false;
+                alert(err.response?.data?.message || 'Gagal menyimpan pengaturan sertifikat.');
             });
         }
         

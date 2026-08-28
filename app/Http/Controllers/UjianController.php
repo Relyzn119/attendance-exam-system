@@ -50,10 +50,20 @@ class UjianController extends Controller
             return response()->json(['message' => 'Kode Token ini sudah pernah digunakan untuk ujian!'], 400);
         }
 
-        // Ambil Soal yang dipilih Admin (is_selected = true)
-        $soalList = BankSoal::where('is_selected', true)->get();
+        // Ambil Pengaturan Model Ujian
+        $ujianSetting = \App\Models\UjianSetting::first();
+
+        if ($ujianSetting && $ujianSetting->model_ujian === 'acak' && $ujianSetting->tipe_acak === 'per_peserta') {
+            // Mode Acak Per Peserta: Hasilkan kombinasi soal acak khusus untuk peserta ini
+            $pickedIds = BankSoalController::pickRandomQuestions($ujianSetting->jumlah_soal, $ujianSetting->tingkat_kesulitan);
+            $soalList = BankSoal::whereIn('id', $pickedIds)->inRandomOrder()->get();
+        } else {
+            // Mode Manual atau Mode Acak Semua Peserta Sama (Menggunakan is_selected = true)
+            $soalList = BankSoal::where('is_selected', true)->get();
+        }
+
         if ($soalList->count() === 0) {
-            return response()->json(['message' => 'Admin belum memilih Soal Ujian! Mohon hubungi Admin.'], 400);
+            return response()->json(['message' => 'Admin belum menentukan atau memilih Soal Ujian! Mohon hubungi Admin.'], 400);
         }
 
         // Tandai Token Sudah Digunakan untuk Ujian
@@ -155,7 +165,9 @@ class UjianController extends Controller
             ], 403);
         }
 
-        $pdf = Pdf::loadView('pdf.sertifikat', compact('riwayat'))->setPaper('a4', 'landscape');
+        $setting = \App\Models\SertifikatSetting::first();
+
+        $pdf = Pdf::loadView('pdf.sertifikat', compact('riwayat', 'setting'))->setPaper('a4', 'landscape');
 
         return $pdf->download("Sertifikat_Diklat_{$riwayat->user->nik}.pdf");
     }

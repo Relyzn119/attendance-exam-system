@@ -5,18 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BankSoal extends Model
+class UjianSetting extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'soal',
-        'opsi_a',
-        'opsi_b',
-        'opsi_c',
-        'opsi_d',
-        'kunci_jawaban',
+        'model_ujian',
+        'tipe_acak',
+        'jumlah_soal',
         'tingkat_kesulitan',
-        'is_selected',
     ];
 }

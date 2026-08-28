@@ -14,16 +14,20 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/user-profile/{id}', [AuthController::class, 'getProfile']);
 Route::get('/berkas/{id}/preview', [AuthController::class, 'previewBerkas']);
 Route::post('/peserta/update-profile/{id}', [AuthController::class, 'updateProfile']);
+Route::post('/change-password/{id}', [AuthController::class, 'changePassword']);
 
 Route::get('/admin/peserta', [AdminController::class, 'getPesertaList']);
 Route::post('/admin/generate-token/{userId}', [AdminController::class, 'generateToken']);
 Route::get('/admin/berkas/{id}/preview', [AdminController::class, 'previewBerkas']);
 Route::get('/admin/peserta/{id}/download-zip', [AdminController::class, 'downloadZipPeserta']);
 Route::post('/admin/peserta/{id}/reset-ujian', [AdminController::class, 'resetUjianPeserta']);
+Route::get('/admin/sertifikat-setting', [AdminController::class, 'getSertifikatSetting']);
+Route::post('/admin/sertifikat-setting', [AdminController::class, 'updateSertifikatSetting']);
 
 Route::get('/admin/bank-soal', [BankSoalController::class, 'index']);
 Route::post('/admin/bank-soal', [BankSoalController::class, 'store']);
 Route::post('/admin/bank-soal/pilih', [BankSoalController::class, 'updateSelection']);
+Route::post('/admin/bank-soal/acak', [BankSoalController::class, 'processAcakSoal']);
 Route::delete('/admin/bank-soal/{id}', [BankSoalController::class, 'destroy']);
 
 Route::post('/ujian/mulai', [UjianController::class, 'startExam']);

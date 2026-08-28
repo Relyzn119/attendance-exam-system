@@ -129,4 +129,31 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    // GANTI PASSWORD USER (ADMIN & PESERTA)
+    public function changePassword(Request $request, $id)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password'     => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Password lama yang Anda masukkan tidak sesuai!'
+            ], 400);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Password Anda berhasil diperbarui!'
+        ]);
+    }
 }

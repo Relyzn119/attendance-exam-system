@@ -146,15 +146,25 @@
       <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center mb-4">
 
         <!-- Search Input -->
-        <div class="md:col-span-4 relative">
+        <div class="md:col-span-3 relative">
           <i class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
           <input v-model="searchQuery" @input="onFilterChange" type="text"
-            placeholder="Cari judul diklat, deskripsi..."
+            placeholder="Cari judul, deskripsi..."
             class="w-full pl-11 pr-4 py-3 bg-slate-950/70 border border-white/15 rounded-2xl text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-inner" />
           <button v-if="searchQuery" @click="searchQuery = ''; onFilterChange()"
             class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1">
             <i class="bi bi-x-circle-fill"></i>
           </button>
+        </div>
+
+        <!-- Filter Tahun Dropdown -->
+        <div class="md:col-span-2 relative">
+          <i class="bi bi-calendar-range absolute left-4 top-1/2 -translate-y-1/2 text-amber-400 text-base"></i>
+          <select v-model="selectedTahun" @change="onFilterChange"
+            class="w-full pl-11 pr-4 py-3 bg-slate-950/70 border border-white/15 rounded-2xl text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-inner [color-scheme:dark]">
+            <option value="">Semua Tahun</option>
+            <option v-for="year in yearOptions" :key="year" :value="year">{{ year }}</option>
+          </select>
         </div>
 
         <!-- Filter Bulan Dropdown -->
@@ -179,7 +189,7 @@
         </div>
 
         <!-- Filter Minggu Dropdown -->
-        <div class="md:col-span-3 relative">
+        <div class="md:col-span-2 relative">
           <i class="bi bi-calendar-week absolute left-4 top-1/2 -translate-y-1/2 text-purple-400 text-base"></i>
           <select v-model="selectedMinggu" @change="onFilterChange"
             class="w-full pl-11 pr-4 py-3 bg-slate-950/70 border border-white/15 rounded-2xl text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-inner [color-scheme:dark]">
@@ -205,7 +215,7 @@
         <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">Quick Filter:</span>
         <button @click="resetAllFilters" :class="[
           'px-3 py-1 rounded-full text-xs font-semibold transition-all',
-          (!selectedDate && !selectedBulan && !selectedMinggu && !searchQuery) ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+          (!selectedDate && !selectedTahun && !selectedBulan && !selectedMinggu && !searchQuery) ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
         ]">Semua Data</button>
         <button @click="setQuickDate(todayDate, 'Hari Ini')" :class="[
           'px-3 py-1 rounded-full text-xs font-semibold transition-all',
@@ -216,7 +226,7 @@
           selectedBulan == currentMonthVal ? 'bg-purple-600 text-white shadow-lg' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
         ]">Bulan Ini</button>
         
-        <button v-if="selectedDate || selectedBulan || selectedMinggu || searchQuery" @click="resetAllFilters"
+        <button v-if="selectedDate || selectedTahun || selectedBulan || selectedMinggu || searchQuery" @click="resetAllFilters"
           class="ml-auto text-xs text-rose-300 font-semibold bg-rose-950/60 hover:bg-rose-900/80 px-3 py-1 rounded-full border border-rose-500/30 transition-all flex items-center gap-1">
           <i class="bi bi-x-lg"></i> Reset Filter
         </button>
@@ -819,16 +829,27 @@ const isDownloadingZip = ref(false);
 // Filter & Search State
 const searchQuery = ref('');
 const selectedDate = ref('');
+const selectedTahun = ref('');
 const selectedBulan = ref('');
 const selectedMinggu = ref('');
 const quickDateLabel = ref('');
 let debounceTimer = null;
 
 const currentMonthVal = computed(() => (new Date().getMonth() + 1).toString());
+const currentYear = new Date().getFullYear();
+const yearOptions = computed(() => {
+  const years = [];
+  const startYear = 2020;
+  for (let y = currentYear + 1; y >= startYear; y--) {
+    years.push(y);
+  }
+  return years;
+});
 
 const resetAllFilters = () => {
   searchQuery.value = '';
   selectedDate.value = '';
+  selectedTahun.value = '';
   selectedBulan.value = '';
   selectedMinggu.value = '';
   quickDateLabel.value = '';
@@ -932,6 +953,7 @@ const fetchData = async () => {
     const params = {};
     if (searchQuery.value) params.search = searchQuery.value;
     if (selectedDate.value) params.tanggal_upload = selectedDate.value;
+    if (selectedTahun.value) params.tahun = selectedTahun.value;
     if (selectedBulan.value) params.bulan = selectedBulan.value;
     if (selectedMinggu.value) params.minggu = selectedMinggu.value;
 

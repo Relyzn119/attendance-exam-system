@@ -59,6 +59,11 @@ class PegawaiController extends Controller
                 }
             }
 
+            // Filter 5: Tahun (misal 2020, 2021, dst.)
+            if ($request->has('tahun') && !empty($request->tahun)) {
+                $query->whereYear('tanggal_upload', $request->tahun);
+            }
+
             // Ambil data diurutkan dari yang terbaru
             $diklatList = $query->orderBy('created_at', 'desc')->get();
 

@@ -288,5 +288,65 @@ class AdminController extends Controller
             'message' => 'Sesi ujian untuk peserta ' . $user->nama . ' berhasil dibuka kembali! Token dapat digunakan ulang.'
         ]);
     }
-    
+
+    // 8. Ambil Pengaturan Sertifikat (Nama Direktur, Pembicara, TTD)
+    public function getSertifikatSetting()
+    {
+        $setting = \App\Models\SertifikatSetting::first();
+
+        if (!$setting) {
+            return response()->json([
+                'nama_direktur'    => 'dr. Iskandar Candra, M.Kes, FISQua, KMK, CHQP',
+                'nama_pembicara'   => 'JUPENTIUS SITUMORANG',
+                'tipe_ttd'          => 'digital',
+                'use_bg_watermark' => true,
+                'ttd_direktur'     => null,
+                'ttd_pembicara'    => null,
+            ]);
+        }
+
+        return response()->json($setting);
+    }
+
+    // 9. Simpan / Perbarui Pengaturan Sertifikat
+    public function updateSertifikatSetting(Request $request)
+    {
+        $request->validate([
+            'nama_direktur'    => 'nullable|string|max:255',
+            'nama_pembicara'   => 'nullable|string|max:255',
+            'tipe_ttd'          => 'required|in:digital,basah',
+            'use_bg_watermark' => 'nullable',
+            'ttd_direktur'     => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'ttd_pembicara'    => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
+        ]);
+
+        $setting = \App\Models\SertifikatSetting::first() ?? new \App\Models\SertifikatSetting();
+
+        $setting->nama_direktur = $request->nama_direktur ?: 'dr. Iskandar Candra, M.Kes, FISQua, KMK, CHQP';
+        $setting->nama_pembicara = $request->nama_pembicara ?: 'JUPENTIUS SITUMORANG';
+        $setting->tipe_ttd = $request->tipe_ttd;
+        $setting->use_bg_watermark = filter_var($request->input('use_bg_watermark', true), FILTER_VALIDATE_BOOLEAN);
+
+        if ($request->hasFile('ttd_direktur')) {
+            $file = $request->file('ttd_direktur');
+            $fileName = 'ttd_direktur_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/ttd'), $fileName);
+            $setting->ttd_direktur = 'uploads/ttd/' . $fileName;
+        }
+
+        if ($request->hasFile('ttd_pembicara')) {
+            $file = $request->file('ttd_pembicara');
+            $fileName = 'ttd_pembicara_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/ttd'), $fileName);
+            $setting->ttd_pembicara = 'uploads/ttd/' . $fileName;
+        }
+
+        $setting->save();
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Pengaturan data sertifikat berhasil diperbarui!',
+            'setting' => $setting
+        ]);
+    }
 }

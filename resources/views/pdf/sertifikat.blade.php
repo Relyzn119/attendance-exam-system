@@ -189,6 +189,10 @@
 <body>
 
     <!-- 1. WATERMARK BACKGROUND (public/images/bg-Sertifikat.png) -->
+    @php
+        $useBgWatermark = isset($setting->use_bg_watermark) ? (bool)$setting->use_bg_watermark : true;
+    @endphp
+    @if($useBgWatermark)
     <div class="watermark-container">
         @php
             $bgCertPath = public_path('images/bg-Sertifikat.png');
@@ -203,6 +207,7 @@
             <img class="watermark-img" src="{{ $bgCertBase64 }}" alt="Background Sertifikat RSU Bunda Thamrin">
         @endif
     </div>
+    @endif
 
     <!-- 2. HEADER DEKORATIF DENGAN LOGO EMBLEM (public/images/logo-rsubt.png) -->
     <div class="header-bar-container">
@@ -244,15 +249,39 @@
 
         <!-- 4. AREA TANDA TANGAN (GAMBAR 2) -->
         @php
-            $ttdDirekturSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 70" width="160" height="56">
-              <path d="M 20,48 C 22,25 28,15 32,28 C 36,42 35,55 40,46 C 45,35 48,25 54,40 C 58,48 62,32 68,36 C 74,40 78,48 84,42 C 90,36 94,44 100,38 M 25,40 L 90,36 M 68,40 C 85,35 110,30 135,28 C 145,27 155,30 160,32" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>';
-            $ttdDirekturBase64 = 'data:image/svg+xml;base64,' . base64_encode($ttdDirekturSvg);
+            $namaDirektur = (!empty($setting) && !empty($setting->nama_direktur)) ? $setting->nama_direktur : 'dr. Iskandar Candra, M.Kes, FISQua, KMK, CHQP';
+            $namaPembicara = (!empty($setting) && !empty($setting->nama_pembicara)) ? $setting->nama_pembicara : 'JUPENTIUS SITUMORANG';
+            $tipeTtd = (!empty($setting) && !empty($setting->tipe_ttd)) ? $setting->tipe_ttd : 'digital';
 
-            $ttdPembicaraSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 70" width="160" height="56">
-              <path d="M 18,38 C 22,18 32,12 30,32 C 28,45 38,22 44,35 C 48,42 50,25 56,32 C 62,38 68,26 76,34 C 82,38 88,28 96,36 C 104,42 112,32 122,38 C 130,44 140,34 150,36 M 65,52 C 75,54 90,55 98,52" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>';
-            $ttdPembicaraBase64 = 'data:image/svg+xml;base64,' . base64_encode($ttdPembicaraSvg);
+            // Direktur TTD
+            $ttdDirekturBase64 = '';
+            if ($tipeTtd === 'digital') {
+                if (!empty($setting) && !empty($setting->ttd_direktur) && file_exists(public_path($setting->ttd_direktur))) {
+                    $ext = pathinfo($setting->ttd_direktur, PATHINFO_EXTENSION);
+                    $mime = ($ext === 'svg') ? 'image/svg+xml' : 'image/' . $ext;
+                    $ttdDirekturBase64 = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents(public_path($setting->ttd_direktur)));
+                } else {
+                    $ttdDirekturSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 70" width="160" height="56">
+                      <path d="M 20,48 C 22,25 28,15 32,28 C 36,42 35,55 40,46 C 45,35 48,25 54,40 C 58,48 62,32 68,36 C 74,40 78,48 84,42 C 90,36 94,44 100,38 M 25,40 L 90,36 M 68,40 C 85,35 110,30 135,28 C 145,27 155,30 160,32" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>';
+                    $ttdDirekturBase64 = 'data:image/svg+xml;base64,' . base64_encode($ttdDirekturSvg);
+                }
+            }
+
+            // Pembicara TTD
+            $ttdPembicaraBase64 = '';
+            if ($tipeTtd === 'digital') {
+                if (!empty($setting) && !empty($setting->ttd_pembicara) && file_exists(public_path($setting->ttd_pembicara))) {
+                    $ext = pathinfo($setting->ttd_pembicara, PATHINFO_EXTENSION);
+                    $mime = ($ext === 'svg') ? 'image/svg+xml' : 'image/' . $ext;
+                    $ttdPembicaraBase64 = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents(public_path($setting->ttd_pembicara)));
+                } else {
+                    $ttdPembicaraSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 70" width="160" height="56">
+                      <path d="M 18,38 C 22,18 32,12 30,32 C 28,45 38,22 44,35 C 48,42 50,25 56,32 C 62,38 68,26 76,34 C 82,38 88,28 96,36 C 104,42 112,32 122,38 C 130,44 140,34 150,36 M 65,52 C 75,54 90,55 98,52" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>';
+                    $ttdPembicaraBase64 = 'data:image/svg+xml;base64,' . base64_encode($ttdPembicaraSvg);
+                }
+            }
         @endphp
 
         <table class="signature-table">
@@ -260,16 +289,20 @@
                 <td>
                     <div class="sig-title">Direktur RSU Bunda Thamrin</div>
                     <div class="sig-image-box">
-                        <img src="{{ $ttdDirekturBase64 }}" alt="Tanda Tangan Direktur">
+                        @if($tipeTtd === 'digital' && !empty($ttdDirekturBase64))
+                            <img src="{{ $ttdDirekturBase64 }}" alt="Tanda Tangan Direktur">
+                        @endif
                     </div>
-                    <div class="sig-name">dr. Iskandar Candra, M.Kes, FISQua, KMK, CHQP</div>
+                    <div class="sig-name">{{ $namaDirektur }}</div>
                 </td>
                 <td>
                     <div class="sig-title">Pembicara</div>
                     <div class="sig-image-box">
-                        <img src="{{ $ttdPembicaraBase64 }}" alt="Tanda Tangan Pembicara">
+                        @if($tipeTtd === 'digital' && !empty($ttdPembicaraBase64))
+                            <img src="{{ $ttdPembicaraBase64 }}" alt="Tanda Tangan Pembicara">
+                        @endif
                     </div>
-                    <div class="sig-name sig-name-bold">JUPENTIUS SITUMORANG</div>
+                    <div class="sig-name sig-name-bold">{{ $namaPembicara }}</div>
                 </td>
             </tr>
         </table>

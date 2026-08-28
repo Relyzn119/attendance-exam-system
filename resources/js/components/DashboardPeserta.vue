@@ -64,6 +64,14 @@
           <i class="bi bi-pencil-square"></i>
           <span>Edit Data Diri</span>
         </button>
+
+        <button
+          @click="openModalChangePassword"
+          class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-xs px-5 py-3 rounded-full border border-white/10 shadow-lg transition-all active:scale-95 shrink-0"
+        >
+          <i class="bi bi-key-fill text-amber-400"></i>
+          <span>Ganti Password</span>
+        </button>
       </div>
     </div>
 
@@ -141,14 +149,14 @@
           <form @submit.prevent="masukUjian" class="space-y-4">
             <div>
               <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Kode Token Kunci
-                Ujian</label>
+                Absensi / Ujian</label>
               <input v-model="tokenInput" type="text" placeholder="Contoh: A7X9K2" :disabled="hasCompletedExam" required
                 class="w-full px-4 py-3 bg-slate-950/70 border border-white/15 rounded-xl text-center text-lg sm:text-xl font-mono font-black tracking-widest text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase transition-all disabled:opacity-50 disabled:cursor-not-allowed" />
             </div>
 
             <button type="submit" :disabled="hasCompletedExam"
               class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 disabled:text-slate-500 text-white font-extrabold text-xs uppercase tracking-wider rounded-full shadow-lg transition-all active:scale-95">
-              {{ hasCompletedExam ? 'Ujian Telah Selesai' : 'Masuk Lembar Ujian' }}
+              {{ hasCompletedExam ? 'Ujian Telah Selesai' : 'Input Token' }}
             </button>
           </form>
         </div>
@@ -408,6 +416,50 @@
 
       </div>
     </div>
+
+    <!-- MODAL GANTI PASSWORD -->
+    <div v-if="showModalPassword" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+      <div class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden text-slate-100 my-8">
+        
+        <div class="bg-slate-950/80 p-5 flex items-center justify-between border-b border-white/10">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="bi bi-key-fill text-amber-400"></i>
+            <span>Ganti Password Peserta</span>
+          </h3>
+          <button @click="showModalPassword = false" class="text-slate-400 hover:text-white">
+            <i class="bi bi-x-lg text-lg"></i>
+          </button>
+        </div>
+
+        <form @submit.prevent="submitChangePassword" class="p-6 space-y-4">
+          <div>
+            <label class="block font-bold text-xs text-slate-300 mb-1 uppercase tracking-wider">Password Lama</label>
+            <input v-model="formPassword.current_password" type="password" required placeholder="Masukkan password lama Anda" class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+          </div>
+
+          <div>
+            <label class="block font-bold text-xs text-slate-300 mb-1 uppercase tracking-wider">Password Baru</label>
+            <input v-model="formPassword.new_password" type="password" required minlength="6" placeholder="Minimal 6 karakter" class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+          </div>
+
+          <div>
+            <label class="block font-bold text-xs text-slate-300 mb-1 uppercase tracking-wider">Konfirmasi Password Baru</label>
+            <input v-model="formPassword.new_password_confirmation" type="password" required minlength="6" placeholder="Ulangi password baru" class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+          </div>
+
+          <div class="pt-3 flex items-center justify-end gap-2">
+            <button type="button" @click="showModalPassword = false" class="px-5 py-2.5 bg-slate-800 text-slate-300 font-bold text-xs rounded-full hover:bg-slate-700 transition-all">
+              Batal
+            </button>
+            <button type="submit" :disabled="isChangingPassword" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 disabled:bg-slate-800 text-slate-950 font-extrabold text-xs uppercase tracking-wider rounded-full shadow-lg transition-all active:scale-95 flex items-center gap-2">
+              <span v-if="isChangingPassword" class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-slate-950 border-t-transparent"></span>
+              <span>{{ isChangingPassword ? 'Memproses...' : 'Simpan Password Baru' }}</span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
 </template>
 
 <script>
@@ -435,6 +487,15 @@ export default {
         no_hp: '',
         alamat: '',
         npwp: ''
+      },
+
+      // STATE GANTI PASSWORD
+      showModalPassword: false,
+      isChangingPassword: false,
+      formPassword: {
+        current_password: '',
+        new_password: '',
+        new_password_confirmation: ''
       }
     };
   },
@@ -491,6 +552,30 @@ export default {
       }).catch(err => {
         this.isUpdatingProfile = false;
         alert('Gagal memperbarui profil: ' + (err.response?.data?.message || err.message));
+      });
+    },
+
+    openModalChangePassword() {
+      this.formPassword = {
+        current_password: '',
+        new_password: '',
+        new_password_confirmation: ''
+      };
+      this.showModalPassword = true;
+    },
+    submitChangePassword() {
+      if (this.formPassword.new_password !== this.formPassword.new_password_confirmation) {
+        alert('Konfirmasi password baru tidak cocok!');
+        return;
+      }
+      this.isChangingPassword = true;
+      axios.post(`/api/change-password/${this.userData.id}`, this.formPassword).then(res => {
+        this.isChangingPassword = false;
+        alert(res.data.message || 'Password berhasil diperbarui!');
+        this.showModalPassword = false;
+      }).catch(err => {
+        this.isChangingPassword = false;
+        alert(err.response?.data?.message || 'Gagal memperbarui password.');
       });
     },
 
