@@ -254,12 +254,12 @@
                     <button @click="saveSelectedSoal"
                         class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-full shadow-lg transition-all active:scale-95">
                         <i class="bi bi-check-circle-fill"></i>
-                        <span>Simpan Set Soal Manual (Model 1)</span>
+                        <span>Simpan Set Soal Manual</span>
                     </button>
                     <button @click="openModalAcakSoal"
                         class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs px-4 py-2.5 rounded-full shadow-lg transition-all active:scale-95">
                         <i class="bi bi-shuffle text-base"></i>
-                        <span>Acak Soal (Model 2)</span>
+                        <span>Acak Soal</span>
                     </button>
                 </div>
             </div>
@@ -274,10 +274,10 @@
                         <span>
                             <strong>Model Ujian Aktif:</strong> 
                             <span v-if="ujianSetting.model_ujian === 'acak'" class="text-purple-300 font-bold">
-                                Model 2 (Acak Soal - {{ ujianSetting.tipe_acak === 'per_peserta' ? 'Soal Berbeda Per Peserta' : 'Soal Sama Untuk Semua' }}, Kesulitan: {{ uppercaseFirst(ujianSetting.tingkat_kesulitan) }}, Target: {{ ujianSetting.jumlah_soal }} Soal)
+                                 (Acak Soal - {{ ujianSetting.tipe_acak === 'per_peserta' ? 'Soal Berbeda Per Peserta' : 'Soal Sama Untuk Semua' }}, Kesulitan: {{ uppercaseFirst(ujianSetting.tingkat_kesulitan) }}, Target: {{ ujianSetting.jumlah_soal }} Soal)
                             </span>
                             <span v-else class="text-amber-300 font-bold">
-                                Model 1 (Pemilihan Manual - {{ selectedSoalIds.length }} Soal Terpilih)
+                                (Pemilihan Manual - {{ selectedSoalIds.length }} Soal Terpilih)
                             </span>
                         </span>
                     </div>
@@ -1019,7 +1019,7 @@
                 <div class="bg-purple-950/60 p-5 flex items-center justify-between border-b border-purple-500/30">
                     <h3 class="text-base font-bold text-purple-300 flex items-center gap-2">
                         <i class="bi bi-shuffle"></i>
-                        <span>Pengaturan Acak Soal Ujian (Model 2)</span>
+                        <span>Pengaturan Acak Soal Ujian</span>
                     </h3>
                     <button @click="showModalAcakSoal = false" class="text-purple-200 hover:text-white">
                         <i class="bi bi-x-lg"></i>
@@ -1119,7 +1119,7 @@
                     </div>
 
                     <p class="text-[11px] text-amber-300/80 bg-amber-950/40 p-3 rounded-xl border border-amber-500/20">
-                        * Catatan: Soal yang ditandai <strong>"Tidak Ada"</strong> pada tingkat kesulitan akan diabaikan dan tidak akan diikutsertakan dalam pengacakan (khusus untuk pemilihan manual Model 1).
+                        * Catatan: Soal yang ditandai <strong>"Tidak Ada"</strong> pada tingkat kesulitan akan diabaikan dan tidak akan diikutsertakan dalam pengacakan (khusus untuk pemilihan manual).
                     </p>
 
                     <div class="pt-2 flex items-center justify-end gap-2">
