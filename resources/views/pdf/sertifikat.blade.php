@@ -236,7 +236,7 @@
         <div class="partisipasi-label">Atas Partisipasinya Sebagai :</div>
         <div class="partisipasi-role">PESERTA</div>
 
-        <div class="pelatihan-nama">PELATIHAN BANTUAN HIDUP DASAR</div>
+        <div class="pelatihan-nama">{{ $judulPelatihan ?? 'PELATIHAN BANTUAN HIDUP DASAR' }}</div>
 
         <!-- STRIPE BOTTOM DEKORATIF -->
         <div class="footer-stripe-container">
@@ -302,7 +302,7 @@
                             <img src="{{ $ttdPembicaraBase64 }}" alt="Tanda Tangan Pembicara">
                         @endif
                     </div>
-                    <div class="sig-name sig-name-bold">{{ $namaPembicara }}</div>
+                    <div class="sig-name">{{ $namaPembicara }}</div>
                 </td>
             </tr>
         </table>

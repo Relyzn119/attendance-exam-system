@@ -174,9 +174,24 @@ class UjianController extends Controller
             ], 403);
         }
 
+        $tanggalUjian = $riwayat->waktu_selesai 
+            ? \Carbon\Carbon::parse($riwayat->waktu_selesai)->format('Y-m-d') 
+            : ($riwayat->updated_at ? \Carbon\Carbon::parse($riwayat->updated_at)->format('Y-m-d') : \Carbon\Carbon::parse($riwayat->waktu_mulai)->format('Y-m-d'));
+
+        // Cari Data Dokumentasi Diklat (Pegawai) yang di-upload pada tanggal ujian tersebut
+        $diklat = \App\Models\Pegawai::whereDate('tanggal_upload', $tanggalUjian)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($diklat && !empty($diklat->nama_lengkap)) {
+            $judulPelatihan = strtoupper(trim($diklat->nama_lengkap));
+        } else {
+            $judulPelatihan = 'PELATIHAN BANTUAN HIDUP DASAR';
+        }
+
         $setting = \App\Models\SertifikatSetting::first();
 
-        $pdf = Pdf::loadView('pdf.sertifikat', compact('riwayat', 'setting'))->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadView('pdf.sertifikat', compact('riwayat', 'setting', 'judulPelatihan'))->setPaper('a4', 'landscape');
 
         return $pdf->download("Sertifikat_Diklat_{$riwayat->user->nik}.pdf");
     }
