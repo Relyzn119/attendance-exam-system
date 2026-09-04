@@ -25,19 +25,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2. Buat 25 Contoh Soal Ujian Diklat (Hanya diisi jika Bank Soal masih kosong)
-        if (BankSoal::count() === 0) {
-            for ($i = 1; $i <= 25; $i++) {
-                BankSoal::create([
-                    'soal'          => "Pertanyaan Soal Diklat No. {$i}: Apakah prosedur K3 di RSU Bunda Thamrin wajib dilaksanakan oleh seluruh staf?",
-                    'opsi_a'        => "Wajib dilaksanakan dengan penuh tanggung jawab",
-                    'opsi_b'        => "Hanya opsional jika ada waktu luang",
-                    'opsi_c'        => "Tidak wajib dilaksanakan",
-                    'opsi_d'        => "Khusus dokter dan perawat saja",
-                    'kunci_jawaban' => "A",
-                    'is_selected'   => true
-                ]);
-            }
-        }
+        // 2. Jalankan Seeder Khusus Bank Soal Ujian Diklat Rumah Sakit
+        $this->call(BankSoalSeeder::class);
     }
 }

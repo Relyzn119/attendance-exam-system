@@ -46,6 +46,15 @@ class UjianController extends Controller
         }
 
         // KONDISI 2: JIKA TOKEN UNTUK MASUK UJIAN
+        $existingCompleted = RiwayatUjian::where('user_id', $request->user_id)
+            ->where('status', 'selesai')
+            ->exists();
+        if ($existingCompleted) {
+            return response()->json([
+                'message' => 'Anda telah menyelesaikan ujian. Anda tidak dapat melakukan ujian kembali kecuali Admin melakukan reset ujian.'
+            ], 400);
+        }
+
         if ($token->is_used) {
             return response()->json(['message' => 'Kode Token ini sudah pernah digunakan untuk ujian!'], 400);
         }

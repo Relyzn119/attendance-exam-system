@@ -1,14 +1,146 @@
 @import "tailwindcss";
 
-/* Styling dasar Body */
-body {
-    background-color: #f8fafc;
-    color: #0f172a;
-    font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+/* Styling dasar HTML & Body Background RSU Bunda Thamrin */
+html, body {
+    background-image: linear-gradient(135deg, rgba(255, 253, 248, 0.45) 0%, rgba(255, 248, 235, 0.55) 100%), url('/images/bg-rsu-bunda-thamrin.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-color: #fef8ee;
+    color: #1e293b;
+    font-family: 'Plus Jakarta Sans', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 
 /* Proteksi agar ikon SVG tidak membesar liar */
 svg {
     max-width: 100%;
     height: auto;
+}
+
+/* Custom Scrollbar Emas & Kaca */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(252, 251, 250, 0.6);
+}
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #f59e0b, #d97706);
+    border-radius: 9999px;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #d97706, #b45309);
+}
+
+/* Kategori Utility Glassmorphism Pearl-Gold */
+.glass-pearl {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(245, 158, 11, 0.32);
+    box-shadow: 0 10px 30px -5px rgba(217, 119, 6, 0.12), 0 4px 12px 0 rgba(0, 0, 0, 0.04);
+}
+
+.glass-pearl-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 251, 243, 0.78) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(245, 158, 11, 0.32);
+    box-shadow: 0 15px 35px -5px rgba(245, 158, 11, 0.15), 0 5px 15px rgba(0, 0, 0, 0.04);
+}
+
+.glass-pearl-table {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 251, 243, 0.78) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(245, 158, 11, 0.32);
+    box-shadow: 0 15px 35px -5px rgba(245, 158, 11, 0.15), 0 5px 15px rgba(0, 0, 0, 0.04);
+    border-radius: 1.5rem;
+    overflow: hidden;
+}
+
+.glass-gold-glow {
+    box-shadow: 0 0 25px 2px rgba(245, 158, 11, 0.25);
+}
+
+.text-gold-gradient {
+    background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.btn-gold-shimmer {
+    background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 20px rgba(217, 119, 6, 0.35);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-gold-shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-gold-shimmer:hover::before {
+    left: 100%;
+}
+
+.btn-gold-shimmer:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.45);
+}
+
+/* Animations */
+@keyframes floatOrb {
+    0%, 100% {
+        transform: translateY(0px) scale(1);
+    }
+    50% {
+        transform: translateY(-20px) scale(1.08);
+    }
+}
+
+@keyframes pulseGold {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+.animate-float-orb {
+    animation: floatOrb 8s ease-in-out infinite;
+}
+
+.animate-float-orb-delayed {
+    animation: floatOrb 12s ease-in-out infinite 4s;
+}
+
+.animate-pulse-gold {
+    animation: pulseGold 3s ease-in-out infinite;
+}
+
+/* Card Hover 3D Lift */
+.hover-tilt-card {
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hover-tilt-card:hover {
+    transform: translateY(-6px) scale(1.015);
+    box-shadow: 0 20px 40px -10px rgba(245, 158, 11, 0.22);
 }

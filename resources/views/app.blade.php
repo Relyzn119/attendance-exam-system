@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full bg-slate-900">
+<html lang="id" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,7 @@
     <!-- Vite Assets (Tailwind CSS v4 & Vue App) -->
     @vite(['resources/css/app.css', 'resources/js/app.ts'])
 </head>
-<body class="h-full font-sans antialiased bg-slate-950 text-slate-100 selection:bg-blue-500 selection:text-white">
+<body class="min-h-screen font-sans antialiased text-slate-800 selection:bg-amber-400/30 selection:text-amber-900">
     <div id="app" class="min-h-screen"></div>
 </body>
 </html>

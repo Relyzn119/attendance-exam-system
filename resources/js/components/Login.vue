@@ -1,23 +1,27 @@
 <template>
-  <div class="max-w-md mx-auto py-8 sm:py-12 px-4 text-slate-100 font-sans">
+  <div class="max-w-md mx-auto py-6 sm:py-10 px-4 text-slate-800 font-sans relative z-20">
     
-    <!-- MAIN GLASS CARD -->
-    <div class="bg-slate-900/60 border border-white/15 rounded-3xl backdrop-blur-xl shadow-2xl overflow-hidden relative p-6 sm:p-8">
+    <!-- MAIN LIGHT PEARL GLASS CARD -->
+    <div class="glass-pearl-card hover-tilt-card rounded-3xl overflow-hidden relative p-7 sm:p-9">
       
+      <!-- DECORATIVE CORNER GLOWS -->
+      <div class="absolute -top-12 -right-12 w-28 h-28 bg-amber-400/20 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute -bottom-12 -left-12 w-28 h-28 bg-yellow-300/30 rounded-full blur-2xl pointer-events-none"></div>
+
       <!-- HEADER BRANDING & LOGO -->
-      <div class="text-center space-y-3 mb-8">
-        <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-blue-600/30 to-indigo-600/30 border border-blue-400/30 flex items-center justify-center text-blue-400 text-2xl shadow-inner">
+      <div class="text-center space-y-3.5 mb-8 relative z-10">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-amber-400 via-amber-500 to-yellow-600 text-white flex items-center justify-center text-3xl shadow-xl shadow-amber-500/30 border border-white/60 transform hover:rotate-6 transition-transform duration-300">
           <i class="bi bi-hospital"></i>
         </div>
         
         <div>
-          <span class="inline-block px-3 py-1 bg-blue-500/10 border border-blue-400/30 rounded-full text-[11px] text-blue-300 font-semibold mb-2">
-            Portal Portal Diklat & Staff Login
+          <span class="inline-flex items-center gap-1.5 px-3.5 py-1 bg-amber-100/90 border border-amber-300/60 rounded-full text-[11px] text-amber-900 font-extrabold tracking-wider uppercase mb-2 shadow-xs">
+            <i class="bi bi-shield-lock-fill text-amber-600"></i> Portal Diklat & Staff Login
           </span>
-          <h2 class="text-2xl font-black text-white tracking-tight uppercase">
-            Login RSU Bunda Thamrin
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight uppercase">
+            Login <span class="text-gold-gradient">RSU Bunda Thamrin</span>
           </h2>
-          <p class="text-xs text-slate-400 mt-1">
+          <p class="text-xs text-slate-600 mt-1.5 font-medium">
             Masuk untuk Mengakses Sistem Ujian & E-Arsip Digital
           </p>
         </div>
@@ -26,18 +30,20 @@
       <!-- ERROR ALERT -->
       <div 
         v-if="errorMsg" 
-        class="bg-rose-950/80 border border-rose-500/40 text-rose-300 p-4 rounded-2xl text-xs sm:text-sm flex items-center gap-3 mb-6 shadow-lg backdrop-blur-md"
+        class="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-2xl text-xs sm:text-sm flex items-center gap-3 mb-6 shadow-sm animate-shake"
       >
-        <i class="bi bi-exclamation-triangle-fill text-rose-400 text-lg shrink-0"></i>
-        <span>{{ errorMsg }}</span>
+        <i class="bi bi-exclamation-triangle-fill text-rose-500 text-lg shrink-0"></i>
+        <span class="font-semibold">{{ errorMsg }}</span>
       </div>
 
       <!-- LOGIN FORM -->
-      <form @submit.prevent="submitLogin" class="space-y-5">
+      <form @submit.prevent="submitLogin" class="space-y-5 relative z-10">
         <div>
-          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Email</label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <i class="bi bi-envelope-fill text-amber-500"></i> Alamat Email
+          </label>
+          <div class="relative group">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-amber-600 transition-colors">
               <i class="bi bi-envelope"></i>
             </div>
             <input 
@@ -45,49 +51,52 @@
               type="email" 
               placeholder="email@bundathamrin.com" 
               required 
-              class="w-full pl-10 pr-4 py-3 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" 
+              class="w-full pl-10 pr-4 py-3.5 bg-white/80 border border-amber-200/80 rounded-xl text-sm text-slate-900 font-semibold placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all shadow-xs" 
             />
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Password</label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <i class="bi bi-key-fill text-amber-500"></i> Kata Sandi
+          </label>
+          <div class="relative group">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-amber-600 transition-colors">
               <i class="bi bi-lock"></i>
             </div>
             <input 
               v-model="form.password" 
               type="password" 
-              placeholder="Masukkan password Anda" 
+              placeholder="Masukkan kata sandi Anda" 
               required 
-              class="w-full pl-10 pr-4 py-3 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" 
+              class="w-full pl-10 pr-4 py-3.5 bg-white/80 border border-amber-200/80 rounded-xl text-sm text-slate-900 font-semibold placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all shadow-xs" 
             />
           </div>
         </div>
 
         <!-- SUBMIT BUTTON -->
-        <div class="pt-2">
+        <div class="pt-3">
           <button 
             type="submit" 
             :disabled="isLoading" 
-            class="w-full bg-white hover:bg-slate-100 disabled:bg-slate-700 text-slate-950 font-black text-xs sm:text-sm uppercase tracking-wider py-3.5 rounded-full shadow-2xl transition-all transform active:scale-95 flex items-center justify-center gap-2"
+            class="w-full btn-gold-shimmer disabled:opacity-70 font-black text-xs sm:text-sm uppercase tracking-wider py-4 rounded-xl shadow-lg transition-all transform active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
           >
-            <span v-if="isLoading" class="animate-spin rounded-full h-4 w-4 border-2 border-slate-950 border-t-transparent"></span>
+            <span v-if="isLoading" class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
+            <i v-else class="bi bi-box-arrow-in-right text-base"></i>
             <span>{{ isLoading ? 'Memproses Login...' : 'Masuk Ke Sistem' }}</span>
           </button>
         </div>
 
         <!-- FOOTER LINK -->
-        <div class="text-center pt-2">
-          <p class="text-xs text-slate-400">
+        <div class="text-center pt-3 border-t border-amber-200/40 mt-4">
+          <p class="text-xs text-slate-600 font-medium">
             Belum punya akun peserta? 
             <a 
               href="#" 
               @click.prevent="$emit('switchView', 'register')" 
-              class="text-blue-400 hover:text-blue-300 font-bold hover:underline transition-colors ml-1"
+              class="text-amber-700 hover:text-amber-900 font-extrabold hover:underline transition-colors ml-1 inline-flex items-center gap-1"
             >
-              Daftar Sekarang
+              Daftar Sekarang <i class="bi bi-arrow-right-short"></i>
             </a>
           </p>
         </div>

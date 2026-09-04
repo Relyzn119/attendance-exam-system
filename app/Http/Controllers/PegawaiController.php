@@ -278,13 +278,17 @@ class PegawaiController extends Controller
         }
 
         try {
-            $judul = $request->input('judul') ?: $request->input('nama_lengkap') ?: $pegawai->nama_lengkap;
-            $deskripsi = $request->input('deskripsi') ?: $request->input('unit_departemen') ?: $pegawai->unit_departemen;
+            $judul = $request->input('judul') ?? $request->input('nama_lengkap') ?? $pegawai->nama_lengkap;
+
+            $deskripsi = $request->has('deskripsi')
+                ? $request->input('deskripsi')
+                : ($request->has('unit_departemen') ? $request->input('unit_departemen') : $pegawai->unit_departemen);
+
             $tanggalUpload = $request->input('tanggal_upload') ?: $pegawai->tanggal_upload;
 
             $pegawai->update([
                 'nama_lengkap'    => $judul,
-                'unit_departemen' => $deskripsi,
+                'unit_departemen' => $deskripsi ?? '-',
                 'tanggal_upload'  => $tanggalUpload,
             ]);
 
@@ -478,13 +482,14 @@ class PegawaiController extends Controller
      */
     private function processUploadedFiles(Request $request, Pegawai $pegawai)
     {
-        $existingCount = $pegawai->berkasPegawais()->count();
+        $allFiles = $request->allFiles();
 
-        // 1. Handling request file_berkas_1, file_berkas_2, dst.
-        for ($i = 1; $i <= 10; $i++) {
-            $inputKey = "file_berkas_{$i}";
-            if ($request->hasFile($inputKey)) {
-                $file = $request->file($inputKey);
+        // 1. Handling upload file_berkas_1, file_berkas_2, ..., file_berkas_N (Dinamis tanpa batas)
+        foreach ($allFiles as $inputKey => $file) {
+            if (str_starts_with($inputKey, 'file_berkas_') && $file->isValid()) {
+                $indexStr = str_replace('file_berkas_', '', $inputKey);
+                $i = is_numeric($indexStr) ? (int) $indexStr : 1;
+
                 $originalName = $file->getClientOriginalName();
                 $fileName = time() . '_' . rand(100, 999) . '_' . preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $originalName);
                 $filePath = $file->storeAs('berkas_pegawai', $fileName, 'public');

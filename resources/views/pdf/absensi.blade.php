@@ -89,7 +89,7 @@
     @endif
 
     <div class="text-center">
-        <div class="doc-title">DAFTAR ABSENSI KEHADIRAN DIKLAT</div>
+        <div class="doc-title">{{ $judulHeader ?? 'DAFTAR ABSENSI KEHADIRAN DIKLAT' }}</div>
         <div class="doc-subtitle">RSU BUNDA THAMRIN MEDAN • TANGGAL: {{ \Carbon\Carbon::parse($tanggal)->format('d/m/Y') }}</div>
     </div>
 
@@ -97,11 +97,10 @@
         <thead>
             <tr>
                 <th width="6%">No</th>
-                <th width="18%">NIK</th>
-                <th width="28%">Nama Peserta</th>
-                <th width="16%">No. HP</th>
-                <th width="16%">Jabatan</th>
-                <th width="16%">Tanggal</th>
+                <th width="20%">NIK</th>
+                <th width="38%">Nama Peserta</th>
+                <th width="18%">Jabatan</th>
+                <th width="18%">Tanggal</th>
             </tr>
         </thead>
         <tbody>
@@ -110,7 +109,6 @@
                 <td class="text-center">{{ $idx + 1 }}</td>
                 <td class="text-center">{{ $abs->user->nik ?? '-' }}</td>
                 <td><strong>{{ $abs->user->nama ?? '-' }}</strong></td>
-                <td class="text-center">{{ $abs->user->no_hp ?? '-' }}</td>
                 <td class="text-center">{{ $abs->user->jabatan ?? '-' }}</td>
                 <td class="text-center">{{ \Carbon\Carbon::parse($abs->created_at)->format('d/m/Y H:i') }}</td>
             </tr>
@@ -118,7 +116,7 @@
 
             @if(count($absensiList) === 0)
             <tr>
-                <td colspan="6" class="text-center" style="padding: 15px; color: #64748b;">
+                <td colspan="5" class="text-center" style="padding: 15px; color: #64748b;">
                     Tidak ada peserta yang melakukan absensi pada tanggal {{ \Carbon\Carbon::parse($tanggal)->format('d/m/Y') }}.
                 </td>
             </tr>

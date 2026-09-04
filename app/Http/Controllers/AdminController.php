@@ -204,7 +204,36 @@ class AdminController extends Controller
         ]);
     }
 
-    // 6. Export PDF Absensi berdasarkan tanggal tertentu (Reset harian & riwayat)
+    // 6. Get Riwayat Kehadiran Peserta Diklat (API Filter Tanggal/Tahun)
+    public function getRiwayatAbsensi(Request $request)
+    {
+        $query = \App\Models\Absensi::with('user');
+
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
+        }
+        if ($request->filled('tahun')) {
+            $query->whereYear('created_at', $request->tahun);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhere('nik', 'like', "%{$search}%")
+                  ->orWhere('jabatan', 'like', "%{$search}%");
+            });
+        }
+
+        $absensiList = $query->orderBy('created_at', 'desc')->get();
+
+        return response()->json([
+            'success' => true,
+            'data'    => $absensiList
+        ]);
+    }
+
+    // 7. Export PDF Absensi berdasarkan tanggal tertentu (dengan Judul Diklat Dinamis)
     public function exportAbsensiPdf(Request $request)
     {
         $tanggal = $request->input('tanggal') ?: date('Y-m-d');
@@ -215,6 +244,21 @@ class AdminController extends Controller
             ->orderBy('created_at', 'asc')
             ->get();
 
+        // Cari Judul Dokumentasi Diklat pada tanggal tersebut (dari model Pegawai)
+        $diklat = \App\Models\Pegawai::whereDate('tanggal_upload', $tanggal)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($diklat && !empty($diklat->nama_lengkap)) {
+            $judulHeader = "Daftar Kehadiran Peserta " . $diklat->nama_lengkap;
+            $safeJudul = preg_replace('/[^a-zA-Z0-9_\- ]/', '', $diklat->nama_lengkap);
+            $fileName = "Absensi_" . trim($safeJudul) . ".pdf";
+        } else {
+            $judulHeader = "DAFTAR ABSENSI KEHADIRAN DIKLAT";
+            $cleanDate = str_replace('-', '', $tanggal);
+            $fileName = "Daftar_Absensi_Diklat_" . $cleanDate . ".pdf";
+        }
+
         $imagePath = public_path('images/BackgroundDocument.png');
         $bgBase64 = '';
         if (file_exists($imagePath)) {
@@ -222,45 +266,65 @@ class AdminController extends Controller
             $bgBase64 = 'data:image/png;base64,' . base64_encode($bgData);
         }
 
-        $pdf = Pdf::loadView('pdf.absensi', compact('absensiList', 'tanggal', 'bgBase64'))->setPaper('a4', 'portrait');
-        
-        $cleanDate = str_replace('-', '', $tanggal);
-        return $pdf->download("Daftar_Absensi_Diklat_" . $cleanDate . ".pdf");
+        $pdf = Pdf::loadView('pdf.absensi', compact('absensiList', 'tanggal', 'judulHeader', 'bgBase64'))->setPaper('a4', 'portrait');
+
+        return $pdf->download($fileName);
     }
-     public function previewBerkas($id)
+     
+    public function previewBerkas($id)
     {
-        $berkas = BerkasPeserta::find($id);
+        // Cek di BerkasPegawai (E-Arsip Diklat) terlebih dahulu
+        $berkas = \App\Models\BerkasPegawai::find($id);
+
+        // Jika tidak ditemukan, cek di BerkasPeserta
+        if (!$berkas) {
+            $berkas = BerkasPeserta::find($id);
+        }
 
         if (!$berkas) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data berkas tidak ditemukan.'
+                'message' => 'Berkas tidak ditemukan di database.'
             ], 404);
         }
 
-        // Bersihkan path file dari prefix 'storage/' atau 'public/' jika ada
-        $cleanPath = ltrim(str_replace(['storage/', 'public/'], '', $berkas->file_path), '/');
+        $cleanRelativePath = ltrim(str_replace(['storage/', 'public/'], '', $berkas->file_path), '/\\');
         
-        // Dapatkan path fisik file di server
-        $fullPath = Storage::disk('public')->path($cleanPath);
+        $candidates = [
+            storage_path('app/public/' . $cleanRelativePath),
+            public_path('storage/' . $cleanRelativePath),
+            storage_path('app/' . $cleanRelativePath),
+            public_path($cleanRelativePath),
+        ];
 
-        // Fallback jika tidak ditemukan di disk public default
-        if (!file_exists($fullPath)) {
-            $fullPath = storage_path('app/public/' . $cleanPath);
+        $fullPath = null;
+        foreach ($candidates as $path) {
+            if (file_exists($path) && is_file($path)) {
+                $fullPath = $path;
+                break;
+            }
         }
 
-        // Cek keberadaan file fisik
-        if (!file_exists($fullPath) || !is_file($fullPath)) {
+        if (!$fullPath) {
             return response()->json([
                 'success' => false,
-                'message' => 'File fisik PDF tidak ditemukan di server.'
+                'message' => 'File fisik dokumen (' . $cleanRelativePath . ') tidak ditemukan di server.'
             ], 404);
         }
 
-        // Mengirimkan response file dengan Content-Type application/pdf dan Content-Disposition inline
+        $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+        $mimeType = match ($ext) {
+            'pdf'          => 'application/pdf',
+            'png'          => 'image/png',
+            'jpg', 'jpeg'  => 'image/jpeg',
+            'webp'         => 'image/webp',
+            default        => 'application/pdf',
+        };
+
+        // Mengirimkan response file dengan Content-Type yang sesuai dan Content-Disposition inline
         return response()->file($fullPath, [
-            'Content-Type'        => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . ($berkas->nama_file ?? 'dokumen.pdf') . '"'
+            'Content-Type'        => $mimeType,
+            'Content-Disposition' => 'inline; filename="' . ($berkas->nama_file ?? 'dokumen') . '"'
         ]);
     }
     // BUKA KEMBALI UJIAN (RESET SESI UJIAN PESERTA)

@@ -1,7 +1,7 @@
 <template>
-  <div class="w-full text-slate-100 font-sans pb-12">
+  <div class="w-full text-slate-800 font-sans pb-12 relative z-20">
 
-    <!-- 1. HERO HEADER & FLOATING TICKER STATS -->
+    <!-- 1. HERO HEADER & FLOATING TICKER STATS LIGHT PEARL GOLD -->
     <div class="relative mb-8">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
 
@@ -9,66 +9,66 @@
         <div class="lg:col-span-7 space-y-5">
           <!-- Tag Badge Pill -->
           <div
-            class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-500/10 border border-blue-400/30 rounded-full text-xs text-blue-300 font-semibold backdrop-blur-md shadow-lg">
-            <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+            class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-amber-100/90 border border-amber-300/60 rounded-full text-xs text-amber-900 font-extrabold uppercase shadow-xs">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
             <span>Repository Dokumentasi & E-Arsip Diklat • RSU Bunda Thamrin</span>
           </div>
 
           <!-- Headline Utama -->
           <h1
-            class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white uppercase leading-[1.08] drop-shadow-md">
+            class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 uppercase leading-[1.08]">
             DATA DOKUMENTASI & ARSIP DIKLAT <span
-              class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-emerald-400">TERINTEGRASI</span>
+              class="text-gold-gradient">TERINTEGRASI</span>
           </h1>
 
           <!-- Deskripsi -->
-          <p class="text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed font-normal">
+          <p class="text-slate-600 text-sm sm:text-base max-w-2xl leading-relaxed font-medium">
             Pusat penyimpanan berkas digital resmi kegiatan Pendidikan & Pelatihan (Diklat) RSU Bunda Thamrin terenkripsi lengkap dengan lampiran dokumen PDF.
           </p>
 
           <!-- CTA Buttons -->
-          <div class="flex flex-wrap items-center gap-3 pt-2">
+          <div class="flex flex-wrap items-center gap-3.5 pt-2">
             <button @click="openModalTambah"
-              class="inline-flex items-center gap-2.5 bg-white hover:bg-slate-100 text-slate-950 font-extrabold text-xs sm:text-sm px-6 py-3.5 rounded-full shadow-xl transition-all transform active:scale-95 group">
-              <i class="bi bi-plus-circle-fill text-blue-600 text-base group-hover:rotate-90 transition-transform"></i>
-              <span>Tambah Data Diklat</span>
+              class="btn-gold-shimmer font-black text-xs sm:text-sm px-7 py-4 rounded-full shadow-lg transition-all active:scale-95 group flex items-center gap-2.5 cursor-pointer">
+              <i class="bi bi-plus-circle-fill text-lg group-hover:rotate-90 transition-transform"></i>
+              <span>Tambah Data Diklat Baru</span>
             </button>
 
             <a href="#tabel-diklat"
-              class="inline-flex items-center gap-2 bg-slate-900/60 hover:bg-slate-800/80 text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-full border border-white/20 backdrop-blur-md transition-all active:scale-95">
-              <i class="bi bi-search text-slate-300"></i>
+              class="inline-flex items-center gap-2 bg-white hover:bg-amber-50 text-slate-800 font-extrabold text-xs sm:text-sm px-6 py-4 rounded-full border border-amber-300 shadow-md transition-all active:scale-95">
+              <i class="bi bi-search text-amber-600"></i>
               <span>Eksplor Data Arsip Diklat</span>
             </a>
           </div>
         </div>
 
         <!-- BAGIAN KANAN: FLOATING GLASS TICKER WIDGETS -->
-        <div class="lg:col-span-5 space-y-3">
+        <div class="lg:col-span-5 space-y-3.5">
 
           <!-- Widget 1: TOTAL DOKUMENTASI DIKLAT -->
           <div
-            class="bg-slate-900/60 hover:bg-slate-900/80 border border-white/15 rounded-2xl p-4 backdrop-blur-xl shadow-2xl transition-all hover:border-blue-400/40 group">
-            <div class="flex items-center justify-between mb-1">
+            class="glass-pearl-card hover-tilt-card rounded-2xl p-4.5 shadow-md group">
+            <div class="flex items-center justify-between mb-1.5">
               <div class="flex items-center gap-2">
                 <span
-                  class="text-xs font-mono font-bold text-blue-400 bg-blue-950/80 border border-blue-500/30 px-2 py-0.5 rounded">DKL/MAIN</span>
-                <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">TOTAL DOKUMENTASI DIKLAT</span>
+                  class="text-xs font-mono font-bold text-amber-900 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-md">DKL/MAIN</span>
+                <span class="text-xs font-black text-slate-800 uppercase tracking-wider">TOTAL DOKUMENTASI DIKLAT</span>
               </div>
               <span
-                class="text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
-                <i class="bi bi-arrow-up-short"></i> Active
+                class="text-xs font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <i class="bi bi-arrow-up-short text-emerald-600"></i> Active
               </span>
             </div>
 
             <div class="flex items-end justify-between">
               <div>
-                <div class="text-2xl sm:text-3xl font-black text-white font-mono tracking-tight">
+                <div class="text-2xl sm:text-3xl font-black text-slate-900 font-mono tracking-tight">
                   {{ statistics.total_diklat || statistics.total_dokter || 0 }} <span
-                    class="text-xs font-sans text-slate-400 font-semibold">Kegiatan</span>
+                    class="text-xs font-sans text-slate-500 font-bold">Kegiatan</span>
                 </div>
-                <div class="text-[11px] text-slate-400">Dokumentasi Diklat Terdaftar</div>
+                <div class="text-[11px] text-slate-500 font-medium">Dokumentasi Diklat Terdaftar</div>
               </div>
-              <svg class="w-24 h-10 text-blue-400 opacity-80 group-hover:opacity-100 transition-opacity" fill="none"
+              <svg class="w-24 h-10 text-amber-500 opacity-80 group-hover:opacity-100 transition-opacity" fill="none"
                 stroke="currentColor" viewBox="0 0 100 30">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M0 25 Q25 5, 50 18 T100 8" />
               </svg>
@@ -77,28 +77,28 @@
 
           <!-- Widget 2: TOTAL BERKAS PDF -->
           <div
-            class="bg-slate-900/60 hover:bg-slate-900/80 border border-white/15 rounded-2xl p-4 backdrop-blur-xl shadow-2xl transition-all hover:border-emerald-400/40 group">
-            <div class="flex items-center justify-between mb-1">
+            class="glass-pearl-card hover-tilt-card rounded-2xl p-4.5 shadow-md group">
+            <div class="flex items-center justify-between mb-1.5">
               <div class="flex items-center gap-2">
                 <span
-                  class="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-2 py-0.5 rounded">PDF/FILE</span>
-                <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">TOTAL BERKAS PDF</span>
+                  class="text-xs font-mono font-bold text-emerald-900 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-md">PDF/FILE</span>
+                <span class="text-xs font-black text-slate-800 uppercase tracking-wider">TOTAL BERKAS PDF</span>
               </div>
               <span
-                class="text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
-                <i class="bi bi-arrow-up-short"></i> Verified
+                class="text-xs font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <i class="bi bi-check2-all text-emerald-600"></i> Verified
               </span>
             </div>
 
             <div class="flex items-end justify-between">
               <div>
-                <div class="text-2xl sm:text-3xl font-black text-white font-mono tracking-tight">
+                <div class="text-2xl sm:text-3xl font-black text-slate-900 font-mono tracking-tight">
                   {{ statistics.total_berkas_pdf || statistics.total_perawat || 0 }} <span
-                    class="text-xs font-sans text-slate-400 font-semibold">File PDF</span>
+                    class="text-xs font-sans text-slate-500 font-bold">File PDF</span>
                 </div>
-                <div class="text-[11px] text-slate-400">File Berkas PDF Ter-upload</div>
+                <div class="text-[11px] text-slate-500 font-medium">File Berkas PDF Ter-upload</div>
               </div>
-              <svg class="w-24 h-10 text-emerald-400 opacity-80 group-hover:opacity-100 transition-opacity" fill="none"
+              <svg class="w-24 h-10 text-emerald-500 opacity-80 group-hover:opacity-100 transition-opacity" fill="none"
                 stroke="currentColor" viewBox="0 0 100 30">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M0 20 Q20 28, 45 10 T100 5" />
               </svg>
@@ -107,28 +107,28 @@
 
           <!-- Widget 3: DOKUMENTASI BULAN INI -->
           <div
-            class="bg-slate-900/60 hover:bg-slate-900/80 border border-white/15 rounded-2xl p-4 backdrop-blur-xl shadow-2xl transition-all hover:border-purple-400/40 group">
-            <div class="flex items-center justify-between mb-1">
+            class="glass-pearl-card hover-tilt-card rounded-2xl p-4.5 shadow-md group">
+            <div class="flex items-center justify-between mb-1.5">
               <div class="flex items-center gap-2">
                 <span
-                  class="text-xs font-mono font-bold text-purple-400 bg-purple-950/80 border border-purple-500/30 px-2 py-0.5 rounded">NEW/RECENT</span>
-                <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">DOKUMENTASI BULAN INI</span>
+                  class="text-xs font-mono font-bold text-purple-900 bg-purple-100 border border-purple-300 px-2.5 py-0.5 rounded-md">NEW/RECENT</span>
+                <span class="text-xs font-black text-slate-800 uppercase tracking-wider">DOKUMENTASI BULAN INI</span>
               </div>
               <span
-                class="text-xs font-bold text-sky-400 bg-sky-950/60 border border-sky-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
-                <i class="bi bi-dash"></i> Recent
+                class="text-xs font-black text-amber-900 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <i class="bi bi-clock-history text-amber-600"></i> Recent
               </span>
             </div>
 
             <div class="flex items-end justify-between">
               <div>
-                <div class="text-2xl sm:text-3xl font-black text-white font-mono tracking-tight">
+                <div class="text-2xl sm:text-3xl font-black text-slate-900 font-mono tracking-tight">
                   {{ statistics.diklat_bulan_ini || statistics.staf_penunjang || 0 }} <span
-                    class="text-xs font-sans text-slate-400 font-semibold">Kegiatan</span>
+                    class="text-xs font-sans text-slate-500 font-bold">Kegiatan</span>
                 </div>
-                <div class="text-[11px] text-slate-400">Kegiatan Diklat Terbaru Bulan Ini</div>
+                <div class="text-[11px] text-slate-500 font-medium">Kegiatan Diklat Terbaru Bulan Ini</div>
               </div>
-              <svg class="w-24 h-10 text-purple-400 opacity-80 group-hover:opacity-100 transition-opacity" fill="none"
+              <svg class="w-24 h-10 text-amber-600 opacity-80 group-hover:opacity-100 transition-opacity" fill="none"
                 stroke="currentColor" viewBox="0 0 100 30">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M0 15 Q35 2, 70 20 T100 12" />
               </svg>
@@ -140,28 +140,29 @@
       </div>
     </div>
 
-    <!-- 2. FILTER BAR & PENCARIAN -->
+    <!-- 2. FILTER BAR & PENCARIAN LIGHT PEARL GOLD -->
+    <!-- 2. FILTER BAR & PENCARIAN LIGHT PEARL GOLD -->
     <div id="tabel-diklat"
-      class="bg-slate-900/60 border border-white/15 rounded-3xl p-5 mb-6 backdrop-blur-xl shadow-2xl">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center mb-4">
+      class="glass-pearl-card hover-tilt-card rounded-3xl p-6 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center mb-4">
 
         <!-- Search Input -->
-        <div class="md:col-span-3 relative">
-          <i class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
+        <div class="md:col-span-4 relative">
+          <i class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-amber-600 text-base"></i>
           <input v-model="searchQuery" @input="onFilterChange" type="text"
             placeholder="Cari judul, deskripsi..."
-            class="w-full pl-11 pr-4 py-3 bg-slate-950/70 border border-white/15 rounded-2xl text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-inner" />
+            class="w-full pl-11 pr-4 py-3 bg-white/85 border border-amber-300/80 rounded-2xl text-xs sm:text-sm text-slate-900 font-semibold placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all shadow-xs" />
           <button v-if="searchQuery" @click="searchQuery = ''; onFilterChange()"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1">
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-700 p-1">
             <i class="bi bi-x-circle-fill"></i>
           </button>
         </div>
 
         <!-- Filter Tahun Dropdown -->
         <div class="md:col-span-2 relative">
-          <i class="bi bi-calendar-range absolute left-4 top-1/2 -translate-y-1/2 text-amber-400 text-base"></i>
+          <i class="bi bi-calendar-range absolute left-4 top-1/2 -translate-y-1/2 text-amber-600 text-base"></i>
           <select v-model="selectedTahun" @change="onFilterChange"
-            class="w-full pl-11 pr-4 py-3 bg-slate-950/70 border border-white/15 rounded-2xl text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-inner [color-scheme:dark]">
+            class="w-full pl-11 pr-4 py-3 bg-white/85 border border-amber-300/80 rounded-2xl text-xs sm:text-sm text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all shadow-xs [color-scheme:light]">
             <option value="">Semua Tahun</option>
             <option v-for="year in yearOptions" :key="year" :value="year">{{ year }}</option>
           </select>
@@ -169,9 +170,9 @@
 
         <!-- Filter Bulan Dropdown -->
         <div class="md:col-span-3 relative">
-          <i class="bi bi-calendar-month absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 text-base"></i>
+          <i class="bi bi-calendar-month absolute left-4 top-1/2 -translate-y-1/2 text-amber-600 text-base"></i>
           <select v-model="selectedBulan" @change="onFilterChange"
-            class="w-full pl-11 pr-4 py-3 bg-slate-950/70 border border-white/15 rounded-2xl text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-inner [color-scheme:dark]">
+            class="w-full pl-11 pr-4 py-3 bg-white/85 border border-amber-300/80 rounded-2xl text-xs sm:text-sm text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all shadow-xs [color-scheme:light]">
             <option value="">Semua Bulan</option>
             <option value="1">Januari</option>
             <option value="2">Februari</option>
@@ -190,9 +191,9 @@
 
         <!-- Filter Minggu Dropdown -->
         <div class="md:col-span-2 relative">
-          <i class="bi bi-calendar-week absolute left-4 top-1/2 -translate-y-1/2 text-purple-400 text-base"></i>
+          <i class="bi bi-calendar-week absolute left-4 top-1/2 -translate-y-1/2 text-amber-600 text-base"></i>
           <select v-model="selectedMinggu" @change="onFilterChange"
-            class="w-full pl-11 pr-4 py-3 bg-slate-950/70 border border-white/15 rounded-2xl text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-inner [color-scheme:dark]">
+            class="w-full pl-11 pr-4 py-3 bg-white/85 border border-amber-300/80 rounded-2xl text-xs sm:text-sm text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all shadow-xs [color-scheme:light]">
             <option value="">Semua Minggu</option>
             <option value="1">Minggu 1 (Tgl 1-7)</option>
             <option value="2">Minggu 2 (Tgl 8-14)</option>
@@ -203,50 +204,50 @@
 
         <!-- Date Filter Input -->
         <div class="md:col-span-2 relative">
-          <i class="bi bi-calendar-event absolute left-4 top-1/2 -translate-y-1/2 text-emerald-400 text-base"></i>
+          <i class="bi bi-calendar-event absolute left-4 top-1/2 -translate-y-1/2 text-amber-600 text-base"></i>
           <input v-model="selectedDate" @change="onFilterChange" type="date"
-            class="w-full pl-11 pr-4 py-3 bg-slate-950/70 border border-white/15 rounded-2xl text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-inner [color-scheme:dark]" />
+            class="w-full pl-11 pr-4 py-3 bg-white/85 border border-amber-300/80 rounded-2xl text-xs sm:text-sm text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all shadow-xs [color-scheme:light]" />
         </div>
 
       </div>
 
       <!-- Quick Preset Filter Date Pills -->
-      <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-white/10">
-        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">Quick Filter:</span>
+      <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-amber-200/50">
+        <span class="text-xs font-black text-amber-900 uppercase tracking-wider mr-1">Quick Filter:</span>
         <button @click="resetAllFilters" :class="[
-          'px-3 py-1 rounded-full text-xs font-semibold transition-all',
-          (!selectedDate && !selectedTahun && !selectedBulan && !selectedMinggu && !searchQuery) ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+          'px-3.5 py-1.5 rounded-full text-xs font-bold transition-all shadow-xs',
+          (!selectedDate && !selectedTahun && !selectedBulan && !selectedMinggu && !searchQuery) ? 'bg-amber-500 text-white shadow-md' : 'bg-white/80 text-slate-700 border border-amber-300/60 hover:bg-amber-100'
         ]">Semua Data</button>
         <button @click="setQuickDate(todayDate, 'Hari Ini')" :class="[
-          'px-3 py-1 rounded-full text-xs font-semibold transition-all',
-          selectedDate === todayDate ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+          'px-3.5 py-1.5 rounded-full text-xs font-bold transition-all shadow-xs',
+          selectedDate === todayDate ? 'bg-amber-500 text-white shadow-md' : 'bg-white/80 text-slate-700 border border-amber-300/60 hover:bg-amber-100'
         ]">Hari Ini</button>
         <button @click="setQuickBulan(currentMonthVal)" :class="[
-          'px-3 py-1 rounded-full text-xs font-semibold transition-all',
-          selectedBulan == currentMonthVal ? 'bg-purple-600 text-white shadow-lg' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+          'px-3.5 py-1.5 rounded-full text-xs font-bold transition-all shadow-xs',
+          selectedBulan == currentMonthVal ? 'bg-amber-500 text-white shadow-md' : 'bg-white/80 text-slate-700 border border-amber-300/60 hover:bg-amber-100'
         ]">Bulan Ini</button>
         
         <button v-if="selectedDate || selectedTahun || selectedBulan || selectedMinggu || searchQuery" @click="resetAllFilters"
-          class="ml-auto text-xs text-rose-300 font-semibold bg-rose-950/60 hover:bg-rose-900/80 px-3 py-1 rounded-full border border-rose-500/30 transition-all flex items-center gap-1">
+          class="ml-auto text-xs text-rose-700 font-bold bg-rose-50 hover:bg-rose-100 px-3.5 py-1.5 rounded-full border border-rose-300 transition-all flex items-center gap-1 shadow-xs">
           <i class="bi bi-x-lg"></i> Reset Filter
         </button>
       </div>
     </div>
 
-    <!-- 3. DATA TABLE DOKUMENTASI DIKLAT -->
-    <div class="bg-slate-900/60 border border-white/15 rounded-3xl overflow-hidden backdrop-blur-xl shadow-2xl">
+    <!-- 3. DATA TABLE DOKUMENTASI DIKLAT (GLASS CARD WHITE-GOLD) -->
+    <div class="glass-pearl-table shadow-2xl">
 
       <!-- Loading State -->
-      <div v-if="isLoading" class="p-16 text-center text-slate-400 space-y-3">
-        <div class="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent mx-auto"></div>
-        <p class="font-medium text-sm">Memuat database dokumentasi diklat & berkas...</p>
+      <div v-if="isLoading" class="p-16 text-center text-slate-600 space-y-3">
+        <div class="animate-spin rounded-full h-10 w-10 border-4 border-amber-500 border-t-transparent mx-auto"></div>
+        <p class="font-bold text-sm text-amber-900">Memuat database dokumentasi diklat & berkas...</p>
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="pegawaiList.length === 0" class="p-16 text-center text-slate-400 space-y-3">
-        <i class="bi bi-folder-x text-5xl text-slate-500"></i>
-        <p class="font-medium text-slate-300">Belum ada data dokumentasi diklat yang sesuai dengan pencarian/filter.</p>
-        <button @click="openModalTambah" class="inline-flex items-center gap-2 text-xs font-bold text-blue-400 hover:underline">
+      <div v-else-if="pegawaiList.length === 0" class="p-16 text-center text-slate-600 space-y-3">
+        <i class="bi bi-folder-x text-5xl text-amber-500"></i>
+        <p class="font-bold text-slate-700">Belum ada data dokumentasi diklat yang sesuai dengan pencarian/filter.</p>
+        <button @click="openModalTambah" class="inline-flex items-center gap-2 text-xs font-black text-amber-700 hover:underline">
           <i class="bi bi-plus-lg"></i> Tambah Data Diklat Baru
         </button>
       </div>
@@ -255,7 +256,7 @@
       <div v-else class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-slate-950/80 border-b border-white/10 text-xs font-black text-slate-300 uppercase tracking-wider">
+            <tr class="bg-amber-100/80 border-b border-amber-300/40 text-xs font-black text-amber-950 uppercase tracking-wider">
               <th class="py-4 px-5 text-center">NO</th>
               <th class="py-4 px-6">JUDUL DOKUMENTASI DIKLAT</th>
               <th class="py-4 px-6">DESKRIPSI / KETERANGAN</th>
@@ -264,25 +265,25 @@
               <th class="py-4 px-6 text-center">AKSI</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-white/5 text-xs sm:text-sm">
-            <tr v-for="(item, index) in displayedPegawaiList" :key="item.id" class="hover:bg-white/5 transition-colors group">
+          <tbody class="divide-y divide-amber-200/40 text-xs sm:text-sm">
+            <tr v-for="(item, index) in displayedPegawaiList" :key="item.id" class="hover:bg-amber-100/40 transition-colors group">
               
               <!-- NO -->
-              <td class="py-4 px-5 text-center font-mono font-bold text-slate-400">
+              <td class="py-4 px-5 text-center font-mono font-bold text-slate-600">
                 {{ startIndex + index + 1 }}
               </td>
 
               <!-- JUDUL DOKUMENTASI DIKLAT -->
               <td class="py-4 px-6">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-400/20 flex items-center justify-center text-blue-400 font-bold text-base shrink-0">
+                  <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-400/30 flex items-center justify-center text-amber-600 font-bold text-base shrink-0">
                     <i class="bi bi-journal-bookmark-fill"></i>
                   </div>
                   <div>
-                    <div class="font-black text-white group-hover:text-blue-300 transition-colors leading-snug">
+                    <div class="font-black text-slate-900 group-hover:text-amber-800 transition-colors leading-snug">
                       {{ item.nama_lengkap }}
                     </div>
-                    <div class="text-[11px] text-slate-400 font-mono mt-0.5">
+                    <div class="text-[11px] text-slate-500 font-mono mt-0.5 font-semibold">
                       ID: {{ item.nik }}
                     </div>
                   </div>
@@ -290,22 +291,22 @@
               </td>
 
               <!-- DESKRIPSI / KETERANGAN -->
-              <td class="py-4 px-6 text-slate-300 max-w-xs truncate">
+              <td class="py-4 px-6 text-slate-700 font-medium max-w-xs truncate">
                 {{ item.unit_departemen || '-' }}
               </td>
 
               <!-- TANGGAL -->
-              <td class="py-4 px-5 text-center font-mono text-slate-300 whitespace-nowrap">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-800/80 border border-white/10 rounded-lg text-xs font-semibold">
-                  <i class="bi bi-calendar3 text-blue-400"></i>
+              <td class="py-4 px-5 text-center font-mono text-slate-700 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50/80 border border-amber-200/80 rounded-lg text-xs font-bold shadow-xs">
+                  <i class="bi bi-calendar3 text-amber-600"></i>
                   {{ item.tanggal_upload }}
                 </span>
               </td>
 
               <!-- DOKUMEN BERKAS PDF -->
               <td class="py-4 px-5 text-center">
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-xs font-bold text-emerald-400">
-                  <i class="bi bi-file-earmark-pdf-fill"></i>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100/90 border border-emerald-300 rounded-full text-xs font-black text-emerald-800 shadow-xs">
+                  <i class="bi bi-file-earmark-pdf-fill text-emerald-600"></i>
                   <span>{{ item.berkas_pegawais_count || 0 }} Berkas PDF</span>
                 </div>
               </td>
@@ -314,22 +315,22 @@
               <td class="py-4 px-6 text-center">
                 <div class="flex items-center justify-center gap-1.5">
                   <button @click="openModalDetail(item.id)" title="Detail Arsip Diklat"
-                    class="p-2 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-600 hover:text-white transition-all transform active:scale-95">
+                    class="p-2 rounded-xl bg-blue-100 hover:bg-blue-600 text-blue-700 hover:text-white transition-all border border-blue-300 shadow-xs transform active:scale-95">
                     <i class="bi bi-eye-fill"></i>
                   </button>
 
                   <button @click="openModalEdit(item)" title="Edit Data Diklat & Berkas"
-                    class="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-600 hover:text-white transition-all transform active:scale-95">
+                    class="p-2 rounded-xl bg-amber-100 hover:bg-amber-500 text-amber-800 hover:text-white transition-all border border-amber-300 shadow-xs transform active:scale-95">
                     <i class="bi bi-pencil-square"></i>
                   </button>
 
                   <button @click="downloadZip(item.id, item.nama_lengkap)" title="Download Semua Berkas Disatukan (1 File PDF)"
-                    class="p-2 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-400 hover:bg-purple-600 hover:text-white transition-all transform active:scale-95">
+                    class="p-2 rounded-xl bg-purple-100 hover:bg-purple-600 text-purple-800 hover:text-white transition-all border border-purple-300 shadow-xs transform active:scale-95">
                     <i class="bi bi-file-earmark-pdf-fill"></i>
                   </button>
 
                   <button @click="confirmHapusPegawai(item)" title="Hapus Permanen Data Diklat"
-                    class="p-2 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-600 hover:text-white transition-all transform active:scale-95">
+                    class="p-2 rounded-xl bg-rose-100 hover:bg-rose-500 text-rose-700 hover:text-white transition-all border border-rose-300 shadow-xs transform active:scale-95">
                     <i class="bi bi-trash3-fill"></i>
                   </button>
                 </div>
@@ -342,30 +343,30 @@
 
       <!-- Pagination Controls Footer -->
       <div v-if="!isLoading && pegawaiList.length > 0"
-        class="p-4 bg-slate-950/80 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs">
-        <div class="text-slate-400">
-          Menampilkan <span class="font-bold text-white font-mono">{{ startIndex + 1 }}</span> - <span
-            class="font-bold text-white font-mono">{{ endIndex }}</span> dari
-          <span class="font-bold text-white font-mono">{{ pegawaiList.length }}</span> total data diklat
+        class="p-4 bg-amber-50/60 border-t border-amber-200/60 flex flex-wrap items-center justify-between gap-4 text-xs">
+        <div class="text-slate-700 font-medium">
+          Menampilkan <span class="font-black text-amber-900 font-mono">{{ startIndex + 1 }}</span> - <span
+            class="font-black text-amber-900 font-mono">{{ endIndex }}</span> dari
+          <span class="font-black text-amber-900 font-mono">{{ pegawaiList.length }}</span> total data diklat
         </div>
 
         <div class="flex items-center gap-1.5">
           <button @click="prevPage" :disabled="currentPage === 1"
-            class="px-3 py-1.5 rounded-lg bg-slate-800 border border-white/10 text-slate-300 hover:bg-slate-700 disabled:opacity-40 disabled:hover:bg-slate-800 transition-all">
+            class="px-3 py-1.5 rounded-lg bg-white/80 border border-amber-300/60 text-slate-800 font-bold hover:bg-amber-100 disabled:opacity-40 transition-all">
             <i class="bi bi-chevron-left"></i> Prev
           </button>
 
           <div class="flex items-center gap-1 font-mono">
             <button v-for="page in totalPages" :key="page" @click="currentPage = page" :class="[
-              'w-8 h-8 rounded-lg font-bold transition-all',
-              currentPage === page ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:text-white'
+              'w-8 h-8 rounded-lg font-black transition-all border',
+              currentPage === page ? 'bg-amber-500 text-white border-amber-600 shadow-sm' : 'bg-white/80 border-amber-300/60 text-slate-800 hover:bg-amber-100'
             ]">
               {{ page }}
             </button>
           </div>
 
           <button @click="nextPage" :disabled="currentPage === totalPages"
-            class="px-3 py-1.5 rounded-lg bg-slate-800 border border-white/10 text-slate-300 hover:bg-slate-700 disabled:opacity-40 disabled:hover:bg-slate-800 transition-all">
+            class="px-3 py-1.5 rounded-lg bg-white/80 border border-amber-300/60 text-slate-800 font-bold hover:bg-amber-100 disabled:opacity-40 transition-all">
             Next <i class="bi bi-chevron-right"></i>
           </button>
         </div>
@@ -373,25 +374,26 @@
     </div>
 
     <!-- 4. MODAL FORM TAMBAH DOKUMENTASI DIKLAT BARU -->
+    <Teleport to="body">
     <div v-if="showModalTambah"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-slate-950/80 backdrop-blur-md">
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-slate-900/40 backdrop-blur-md">
       <div
-        class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden my-8 max-h-[90vh] flex flex-col text-slate-100">
+        class="glass-pearl-card border border-amber-300/60 rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden my-8 max-h-[90vh] flex flex-col text-slate-800">
 
         <!-- Modal Header -->
-        <div class="bg-blue-950/60 p-6 flex items-center justify-between border-b border-blue-500/30 shrink-0">
+        <div class="bg-gradient-to-r from-amber-500/15 via-amber-400/10 to-yellow-500/15 p-6 flex items-center justify-between border-b border-amber-300/40 shrink-0">
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 rounded-xl bg-blue-600/30 border border-blue-500/40 flex items-center justify-center text-blue-400">
+              class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-700 shadow-xs">
               <i class="bi bi-journal-plus text-xl"></i>
             </div>
             <div>
-              <h3 class="text-lg font-bold text-white leading-tight">Tambah Data Dokumentasi Diklat Baru</h3>
-              <p class="text-xs text-slate-400">Input Judul Diklat, Deskripsi & Lampiran Dokumen PDF</p>
+              <h3 class="text-lg font-black text-slate-900 leading-tight">Tambah Data Dokumentasi Diklat Baru</h3>
+              <p class="text-xs text-slate-600 font-medium">Input Judul Diklat, Deskripsi & Lampiran Dokumen PDF</p>
             </div>
           </div>
           <button @click="closeModalTambah"
-            class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors">
+            class="text-slate-500 hover:text-rose-600 p-1.5 rounded-xl hover:bg-rose-50 transition-colors">
             <i class="bi bi-x-lg text-lg"></i>
           </button>
         </div>
@@ -402,103 +404,57 @@
             
             <!-- 1. Tambahkan Judul -->
             <div class="md:col-span-2">
-              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Tambahkan Judul *</label>
+              <label class="block text-xs font-black text-amber-900 uppercase tracking-wider mb-1.5">Tambahkan Judul *</label>
               <input v-model="formTambah.judul" required type="text" placeholder="Masukkan Judul Kegiatan Diklat / Pelatihan..."
-                class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-slate-500" />
+                class="w-full px-4 py-3 bg-white/90 border border-amber-300/80 rounded-xl text-sm text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/50 placeholder-slate-400 shadow-xs" />
             </div>
 
             <!-- 2. Deskripsi (Optional) -->
             <div class="md:col-span-2">
-              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Deskripsi (Optional)</label>
+              <label class="block text-xs font-black text-amber-900 uppercase tracking-wider mb-1.5">Deskripsi (Optional)</label>
               <textarea v-model="formTambah.deskripsi" rows="3" placeholder="Masukkan keterangan / deskripsi singkat mengenai dokumentasi diklat ini..."
-                class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-slate-500"></textarea>
+                class="w-full px-4 py-3 bg-white/90 border border-amber-300/80 rounded-xl text-sm text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/50 placeholder-slate-400 shadow-xs"></textarea>
             </div>
 
             <!-- 3. Tanggal -->
             <div class="md:col-span-2">
-              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Tanggal *</label>
+              <label class="block text-xs font-black text-amber-900 uppercase tracking-wider mb-1.5">Tanggal *</label>
               <input v-model="formTambah.tanggal_upload" required type="date"
-                class="w-full px-3.5 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 [color-scheme:dark]" />
+                class="w-full px-4 py-3 bg-white/90 border border-amber-300/80 rounded-xl text-sm text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/50 shadow-xs [color-scheme:light]" />
             </div>
 
           </div>
 
           <!-- SECTION LAMPIRAN DOKUMEN BERKAS (BERKAS 1, BERKAS 2, DST.) -->
-          <div class="border-t border-white/10 pt-4 mt-4">
-            <label class="block text-xs font-bold text-blue-400 uppercase tracking-wider mb-3">
-              LAMPIRAN BERKAS FILE (PDF / JPG / PNG / WEBP):
-            </label>
+          <div class="border-t border-amber-200/60 pt-4 mt-4">
+            <div class="flex items-center justify-between mb-3">
+              <label class="block text-xs font-black text-amber-900 uppercase tracking-wider">
+                LAMPIRAN BERKAS FILE (PDF / JPG / PNG / WEBP):
+              </label>
+              <button type="button" @click="tambahFieldBerkasTambah"
+                class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-extrabold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer active:scale-95">
+                <i class="bi bi-plus-circle-fill text-sm"></i>
+                <span>+Tambah Berkas Baru</span>
+              </button>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
 
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">1. Berkas 1 (PDF / Gambar)</label>
-                <input @change="handleFileTambah($event, 'file_berkas_1')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50" />
-              </div>
-
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">2. Berkas 2 (PDF / Gambar)</label>
-                <input @change="handleFileTambah($event, 'file_berkas_2')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50" />
-              </div>
-
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">3. Berkas 3 (PDF / Gambar)</label>
-                <input @change="handleFileTambah($event, 'file_berkas_3')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50" />
-              </div>
-
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">4. Berkas 4 (PDF / Gambar)</label>
-                <input @change="handleFileTambah($event, 'file_berkas_4')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50" />
-              </div>
-
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">5. Berkas 5 (PDF / Gambar)</label>
-                <input @change="handleFileTambah($event, 'file_berkas_5')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50" />
-              </div>
-
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">6. Berkas 6 (PDF / Gambar)</label>
-                <input @change="handleFileTambah($event, 'file_berkas_6')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50" />
-              </div>
-
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">7. Berkas 7 (PDF / Gambar)</label>
-                <input @change="handleFileTambah($event, 'file_berkas_7')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50" />
-              </div>
-
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">8. Berkas 8 (PDF / Gambar)</label>
-                <input @change="handleFileTambah($event, 'file_berkas_8')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50" />
-              </div>
-
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">9. Berkas 9 (PDF / Gambar)</label>
-                <input @change="handleFileTambah($event, 'file_berkas_9')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50" />
-              </div>
-
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">10. Berkas 10 (PDF / Gambar)</label>
-                <input @change="handleFileTambah($event, 'file_berkas_10')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/50" />
+              <div v-for="i in berkasTambahCount" :key="i" class="bg-white/80 p-3 rounded-xl border border-amber-200/80 shadow-xs">
+                <label class="block font-bold text-slate-800 mb-1">{{ i }}. Berkas {{ i }} (PDF / Gambar)</label>
+                <input @change="handleFileTambah($event, 'file_berkas_' + i)" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
+                  class="w-full text-xs text-slate-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-extrabold file:bg-amber-100 file:text-amber-900 hover:file:bg-amber-200" />
               </div>
 
             </div>
           </div>
 
           <!-- Action Footer -->
-          <div class="flex items-center justify-end gap-3 pt-4 border-t border-white/10 shrink-0">
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-amber-200/60 shrink-0">
             <button type="button" @click="closeModalTambah"
-              class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition-all">Batal</button>
+              class="px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-bold rounded-xl transition-all shadow-xs">Batal</button>
             <button type="submit" :disabled="isSubmitting"
-              class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 text-white text-xs font-bold rounded-xl shadow-lg transition-all inline-flex items-center gap-2">
+              class="px-6 py-2.5 btn-gold-shimmer text-white text-xs font-black uppercase tracking-wider rounded-xl shadow-lg transition-all inline-flex items-center gap-2 cursor-pointer">
               <span v-if="isSubmitting"
                 class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
               <span>{{ isSubmitting ? 'Menyimpan...' : 'Simpan Data Diklat & Berkas' }}</span>
@@ -507,6 +463,7 @@
         </form>
       </div>
     </div>
+    </Teleport>
 
     <!-- 5. MODAL EDIT DOKUMENTASI DIKLAT & KELOLA BERKAS -->
     <div v-if="showModalEdit"
@@ -556,27 +513,27 @@
 
           <!-- BERKAS EXISTING -->
           <div v-if="berkasExisting && berkasExisting.length > 0"
-            class="bg-slate-950/60 border border-white/10 rounded-2xl p-4 mt-4">
-            <label class="block text-xs font-bold text-amber-400 uppercase tracking-wider mb-3">
+            class="bg-white/80 border border-amber-200/80 rounded-2xl p-4 mt-4 shadow-xs">
+            <label class="block text-xs font-black text-amber-900 uppercase tracking-wider mb-3">
               DOKUMEN PDF TERUNGGAH SAAT INI:
             </label>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div v-for="berkas in berkasExisting" :key="berkas.id"
-                class="flex items-center justify-between p-3 bg-slate-900 rounded-xl border border-white/10">
+                class="flex items-center justify-between p-3 bg-amber-50/80 rounded-xl border border-amber-200/80">
                 <div class="flex items-center gap-2.5 overflow-hidden">
-                  <i class="bi bi-file-earmark-pdf-fill text-rose-400 text-lg shrink-0"></i>
+                  <i class="bi bi-file-earmark-pdf-fill text-rose-600 text-lg shrink-0"></i>
                   <div class="truncate">
-                    <div class="text-xs font-bold text-white truncate">{{ berkas.jenis_berkas }}</div>
-                    <div class="text-[11px] text-slate-400 truncate">{{ berkas.nama_file }} ({{ berkas.file_size }})</div>
+                    <div class="text-xs font-bold text-slate-900 truncate">{{ berkas.jenis_berkas }}</div>
+                    <div class="text-[11px] text-slate-500 truncate">{{ berkas.nama_file }} ({{ berkas.file_size }})</div>
                   </div>
                 </div>
                 <div class="flex items-center gap-1 shrink-0">
-                  <button type="button" @click="viewPdf(berkas.file_path)" title="Lihat PDF"
-                    class="p-1.5 bg-blue-500/20 text-blue-300 hover:bg-blue-600 hover:text-white rounded-lg transition-colors">
+                  <button type="button" @click="viewPdf(berkas)" title="Lihat PDF"
+                    class="p-1.5 bg-blue-100 text-blue-700 hover:bg-blue-600 hover:text-white rounded-lg transition-colors border border-blue-300">
                     <i class="bi bi-eye-fill"></i>
                   </button>
                   <button type="button" @click="deleteBerkasIndividual(berkas.id)" title="Hapus Berkas"
-                    class="p-1.5 bg-rose-500/20 text-rose-400 hover:bg-rose-600 hover:text-white rounded-lg transition-colors">
+                    class="p-1.5 bg-rose-100 text-rose-700 hover:bg-rose-600 hover:text-white rounded-lg transition-colors border border-rose-300">
                     <i class="bi bi-trash"></i>
                   </button>
                 </div>
@@ -585,70 +542,33 @@
           </div>
 
           <!-- UPLOAD DOKUMEN BERKAS BARU (SAAT EDIT) -->
-          <div class="border-t border-white/10 pt-4 mt-4">
-            <label class="block text-xs font-bold text-amber-400 uppercase tracking-wider mb-3">
-              TAMBAH / UPDATE LAMPIRAN BERKAS (PDF / GAMBAR):
-            </label>
+          <div class="border-t border-amber-200/60 pt-4 mt-4">
+            <div class="flex items-center justify-between mb-3">
+              <label class="block text-xs font-black text-amber-900 uppercase tracking-wider">
+                TAMBAH / UPDATE LAMPIRAN BERKAS (PDF / GAMBAR):
+              </label>
+              <button type="button" @click="tambahFieldBerkasEdit"
+                class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-extrabold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer active:scale-95">
+                <i class="bi bi-plus-circle-fill text-sm"></i>
+                <span>+Tambah Berkas Baru</span>
+              </button>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">Berkas 1 (PDF / Gambar)</label>
-                <input @change="handleFileEdit($event, 'file_berkas_1')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
-              </div>
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">Berkas 2 (PDF / Gambar)</label>
-                <input @change="handleFileEdit($event, 'file_berkas_2')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
-              </div>
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">Berkas 3 (PDF / Gambar)</label>
-                <input @change="handleFileEdit($event, 'file_berkas_3')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
-              </div>
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">Berkas 4 (PDF / Gambar)</label>
-                <input @change="handleFileEdit($event, 'file_berkas_4')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
-              </div>
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">Berkas 5 (PDF / Gambar)</label>
-                <input @change="handleFileEdit($event, 'file_berkas_5')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
-              </div>
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">Berkas 6 (PDF / Gambar)</label>
-                <input @change="handleFileEdit($event, 'file_berkas_6')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
-              </div>
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">Berkas 7 (PDF / Gambar)</label>
-                <input @change="handleFileEdit($event, 'file_berkas_7')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
-              </div>
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">Berkas 8 (PDF / Gambar)</label>
-                <input @change="handleFileEdit($event, 'file_berkas_8')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
-              </div>
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">Berkas 9 (PDF / Gambar)</label>
-                <input @change="handleFileEdit($event, 'file_berkas_9')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
-              </div>
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-                <label class="block font-bold text-slate-300 mb-1">Berkas 10 (PDF / Gambar)</label>
-                <input @change="handleFileEdit($event, 'file_berkas_10')" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
-                  class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600/30 file:text-amber-300 hover:file:bg-amber-600/50" />
+              <div v-for="i in berkasEditCount" :key="i" class="bg-white/80 p-3 rounded-xl border border-amber-200/80 shadow-xs">
+                <label class="block font-bold text-slate-800 mb-1">Berkas {{ i }} (PDF / Gambar)</label>
+                <input @change="handleFileEdit($event, 'file_berkas_' + i)" type="file" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
+                  class="w-full text-xs text-slate-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-extrabold file:bg-amber-100 file:text-amber-900 hover:file:bg-amber-200" />
               </div>
             </div>
           </div>
 
           <!-- Action Footer -->
-          <div class="flex items-center justify-end gap-3 pt-4 border-t border-white/10 shrink-0">
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-amber-200/60 shrink-0">
             <button type="button" @click="closeModalEdit"
-              class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition-all">Batal</button>
+              class="px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-bold rounded-xl transition-all shadow-xs">Batal</button>
             <button type="submit" :disabled="isSubmittingEdit"
-              class="px-6 py-2.5 bg-amber-600 hover:bg-amber-500 disabled:bg-amber-800 text-white text-xs font-bold rounded-xl shadow-lg transition-all inline-flex items-center gap-2">
+              class="px-6 py-2.5 btn-gold-shimmer text-white text-xs font-black uppercase tracking-wider rounded-xl shadow-lg transition-all inline-flex items-center gap-2 cursor-pointer">
               <span v-if="isSubmittingEdit"
                 class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
               <span>{{ isSubmittingEdit ? 'Memperbarui...' : 'Simpan Perubahan' }}</span>
@@ -660,56 +580,56 @@
 
     <!-- 6. MODAL DETAIL DOKUMENTASI DIKLAT (READ-ONLY) -->
     <div v-if="showModalDetail"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-slate-950/80 backdrop-blur-md">
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-slate-900/40 backdrop-blur-md">
       <div
-        class="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden my-8 max-h-[90vh] flex flex-col text-slate-100">
+        class="glass-pearl-card border border-amber-300/60 rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden my-8 max-h-[90vh] flex flex-col text-slate-800">
 
         <!-- Modal Header -->
-        <div class="bg-slate-950 p-6 flex items-center justify-between border-b border-white/10 shrink-0">
+        <div class="bg-gradient-to-r from-amber-500/15 via-amber-400/10 to-yellow-500/15 p-6 flex items-center justify-between border-b border-amber-300/40 shrink-0">
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+              class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-700 shadow-xs">
               <i class="bi bi-journal-check text-xl"></i>
             </div>
             <div>
-              <h3 class="text-lg font-bold text-white leading-tight">Detail Arsip Dokumentasi Diklat</h3>
-              <p class="text-xs text-slate-400">Pratinjau Informasi & Lampiran Berkas PDF</p>
+              <h3 class="text-lg font-black text-slate-900 leading-tight">Detail Arsip Dokumentasi Diklat</h3>
+              <p class="text-xs text-slate-600 font-medium">Pratinjau Informasi & Lampiran Berkas PDF</p>
             </div>
           </div>
           <button @click="closeModalDetail"
-            class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors">
+            class="text-slate-500 hover:text-rose-600 p-1.5 rounded-xl hover:bg-rose-50 transition-colors">
             <i class="bi bi-x-lg text-lg"></i>
           </button>
         </div>
 
         <!-- Detail Content -->
         <div class="p-6 space-y-6 overflow-y-auto flex-grow">
-          <div v-if="isLoadingDetail" class="p-12 text-center text-slate-400 space-y-3">
-            <div class="animate-spin rounded-full h-8 w-8 border-3 border-blue-500 border-t-transparent mx-auto"></div>
-            <p class="text-sm font-medium">Memuat rincian diklat...</p>
+          <div v-if="isLoadingDetail" class="p-12 text-center text-slate-600 space-y-3">
+            <div class="animate-spin rounded-full h-8 w-8 border-3 border-amber-500 border-t-transparent mx-auto"></div>
+            <p class="text-sm font-bold text-amber-900">Memuat rincian diklat...</p>
           </div>
 
           <div v-else-if="selectedPegawai">
             <!-- Information Grid -->
-            <div class="bg-slate-950/60 border border-white/10 rounded-2xl p-5 mb-6">
+            <div class="bg-white/80 border border-amber-200/80 rounded-2xl p-5 mb-6 shadow-xs">
               <div class="flex items-start gap-4">
                 <div
-                  class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 flex items-center justify-center text-white font-black text-2xl shadow-xl shrink-0">
+                  class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-black text-2xl shadow-md shrink-0">
                   <i class="bi bi-journal-text"></i>
                 </div>
                 <div class="space-y-2 flex-grow">
-                  <h2 class="text-xl font-black text-white leading-snug">
+                  <h2 class="text-xl font-black text-slate-900 leading-snug">
                     {{ selectedPegawai.nama_lengkap }}
                   </h2>
 
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-2 border-t border-white/10">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-2 border-t border-amber-200/60">
                     <div>
-                      <span class="text-slate-400 block mb-0.5">Deskripsi / Keterangan:</span>
-                      <span class="font-semibold text-white">{{ selectedPegawai.unit_departemen || '-' }}</span>
+                      <span class="text-slate-500 block mb-0.5 font-bold uppercase">Deskripsi / Keterangan:</span>
+                      <span class="font-bold text-slate-900">{{ selectedPegawai.unit_departemen || '-' }}</span>
                     </div>
                     <div>
-                      <span class="text-slate-400 block mb-0.5">Tanggal Pelaksanaan:</span>
-                      <span class="font-semibold text-blue-300 font-mono">{{ selectedPegawai.tanggal_upload }}</span>
+                      <span class="text-slate-500 block mb-0.5 font-bold uppercase">Tanggal Pelaksanaan:</span>
+                      <span class="font-extrabold text-amber-800 font-mono">{{ selectedPegawai.tanggal_upload }}</span>
                     </div>
                   </div>
                 </div>
@@ -719,47 +639,48 @@
             <!-- List Berkas PDF Terlampir -->
             <div>
               <div class="flex items-center justify-between mb-4">
-                <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider">
+                <h4 class="text-xs font-black text-amber-900 uppercase tracking-wider">
                   LAMPIRAN DOKUMEN & BERKAS ({{ selectedPegawai.berkas_pegawais ? selectedPegawai.berkas_pegawais.length : 0 }})
                 </h4>
                 <button v-if="selectedPegawai.berkas_pegawais && selectedPegawai.berkas_pegawais.length > 0"
                   @click="downloadZip(selectedPegawai.id, selectedPegawai.nama_lengkap)"
-                  class="px-3 py-1.5 bg-purple-600/30 hover:bg-purple-600 border border-purple-500/40 text-purple-300 hover:text-white rounded-lg text-xs font-bold transition-all inline-flex items-center gap-1.5">
+                  class="px-3 py-1.5 bg-purple-100 hover:bg-purple-600 border border-purple-300 text-purple-800 hover:text-white rounded-lg text-xs font-bold transition-all inline-flex items-center gap-1.5 shadow-xs">
                   <i class="bi bi-file-earmark-pdf-fill"></i>
                   <span>Download PDF Gabungan</span>
                 </button>
               </div>
 
               <div v-if="!selectedPegawai.berkas_pegawais || selectedPegawai.berkas_pegawais.length === 0"
-                class="p-8 text-center bg-slate-950/40 border border-white/10 rounded-2xl text-slate-400 text-xs">
+                class="p-8 text-center bg-white/80 border border-amber-200/80 rounded-2xl text-slate-600 text-xs font-medium">
                 Belum ada berkas PDF yang terunggah untuk diklat ini.
               </div>
 
               <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div v-for="berkas in selectedPegawai.berkas_pegawais" :key="berkas.id"
-                  class="bg-slate-950/60 border border-white/10 rounded-xl p-4 flex items-center justify-between hover:border-blue-500/40 transition-all group">
+                  class="bg-white/80 border border-amber-200/80 rounded-xl p-4 flex items-center justify-between hover:border-amber-400 transition-all group shadow-xs">
                   <div class="flex items-center gap-3 truncate">
                     <div
-                      class="w-10 h-10 rounded-lg bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 text-lg shrink-0">
+                      class="w-10 h-10 rounded-lg bg-rose-100 border border-rose-300 flex items-center justify-center text-rose-600 text-lg shrink-0">
                       <i class="bi bi-file-earmark-pdf-fill"></i>
                     </div>
                     <div class="truncate">
-                      <div class="text-xs font-bold text-white truncate group-hover:text-blue-300 transition-colors">
+                      <div class="text-xs font-bold text-slate-900 truncate group-hover:text-amber-800 transition-colors">
                         {{ berkas.jenis_berkas }}
                       </div>
-                      <div class="text-[11px] text-slate-400 truncate mt-0.5">
+                      <div class="text-[11px] text-slate-500 truncate mt-0.5 font-medium">
                         {{ berkas.nama_file }} • {{ berkas.file_size }}
                       </div>
                     </div>
                   </div>
 
                   <div class="flex items-center gap-1.5 shrink-0 ml-2">
-                    <button @click="viewPdf(berkas.file_path)" title="Buka / Preview PDF"
-                      class="px-2.5 py-1.5 bg-blue-600/30 hover:bg-blue-600 border border-blue-500/40 text-blue-300 hover:text-white rounded-lg text-xs font-semibold transition-all">
-                      Lihat
+                    <button @click="viewPdf(berkas)" title="Buka / Preview Berkas"
+                      class="px-3 py-1.5 bg-blue-100 hover:bg-blue-600 border border-blue-300 text-blue-800 hover:text-white rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
+                      <i class="bi bi-eye-fill"></i>
+                      <span>Buka / Preview Berkas</span>
                     </button>
                     <button @click="downloadPdf(berkas.file_path, berkas.nama_file)" title="Unduh File"
-                      class="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs transition-all">
+                      class="p-1.5 bg-white hover:bg-amber-100 border border-amber-300/80 text-slate-800 rounded-lg text-xs transition-all shadow-xs">
                       <i class="bi bi-download"></i>
                     </button>
                   </div>
@@ -770,7 +691,7 @@
         </div>
 
         <!-- Modal Footer -->
-        <div class="bg-slate-950 p-4 border-t border-white/10 flex justify-end shrink-0">
+        <div class="bg-amber-50/60 p-4 border-t border-amber-200/60 flex justify-end shrink-0">
           <button @click="closeModalDetail"
             class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition-all">Tutup</button>
         </div>
@@ -875,6 +796,20 @@ const showModalTambah = ref(false);
 const showModalEdit = ref(false);
 const showModalDetail = ref(false);
 const showModalHapus = ref(false);
+
+// Dynamic File Upload Fields Count
+const berkasTambahCount = ref(10);
+const berkasEditCount = ref(10);
+
+const tambahFieldBerkasTambah = () => {
+  berkasTambahCount.value++;
+  formTambah.value[`file_berkas_${berkasTambahCount.value}`] = null;
+};
+
+const tambahFieldBerkasEdit = () => {
+  berkasEditCount.value++;
+  formEdit.value[`file_berkas_${berkasEditCount.value}`] = null;
+};
 
 const selectedPegawai = ref(null);
 const pegawaiToDelete = ref(null);
@@ -994,6 +929,7 @@ const setQuickDate = (dateVal, label) => {
 
 // Modal Tambah Handlers
 const openModalTambah = () => {
+  berkasTambahCount.value = 10;
   formTambah.value = {
     judul: '',
     deskripsi: '',
@@ -1058,6 +994,7 @@ const submitTambahPegawai = async () => {
 
 // Modal Edit Handlers
 const openModalEdit = async (item) => {
+  berkasEditCount.value = 10;
   formEdit.value = {
     id: item.id,
     nama_lengkap: item.nama_lengkap || '',
@@ -1104,7 +1041,9 @@ const submitEditPegawai = async () => {
   formData.append('_method', 'PUT');
 
   formData.append('nama_lengkap', formEdit.value.nama_lengkap);
+  formData.append('judul', formEdit.value.nama_lengkap);
   formData.append('unit_departemen', formEdit.value.unit_departemen || '');
+  formData.append('deskripsi', formEdit.value.unit_departemen || '');
   formData.append('tanggal_upload', formEdit.value.tanggal_upload);
 
   Object.keys(formEdit.value).forEach(key => {
@@ -1222,9 +1161,15 @@ const downloadZip = async (id, judulDiklat) => {
 };
 
 // Helpers Action PDF
-const viewPdf = (filePath) => {
-  if (!filePath) return alert('File PDF tidak ditemukan');
-  const url = filePath.startsWith('http') || filePath.startsWith('/') ? filePath : '/' + filePath;
+const viewPdf = (berkas) => {
+  if (!berkas) return alert('File dokumen tidak ditemukan');
+  if (typeof berkas === 'object' && berkas.id) {
+    window.open(`/api/admin/berkas/${berkas.id}/preview`, '_blank');
+    return;
+  }
+  const pathStr = typeof berkas === 'string' ? berkas : (berkas.file_path || '');
+  if (!pathStr) return alert('File dokumen tidak ditemukan');
+  const url = pathStr.startsWith('http') || pathStr.startsWith('/') ? pathStr : '/' + pathStr;
   window.open(url, '_blank');
 };
 

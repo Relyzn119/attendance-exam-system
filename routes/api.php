@@ -12,7 +12,7 @@ use App\Http\Controllers\PegawaiController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/user-profile/{id}', [AuthController::class, 'getProfile']);
-Route::get('/berkas/{id}/preview', [AuthController::class, 'previewBerkas']);
+Route::get('/berkas/{id}/preview', [AdminController::class, 'previewBerkas']);
 Route::post('/peserta/update-profile/{id}', [AuthController::class, 'updateProfile']);
 Route::post('/change-password/{id}', [AuthController::class, 'changePassword']);
 
@@ -35,6 +35,7 @@ Route::post('/ujian/submit/{riwayatId}', [UjianController::class, 'submitExam'])
 Route::get('/ujian/review/{riwayatId}', [UjianController::class, 'getReviewJawaban']);
 Route::get('/ujian/sertifikat/{riwayatId}', [UjianController::class, 'cetakSertifikat']);
 Route::get('/admin/export-absensi', [AdminController::class, 'exportAbsensiPdf']);
+Route::get('/admin/riwayat-absensi', [AdminController::class, 'getRiwayatAbsensi']);
 
 Route::get('/admin/pegawai', [PegawaiController::class, 'index']);
 Route::post('/admin/pegawai', [PegawaiController::class, 'store']);
