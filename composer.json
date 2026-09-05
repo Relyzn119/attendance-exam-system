@@ -1,11 +1,15 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/vue-starter-kit",
+    "name": "rsu-bunda-thamrin/hospital-system",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Sistem Manajemen Diklat, CBT Ujian Digital, & Repositori E-Arsip Dokumen HRD Karyawan RSU Bunda Thamrin Medan.",
     "keywords": [
         "laravel",
-        "framework"
+        "vue",
+        "hospital-system",
+        "cbt-exam",
+        "e-arsip",
+        "rsu-bunda-thamrin"
     ],
     "license": "MIT",
     "require": {
